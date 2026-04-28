@@ -356,7 +356,6 @@ section h2 {
         <li>Deterministic, cheap, fast</li>
         <li>Runs on a laptop or free Colab CPU</li>
         <li>Good for stance, sentiment, topic, NER, any closed-label task</li>
-        <li>Park's measurement strategy</li>
       </ul>
     </div>
     <div class="family warm">
@@ -388,7 +387,7 @@ section h2 {
     <div class="pick-decoder"><div class="pick-tag">Generative, prompted</div>LLM with clear schema and validators.</div>
 
     <div class="row-head">Large data<small>~tens of thousands+</small></div>
-    <div class="pick-encoder"><div class="pick-tag">Encoder, fine-tuned</div>300 hand-labels, train an encoder. Park's pattern.</div>
+    <div class="pick-encoder"><div class="pick-tag">Encoder, fine-tuned</div>300 hand-labels, train an encoder.</div>
     <div class="pick-decoder"><div class="pick-tag">Encoder + generative</div>Encoder filter, generative for hard cases.</div>
     <div class="pick-decoder"><div class="pick-tag">Hybrid pipeline</div>Generative for extraction, encoder to classify.</div>
   </div>
@@ -411,7 +410,7 @@ section h2 {
 <section>
   <h2>The NLI trick · why an encoder can do almost anything</h2>
   <div class="nli-box">
-    An NLI-trained encoder learns one job. Given a <strong>premise</strong> and a <strong>hypothesis</strong>, decide entailment / neutral / contradiction. Any classification can be rewritten as a yes-or-no entailment question. <code>zero-shot-classification</code> does this for you with a list of candidate labels. Park aggregates 13 such hypotheses with weights into a continuous -5 to +5 stance score.
+    An NLI-trained encoder learns one job. Given a <strong>premise</strong> and a <strong>hypothesis</strong>, decide entailment / neutral / contradiction. Any classification can be rewritten as a yes-or-no entailment question. <code>zero-shot-classification</code> does this for you with a list of candidate labels. Park (2026) aggregates 13 such hypotheses with weights into a continuous -5 to +5 stance score.
   </div>
 </section>
 

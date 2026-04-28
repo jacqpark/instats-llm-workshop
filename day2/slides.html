@@ -393,6 +393,32 @@ svg text { font-family: 'Inter', sans-serif; font-size: 13px; fill: var(--ink); 
 svg text.label { font-size: 11px; fill: var(--ink-soft); }
 svg text.mono { font-family: 'JetBrains Mono', monospace; font-size: 10px; fill: var(--ink-faint); }
 
+/* SVG animations */
+.bar-anim {
+  transform-box: fill-box;
+  transform-origin: center bottom;
+  transform: scaleY(0);
+}
+.slide.active .bar-anim {
+  animation: barGrow 0.7s cubic-bezier(0.2, 0.8, 0.3, 1) forwards;
+  animation-delay: calc(0.06s * var(--i, 0));
+}
+@keyframes barGrow {
+  to { transform: scaleY(1); }
+}
+.line-anim {
+  stroke-dasharray: 2600;
+  stroke-dashoffset: 2600;
+}
+.slide.active .line-anim {
+  animation: lineDraw 1.6s ease-out forwards;
+}
+.slide.active .line-anim.lag-1 { animation-delay: 0.35s; }
+.slide.active .line-anim.lag-2 { animation-delay: 1.6s; animation-duration: 0.9s; }
+@keyframes lineDraw {
+  to { stroke-dashoffset: 0; }
+}
+
 /* Bars */
 .bars { display: flex; flex-direction: column; gap: 12px; }
 .bar-row { display: grid; grid-template-columns: 220px 1fr 80px; align-items: center; gap: 14px; }
@@ -875,7 +901,7 @@ svg text.mono { font-family: 'JetBrains Mono', monospace; font-size: 10px; fill:
 <!-- 14. METRICS THAT GO IN THE APPENDIX -->
 <section class="slide">
   <div class="eyebrow">Validation metrics</div>
-  <h2>Four numbers your appendix needs.<br>Following Park (2026).</h2>
+  <h2>Four numbers your appendix needs.</h2>
   <div class="rule"></div>
   <div class="two-col">
     <div>
@@ -983,7 +1009,7 @@ out = <span class="fn">zsc</span>(text, candidate_labels)</pre>
 <!-- 19. MULTIPLE HYPOTHESES -->
 <section class="slide">
   <div class="eyebrow">From one hypothesis to many</div>
-  <h2>Park's thirteen hypotheses.<br>Six factual, seven interpretive.</h2>
+  <h2>Park's (2026) thirteen hypotheses.<br>Six factual, seven interpretive.</h2>
   <div class="rule"></div>
   <div class="hyp-stack" style="margin-top: 4px; gap: 4px;">
     <div class="hyp-row neg" style="padding: 3px 14px;"><div class="idx">H1 <span style="color: var(--highlight); font-weight: 600;">F</span></div><div class="text" style="font-size: 13px;">The country is the Priority Foreign Country.</div><div class="w neg">&minus;2</div></div>
@@ -1055,7 +1081,7 @@ out = <span class="fn">zsc</span>(text, candidate_labels)</pre>
   <h2>Per-hypothesis weighted F1,<br>fully out-of-sample on 300 paragraphs.</h2>
   <div class="rule"></div>
   <div style="flex: 1; display: flex; align-items: center; justify-content: center; min-height: 0;">
-    <svg viewBox="0 0 980 320" style="width: 100%; max-width: 940px;">
+    <svg viewBox="0 0 980 348" style="width: 100%; max-width: 940px;">
       <!-- axes -->
       <line x1="60" y1="280" x2="940" y2="280" class="stroke-thin" />
       <line x1="60" y1="40" x2="60" y2="280" class="stroke-thin" />
@@ -1072,62 +1098,62 @@ out = <span class="fn">zsc</span>(text, candidate_labels)</pre>
       <text x="500" y="20" text-anchor="middle" style="font-size: 11px; fill: #2D493C; font-weight: 600;">- - -  Pooled F1 = 0.870</text>
       <!-- bars -->
       <!-- Factual H1=0.99 -->
-      <rect x="80" y="42.4" width="55" height="237.6" fill="#334B99" />
+      <rect class="bar-anim" style="--i: 0" x="80" y="42.4" width="55" height="237.6" fill="#334B99" />
       <text x="107" y="36" text-anchor="middle" style="font-size: 11px; fill: var(--ink); font-weight: 600;">0.99</text>
       <text x="107" y="296" text-anchor="middle" class="mono" style="font-size: 11px; fill: var(--ink-soft);">H1</text>
       <!-- H2=0.98 -->
-      <rect x="145" y="44.8" width="55" height="235.2" fill="#334B99" />
+      <rect class="bar-anim" style="--i: 1" x="145" y="44.8" width="55" height="235.2" fill="#334B99" />
       <text x="172" y="38" text-anchor="middle" style="font-size: 11px; fill: var(--ink); font-weight: 600;">0.98</text>
       <text x="172" y="296" text-anchor="middle" class="mono" style="font-size: 11px; fill: var(--ink-soft);">H2</text>
       <!-- H3=0.96 -->
-      <rect x="210" y="49.6" width="55" height="230.4" fill="#334B99" />
+      <rect class="bar-anim" style="--i: 2" x="210" y="49.6" width="55" height="230.4" fill="#334B99" />
       <text x="237" y="43" text-anchor="middle" style="font-size: 11px; fill: var(--ink); font-weight: 600;">0.96</text>
       <text x="237" y="296" text-anchor="middle" class="mono" style="font-size: 11px; fill: var(--ink-soft);">H3</text>
       <!-- H4=0.99 -->
-      <rect x="275" y="42.4" width="55" height="237.6" fill="#334B99" />
+      <rect class="bar-anim" style="--i: 3" x="275" y="42.4" width="55" height="237.6" fill="#334B99" />
       <text x="302" y="36" text-anchor="middle" style="font-size: 11px; fill: var(--ink); font-weight: 600;">0.99</text>
       <text x="302" y="296" text-anchor="middle" class="mono" style="font-size: 11px; fill: var(--ink-soft);">H4</text>
       <!-- H5=0.84 interpretive -->
-      <rect x="340" y="78.4" width="55" height="201.6" fill="#2D493C" />
+      <rect class="bar-anim" style="--i: 4" x="340" y="78.4" width="55" height="201.6" fill="#2D493C" />
       <text x="367" y="72" text-anchor="middle" style="font-size: 11px; fill: var(--ink); font-weight: 600;">0.84</text>
       <text x="367" y="296" text-anchor="middle" class="mono" style="font-size: 11px; fill: var(--ink-soft);">H5</text>
       <!-- H6=0.69 -->
-      <rect x="405" y="114.4" width="55" height="165.6" fill="#2D493C" />
+      <rect class="bar-anim" style="--i: 5" x="405" y="114.4" width="55" height="165.6" fill="#2D493C" />
       <text x="432" y="108" text-anchor="middle" style="font-size: 11px; fill: var(--ink); font-weight: 600;">0.69</text>
       <text x="432" y="296" text-anchor="middle" class="mono" style="font-size: 11px; fill: var(--ink-soft);">H6</text>
       <!-- H7=0.81 -->
-      <rect x="470" y="85.6" width="55" height="194.4" fill="#2D493C" />
+      <rect class="bar-anim" style="--i: 6" x="470" y="85.6" width="55" height="194.4" fill="#2D493C" />
       <text x="497" y="79" text-anchor="middle" style="font-size: 11px; fill: var(--ink); font-weight: 600;">0.81</text>
       <text x="497" y="296" text-anchor="middle" class="mono" style="font-size: 11px; fill: var(--ink-soft);">H7</text>
       <!-- H8=0.85 -->
-      <rect x="535" y="76" width="55" height="204" fill="#2D493C" />
+      <rect class="bar-anim" style="--i: 7" x="535" y="76" width="55" height="204" fill="#2D493C" />
       <text x="562" y="69" text-anchor="middle" style="font-size: 11px; fill: var(--ink); font-weight: 600;">0.85</text>
       <text x="562" y="296" text-anchor="middle" class="mono" style="font-size: 11px; fill: var(--ink-soft);">H8</text>
       <!-- H9=0.80 -->
-      <rect x="600" y="88" width="55" height="192" fill="#2D493C" />
+      <rect class="bar-anim" style="--i: 8" x="600" y="88" width="55" height="192" fill="#2D493C" />
       <text x="627" y="81" text-anchor="middle" style="font-size: 11px; fill: var(--ink); font-weight: 600;">0.80</text>
       <text x="627" y="296" text-anchor="middle" class="mono" style="font-size: 11px; fill: var(--ink-soft);">H9</text>
       <!-- H10=0.88 -->
-      <rect x="665" y="68.8" width="55" height="211.2" fill="#2D493C" />
+      <rect class="bar-anim" style="--i: 9" x="665" y="68.8" width="55" height="211.2" fill="#2D493C" />
       <text x="692" y="62" text-anchor="middle" style="font-size: 11px; fill: var(--ink); font-weight: 600;">0.88</text>
       <text x="692" y="296" text-anchor="middle" class="mono" style="font-size: 11px; fill: var(--ink-soft);">H10</text>
       <!-- H11=0.86 -->
-      <rect x="730" y="73.6" width="55" height="206.4" fill="#2D493C" />
+      <rect class="bar-anim" style="--i: 10" x="730" y="73.6" width="55" height="206.4" fill="#2D493C" />
       <text x="757" y="67" text-anchor="middle" style="font-size: 11px; fill: var(--ink); font-weight: 600;">0.86</text>
       <text x="757" y="296" text-anchor="middle" class="mono" style="font-size: 11px; fill: var(--ink-soft);">H11</text>
       <!-- H12=0.89 -->
-      <rect x="795" y="66.4" width="55" height="213.6" fill="#334B99" />
+      <rect class="bar-anim" style="--i: 11" x="795" y="66.4" width="55" height="213.6" fill="#334B99" />
       <text x="822" y="60" text-anchor="middle" style="font-size: 11px; fill: var(--ink); font-weight: 600;">0.89</text>
       <text x="822" y="296" text-anchor="middle" class="mono" style="font-size: 11px; fill: var(--ink-soft);">H12</text>
       <!-- H13=0.89 -->
-      <rect x="860" y="66.4" width="55" height="213.6" fill="#334B99" />
+      <rect class="bar-anim" style="--i: 12" x="860" y="66.4" width="55" height="213.6" fill="#334B99" />
       <text x="887" y="60" text-anchor="middle" style="font-size: 11px; fill: var(--ink); font-weight: 600;">0.89</text>
       <text x="887" y="296" text-anchor="middle" class="mono" style="font-size: 11px; fill: var(--ink-soft);">H13</text>
       <!-- legend -->
-      <rect x="76" y="312" width="14" height="10" fill="#334B99" />
-      <text x="96" y="321" style="font-size: 11px; fill: var(--ink-soft);">Factual (H1-H4, H12-H13)</text>
-      <rect x="280" y="312" width="14" height="10" fill="#2D493C" />
-      <text x="300" y="321" style="font-size: 11px; fill: var(--ink-soft);">Interpretive (H5-H11)</text>
+      <rect x="76" y="320" width="14" height="10" fill="#334B99" />
+      <text x="96" y="329" style="font-size: 11px; fill: var(--ink-soft);">Factual (H1-H4, H12-H13)</text>
+      <rect x="280" y="320" width="14" height="10" fill="#2D493C" />
+      <text x="300" y="329" style="font-size: 11px; fill: var(--ink-soft);">Interpretive (H5-H11)</text>
     </svg>
   </div>
   <p class="tiny" style="margin-top: 12px;">Source. Park (2026), R&amp;R at RIO, Figure A.2. 10-fold cross-validation, n=300 hand-labeled paragraphs, DeBERTa-v3-large fine-tuned on all 13 hypotheses simultaneously. Aggregate score validation. weighted F1 = 0.787, accuracy = 0.773, Pearson r = 0.676 against the hand-coded score. The off-the-shelf zero-shot ensemble in the demo notebook does not reach these numbers. Closing the gap requires fine-tuning, which is the natural next step beyond Day 2.</p>
@@ -1262,9 +1288,11 @@ out = <span class="fn">zsc</span>(text, candidate_labels)</pre>
       <text x="656" y="40" text-anchor="middle" style="font-size: 11px; fill: var(--highlight); font-weight: 600;">2014</text>
       <text x="722" y="40" text-anchor="middle" style="font-size: 11px; fill: var(--highlight); font-weight: 600;">2016</text>
       <!-- Israel curve (real values from NTE_IPR_final_v2.csv) -->
-      <polyline points="126,134 159,217 192,248 226,182 259,155 292,189 325,207 358,215 391,253 424,258 457,255 490,52 557,111 590,116 623,208 656,128 689,128 722,129 755,190 788,150 822,147 855,130 888,227 921,227" stroke="#334B99" stroke-width="2.4" fill="none" stroke-linejoin="round" />
-      <!-- Turkey curve (real values) -->
-      <polyline points="60,207 93,97 126,189 159,227 192,127 226,140 259,139 292,164 358,213 391,225 424,245 457,161 490,215 557,252 590,245 623,167 656,165 689,234 722,236 755,244 788,250 822,252 855,232 888,266 921,265" stroke="#2D493C" stroke-width="2.4" fill="none" stroke-linejoin="round" />
+      <polyline class="line-anim" points="126,134 159,217 192,248 226,182 259,155 292,189 325,207 358,215 391,253 424,258 457,255 490,52 557,111 590,116 623,208 656,128 689,128 722,129 755,190 788,150 822,147 855,130 888,227 921,227" stroke="#334B99" stroke-width="2.4" fill="none" stroke-linejoin="round" />
+      <!-- Turkey curve, pre-2014 (context) -->
+      <polyline class="line-anim lag-1" points="60,207 93,97 126,189 159,227 192,127 226,140 259,139 292,164 358,213 391,225 424,245 457,161 490,215 557,252 590,245 623,167 656,165" stroke="#2D493C" stroke-width="2" stroke-opacity="0.42" fill="none" stroke-linejoin="round" />
+      <!-- Turkey curve, 2014 onward (backsliding) -->
+      <polyline class="line-anim lag-2" points="656,165 689,234 722,236 755,244 788,250 822,252 855,232 888,266 921,265" stroke="#2D493C" stroke-width="2.8" fill="none" stroke-linejoin="round" />
       <!-- end-of-line dots -->
       <circle cx="921" cy="227" r="4" fill="#334B99" />
       <circle cx="921" cy="265" r="4" fill="#2D493C" />
