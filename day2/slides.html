@@ -1,0 +1,1383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Day 2 · LLMs for Political Scientists</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #D4E8D9;
+  --bg-tint: #E5EFE8;
+  --bg-deep: #BFD9C4;
+  --ink: #132025;
+  --ink-soft: #2D493C;
+  --ink-faint: #5C7B6A;
+  --rule: #A8C9AE;
+  --accent: #2D493C;
+  --highlight: #334B99;
+  --pop: #B1F1B1;
+  --dark: #132025;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  background: var(--dark);
+  font-family: 'Inter', -apple-system, sans-serif;
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+.deck {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+}
+.slide {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 1280px;
+  height: 720px;
+  background: var(--bg);
+  box-shadow: 0 30px 90px rgba(0,0,0,0.55);
+  padding: 64px 80px;
+  display: flex;
+  flex-direction: column;
+  transform: translate(-50%, -50%) scale(var(--s, 1));
+  transform-origin: center center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.35s ease;
+  overflow: hidden;
+}
+.slide.active {
+  opacity: 1;
+  visibility: visible;
+}
+.slide.dark {
+  background: var(--dark);
+  color: var(--bg);
+}
+.slide.dark h1, .slide.dark h2 { color: var(--bg); }
+.slide.dark .lede, .slide.dark p, .slide.dark .small, .slide.dark .tiny { color: var(--bg); }
+.slide.dark .eyebrow { color: var(--pop); }
+.slide.dark h4 { color: var(--pop); }
+
+.eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--highlight);
+  margin-bottom: 18px;
+  font-weight: 500;
+}
+.eyebrow.subtle { color: var(--ink-faint); }
+h1 {
+  font-family: 'Crimson Pro', serif;
+  font-weight: 700;
+  font-size: 88px;
+  line-height: 1.02;
+  color: var(--accent);
+  letter-spacing: -0.025em;
+}
+h2 {
+  font-family: 'Crimson Pro', serif;
+  font-weight: 600;
+  font-size: 52px;
+  line-height: 1.06;
+  color: var(--accent);
+  letter-spacing: -0.018em;
+  margin-bottom: 24px;
+}
+h3 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 24px;
+  color: var(--ink);
+  margin-bottom: 10px;
+  letter-spacing: -0.005em;
+}
+h4 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--highlight);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+p {
+  font-size: 21px;
+  line-height: 1.5;
+  color: var(--ink);
+  margin-bottom: 12px;
+}
+p.lede {
+  font-family: 'Crimson Pro', serif;
+  font-size: 30px;
+  font-weight: 400;
+  line-height: 1.35;
+  color: var(--ink-soft);
+  font-style: italic;
+}
+.small { font-size: 16px; color: var(--ink-soft); line-height: 1.5; margin-bottom: 8px; }
+.tiny { font-size: 13px; color: var(--ink-faint); line-height: 1.4; }
+.accent { color: var(--accent); }
+.highlight { color: var(--highlight); font-weight: 600; }
+.muted { color: var(--ink-faint); }
+.serif { font-family: 'Crimson Pro', serif; }
+
+.rule {
+  width: 56px;
+  height: 3px;
+  background: var(--highlight);
+  margin-bottom: 24px;
+}
+.rule.thin { height: 1px; background: var(--rule); width: 100%; }
+
+ul.bare { list-style: none; }
+ul.bare li {
+  font-size: 19px;
+  line-height: 1.5;
+  margin-bottom: 12px;
+  padding-left: 28px;
+  position: relative;
+  color: var(--ink);
+}
+ul.bare li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 13px;
+  width: 16px;
+  height: 1px;
+  background: var(--highlight);
+}
+
+code, pre, .mono { font-family: 'JetBrains Mono', monospace; font-variant-numeric: tabular-nums; }
+pre {
+  background: var(--bg-deep);
+  padding: 18px 22px;
+  border-left: 3px solid var(--highlight);
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--ink);
+  overflow: hidden;
+  border-radius: 2px;
+}
+pre .kw { color: var(--highlight); font-weight: 500; }
+pre .str { color: var(--accent); }
+pre .com { color: var(--ink-faint); font-style: italic; }
+pre .fn { color: var(--accent); font-weight: 500; }
+
+.flex { display: flex; }
+.col { display: flex; flex-direction: column; }
+.flex-1 { flex: 1; min-height: 0; }
+
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  flex: 1;
+  min-height: 0;
+}
+.three-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 24px;
+  flex: 1;
+  min-height: 0;
+}
+.card {
+  background: var(--bg-tint);
+  padding: 22px 24px;
+  border-top: 3px solid var(--highlight);
+  display: flex;
+  flex-direction: column;
+  border-radius: 2px;
+}
+.card.cool { border-top-color: var(--highlight); background: #DCE8F0; }
+.card.warm { border-top-color: var(--accent); background: var(--bg-tint); }
+.card .label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-bottom: 8px;
+}
+.card h3 { font-size: 20px; margin-bottom: 10px; color: var(--accent); }
+.card p { font-size: 16px; line-height: 1.45; color: var(--ink); margin-bottom: 8px; }
+.card .tag {
+  display: inline-block;
+  padding: 3px 10px;
+  background: var(--pop);
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  font-family: 'JetBrains Mono', monospace;
+  margin-top: auto;
+  align-self: flex-start;
+  border-radius: 2px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 16px;
+  font-variant-numeric: tabular-nums;
+}
+th, td {
+  padding: 10px 14px;
+  text-align: left;
+  border-bottom: 1px solid var(--rule);
+  vertical-align: top;
+  line-height: 1.4;
+}
+thead th {
+  font-weight: 600;
+  color: var(--accent);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-bottom: 2px solid var(--accent);
+  padding-bottom: 8px;
+}
+td.gold { background: rgba(177,241,177,0.18); }
+td.warn { background: rgba(45,73,60,0.06); }
+
+/* Title slide */
+.slide-title { padding: 0; }
+.slide-title-inner {
+  flex: 1;
+  padding: 64px 80px 56px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+}
+.slide-title h1 { font-size: 104px; max-width: 940px; line-height: 0.98; }
+.slide-title .lede { font-size: 26px; max-width: 740px; margin-top: 24px; }
+.slide-title .meta {
+  display: flex;
+  gap: 48px;
+  padding-top: 18px;
+  border-top: 1px solid var(--rule);
+  font-size: 14px;
+  color: var(--ink-soft);
+  letter-spacing: 0.02em;
+}
+.slide-title .meta .label {
+  display: block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-bottom: 6px;
+}
+.slide-title .corner {
+  position: absolute;
+  top: 64px;
+  right: 80px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  color: var(--highlight);
+  text-transform: uppercase;
+}
+
+/* Section divider */
+.slide.section-divider {
+  background-color: #2D493C !important;
+  padding: 80px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  overflow: hidden;
+}
+.slide.section-divider::before {
+  content: '';
+  position: absolute;
+  top: 80px;
+  left: 80px;
+  width: 56px;
+  height: 3px;
+  background: #B1F1B1;
+  z-index: 4;
+}
+.slide.section-divider .num {
+  font-family: 'Crimson Pro', Georgia, serif;
+  font-weight: 200;
+  font-size: 200px;
+  line-height: 0.85;
+  color: rgba(177, 241, 177, 0.45);
+  position: absolute;
+  bottom: 56px;
+  right: 80px;
+  letter-spacing: -0.04em;
+  pointer-events: none;
+  z-index: 1;
+  margin: 0;
+}
+.slide.section-divider h1 {
+  color: #D4E8D9 !important;
+  font-size: 84px !important;
+  line-height: 1.02 !important;
+  position: relative;
+  z-index: 3;
+  max-width: 900px;
+  margin: 0;
+  font-family: 'Crimson Pro', Georgia, serif !important;
+  font-weight: 700 !important;
+}
+.slide.section-divider p.lede {
+  color: #B1F1B1 !important;
+  margin-top: 24px !important;
+  margin-bottom: 0 !important;
+  position: relative;
+  z-index: 3;
+  max-width: 760px;
+  font-size: 24px !important;
+  font-style: italic !important;
+  font-family: 'Crimson Pro', Georgia, serif !important;
+  font-weight: 400 !important;
+  line-height: 1.4 !important;
+}
+.slide.section-divider .eyebrow {
+  position: relative;
+  z-index: 3;
+  margin-bottom: 24px !important;
+  color: #B1F1B1 !important;
+  font-family: 'JetBrains Mono', 'Courier New', monospace !important;
+  font-size: 12px !important;
+  letter-spacing: 0.2em !important;
+  text-transform: uppercase !important;
+  font-weight: 500 !important;
+}
+.slide.section-divider h4 {
+  color: #B1F1B1 !important;
+  position: relative;
+  z-index: 3;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 14px !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+  margin-bottom: 10px !important;
+}
+.slide.section-divider p {
+  color: #D4E8D9 !important;
+  font-family: 'Inter', sans-serif;
+}
+.slide.section-divider .slide-footer {
+  color: rgba(212, 232, 217, 0.5) !important;
+  z-index: 4;
+}
+
+/* SVG */
+svg .stroke { stroke: var(--accent); stroke-width: 1.5; fill: none; }
+svg .stroke-thin { stroke: var(--ink-faint); stroke-width: 1; fill: none; }
+svg .stroke-warm { stroke: var(--highlight); stroke-width: 1.5; fill: none; }
+svg .fill-warm { fill: var(--highlight); }
+svg .fill-cool { fill: var(--accent); }
+svg .fill-bg { fill: var(--bg-tint); }
+svg .fill-pop { fill: var(--pop); }
+svg text { font-family: 'Inter', sans-serif; font-size: 13px; fill: var(--ink); }
+svg text.label { font-size: 11px; fill: var(--ink-soft); }
+svg text.mono { font-family: 'JetBrains Mono', monospace; font-size: 10px; fill: var(--ink-faint); }
+
+/* Bars */
+.bars { display: flex; flex-direction: column; gap: 12px; }
+.bar-row { display: grid; grid-template-columns: 220px 1fr 80px; align-items: center; gap: 14px; }
+.bar-row .name { font-size: 14px; color: var(--ink); font-weight: 500; }
+.bar-row .track { background: var(--bg-deep); height: 22px; position: relative; border-radius: 1px; }
+.bar-row .fill { background: var(--highlight); height: 100%; border-radius: 1px; transition: width 0.3s; }
+.bar-row .fill.warm { background: var(--accent); }
+.bar-row .fill.muted { background: var(--ink-faint); }
+.bar-row .fill.pop { background: var(--accent); }
+.bar-row .val { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--ink-soft); text-align: right; font-variant-numeric: tabular-nums; }
+
+/* Footer */
+.slide-footer {
+  position: absolute;
+  bottom: 22px;
+  left: 80px;
+  right: 80px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+.slide.dark .slide-footer { color: rgba(212,232,217,0.45); }
+.slide-title .slide-footer { left: 80px; right: 80px; }
+
+/* HUD */
+.hud {
+  position: fixed;
+  bottom: 14px;
+  right: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: rgba(212,232,217,0.55);
+  letter-spacing: 0.08em;
+  z-index: 100;
+}
+.hud button {
+  background: rgba(212,232,217,0.08);
+  border: 1px solid rgba(212,232,217,0.15);
+  color: rgba(212,232,217,0.7);
+  padding: 4px 10px;
+  font-family: inherit;
+  font-size: 10px;
+  cursor: pointer;
+  letter-spacing: 0.08em;
+}
+.hud button:hover { background: rgba(212,232,217,0.15); }
+.progress-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  background: var(--pop);
+  transition: width 0.35s ease;
+  z-index: 100;
+}
+.help-text {
+  position: fixed;
+  top: 14px;
+  left: 14px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: rgba(212,232,217,0.35);
+  letter-spacing: 0.1em;
+  z-index: 100;
+  pointer-events: none;
+}
+
+/* Codebook table */
+.codebook {
+  display: grid;
+  grid-template-columns: 80px 1fr 1.2fr;
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+  flex: 1;
+  min-height: 0;
+}
+.codebook > div {
+  background: var(--bg);
+  padding: 12px 16px;
+  font-size: 14px;
+  line-height: 1.45;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.codebook .head {
+  background: var(--accent);
+  color: var(--bg);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+.codebook .score-cell {
+  background: var(--bg-tint);
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 600;
+  font-size: 18px;
+  color: var(--accent);
+  text-align: center;
+}
+
+/* Hypothesis stack */
+.hyp-stack { display: flex; flex-direction: column; gap: 6px; }
+.hyp-row {
+  display: grid;
+  grid-template-columns: 60px 1fr 60px;
+  align-items: center;
+  gap: 14px;
+  background: var(--bg-tint);
+  padding: 8px 14px;
+  font-size: 14px;
+  border-left: 3px solid var(--highlight);
+  border-radius: 1px;
+}
+.hyp-row.neg { border-left-color: var(--accent); }
+.hyp-row .w { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--ink-faint); text-align: right; }
+.hyp-row .w.pos { color: var(--highlight); font-weight: 600; }
+.hyp-row .w.neg { color: var(--accent); font-weight: 600; }
+.hyp-row .text { font-family: 'Crimson Pro', serif; font-style: italic; color: var(--ink); }
+.hyp-row .idx { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--ink-faint); }
+
+/* Time-series chart */
+.ts-chart {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+}
+
+/* Confusion matrix */
+.cmatrix {
+  display: grid;
+  grid-template-columns: 120px repeat(3, 1fr);
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+  font-size: 14px;
+}
+.cmatrix > div {
+  background: var(--bg);
+  padding: 14px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.cmatrix .corner { background: var(--bg-tint); font-size: 11px; color: var(--ink-faint); font-family: 'JetBrains Mono', monospace; letter-spacing: 0.08em; }
+.cmatrix .head { background: var(--accent); color: var(--bg); font-size: 11px; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600; }
+.cmatrix .row-head { background: var(--accent); color: var(--bg); font-size: 11px; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600; }
+.cmatrix .diag { background: rgba(177,241,177,0.32); font-weight: 600; font-family: 'JetBrains Mono', monospace; font-size: 24px; color: var(--accent); }
+.cmatrix .off { background: var(--bg); font-family: 'JetBrains Mono', monospace; font-size: 18px; color: var(--ink-soft); }
+</style>
+</head>
+<body>
+<div class="help-text">&larr; &rarr; arrows &middot; F fullscreen</div>
+<div class="deck" id="deck">
+
+<!-- 1. TITLE -->
+<section class="slide slide-title active">
+  <div class="slide-title-inner">
+    <div class="corner">Day 02 / 03</div>
+    <div style="margin-top: 88px;">
+      <div class="eyebrow">A 3-day workshop on LLMs for measurement</div>
+      <h1>From a model<br>to a measurement.</h1>
+      <p class="lede">A working notebook becomes a defensible proxy. Hand-coding, hypothesis engineering, and the validation that turns a script into a regression-ready dataset.</p>
+    </div>
+    <div class="meta">
+      <div><span class="label">Instructor</span>Jihye Park &middot; University of Geneva</div>
+      <div><span class="label">Prerequisite</span>Day 1 hands-on cell finished running</div>
+      <div><span class="label">Duration</span>2 hours 30 minutes</div>
+    </div>
+  </div>
+</section>
+
+<!-- 2. ROADMAP -->
+<section class="slide">
+  <div class="eyebrow">Today</div>
+  <h2>Four movements,<br>from notebook to publishable proxy.</h2>
+  <div class="rule"></div>
+  <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; flex: 1; min-height: 0;">
+    <div class="card">
+      <div class="label">Movement 01 &middot; 25 min</div>
+      <h3>The validity problem</h3>
+      <p>Why Day 1's notebook is not yet a measurement, and what political-science readers will demand before they trust it.</p>
+    </div>
+    <div class="card">
+      <div class="label">Movement 02 &middot; 30 min</div>
+      <h3>The gold set</h3>
+      <p>Hand-code thirty paragraphs with a codebook. The single step that separates demos from proxies.</p>
+    </div>
+    <div class="card">
+      <div class="label">Movement 03 &middot; 40 min</div>
+      <h3>Hypothesis engineering</h3>
+      <p>One hypothesis becomes thirteen. Weighted ensembles, tested against the gold set you just built.</p>
+    </div>
+    <div class="card">
+      <div class="label">Movement 04 &middot; 35 min</div>
+      <h3>Aggregation and validation</h3>
+      <p>From paragraph scores to a country-year proxy, plotted against known events. The closing checklist.</p>
+    </div>
+  </div>
+  <p class="small" style="margin-top: 18px;">Two breaks. Two live demos. Output is a CSV, a plot, and a notebook you could attach to a paper.</p>
+  <div class="slide-footer"><span>Day 2 &middot; Roadmap</span><span>02 / 30</span></div>
+</section>
+
+<!-- 3. RECAP DAY 1 -->
+<section class="slide">
+  <div class="eyebrow">Where we left off</div>
+  <h2>Day 1 in one slide.</h2>
+  <div class="rule"></div>
+  <div class="three-col">
+    <div class="card cool">
+      <div class="label">Concept</div>
+      <h3>Encoder vs generative</h3>
+      <p>Encoders read a sentence and return a fixed label. Generative models continue text. Today is encoder day.</p>
+    </div>
+    <div class="card cool">
+      <div class="label">Tool</div>
+      <h3>Zero-shot DeBERTa</h3>
+      <p>Three lines of Python. Pick candidate labels, pass in text, get back probabilities. No training data needed.</p>
+    </div>
+    <div class="card warm">
+      <div class="label">Result</div>
+      <h3>It mostly worked</h3>
+      <p>Peru and Bahrain came out the way you would expect. Israel did not. That gap is where Day 2 begins.</p>
+    </div>
+  </div>
+  <p class="lede" style="text-align: center; margin-top: 18px; font-size: 24px;">A notebook that classifies five sentences is a demo. A measurement is something else.</p>
+  <div class="slide-footer"><span>Day 2 &middot; Recap</span><span>03 / 30</span></div>
+</section>
+
+<!-- 4. THE GAP -->
+<section class="slide">
+  <div class="eyebrow">The gap</div>
+  <h2>What separates a demo<br>from a proxy.</h2>
+  <div class="rule"></div>
+  <div class="two-col">
+    <div>
+      <h4>A demo says</h4>
+      <p style="font-family: 'Crimson Pro', serif; font-style: italic; font-size: 24px; color: var(--accent); margin-bottom: 14px;">"Look, the model classified this sentence."</p>
+      <p class="small">Five examples. The instructor picks them. Cherry-picking is allowed because the goal is intuition.</p>
+    </div>
+    <div>
+      <h4>A proxy claims</h4>
+      <p style="font-family: 'Crimson Pro', serif; font-style: italic; font-size: 24px; color: var(--accent); margin-bottom: 14px;">"This score, for every country-year, captures US assessments of foreign IP regimes."</p>
+      <p class="small">An auxiliary regression downstream depends on it. A reviewer asks what its kappa against gold is. The answer needs to exist.</p>
+    </div>
+  </div>
+  <div style="margin-top: 28px; padding: 22px 26px; background: var(--bg-tint); border-left: 3px solid var(--highlight); border-radius: 2px;">
+    <h4>The rest of today</h4>
+    <p style="font-size: 19px; line-height: 1.5;">Build the gold set, build the ensemble, validate, aggregate. Each of those four steps is the answer to a specific reviewer question.</p>
+  </div>
+  <div class="slide-footer"><span>Day 2 &middot; The gap</span><span>04 / 30</span></div>
+</section>
+
+<!-- 5. SECTION DIVIDER 1 -->
+<section class="slide section-divider dark">
+  <div class="num">01</div>
+  <div class="eyebrow">First movement &middot; 25 minutes</div>
+  <h1>The validity<br>problem.</h1>
+  <p class="lede">Three threats your reviewer will name. Why off-the-shelf zero-shot is the start of the conversation, never the end.</p>
+  <div class="slide-footer"><span>Day 2</span><span>05 / 30</span></div>
+</section>
+
+<!-- 6. WHAT IS A MEASUREMENT -->
+<section class="slide">
+  <div class="eyebrow">Definition we are working toward</div>
+  <h2>A measurement assigns numbers<br>to cases in a defensible way.</h2>
+  <div class="rule"></div>
+  <div class="three-col">
+    <div class="card">
+      <div class="label">Property 01</div>
+      <h3>Validity</h3>
+      <p>The number tracks the concept it claims to track. Stance toward IP enforcement, not generic negativity.</p>
+    </div>
+    <div class="card">
+      <div class="label">Property 02</div>
+      <h3>Reliability</h3>
+      <p>Re-running the pipeline on the same input gives the same output. Two coders agree on the gold set.</p>
+    </div>
+    <div class="card">
+      <div class="label">Property 03</div>
+      <h3>Comparability</h3>
+      <p>Scores can be compared across countries and years without systematic drift introduced by the model.</p>
+    </div>
+  </div>
+  <p class="tiny" style="margin-top: 18px;">Adcock and Collier (APSR 2001) is the canonical political-science treatment. Their framework predates LLMs but the demands are the same.</p>
+  <div class="slide-footer"><span>Day 2 &middot; Movement 01</span><span>06 / 30</span></div>
+</section>
+
+<!-- 7. THREE THREATS -->
+<section class="slide">
+  <div class="eyebrow">Three threats to validity</div>
+  <h2>What goes wrong<br>when you skip the validation step.</h2>
+  <div class="rule"></div>
+  <div class="three-col">
+    <div class="card warm">
+      <div class="label">Threat 01</div>
+      <h3>Concept slippage</h3>
+      <p>The label "negative" captures sentiment, not stance. The model agrees with you but on the wrong concept.</p>
+      <p class="small" style="margin-top: 6px;"><span class="highlight">Bestvater &amp; Monroe (2023):</span> the canonical example.</p>
+    </div>
+    <div class="card warm">
+      <div class="label">Threat 02</div>
+      <h3>Mixed paragraphs</h3>
+      <p>Real text contains both halves. The model picks the dominant signal. Israel 2017 looked positive because it opened with removal-from-list.</p>
+    </div>
+    <div class="card warm">
+      <div class="label">Threat 03</div>
+      <h3>Subgroup drift</h3>
+      <p>The model performs well on EU paragraphs and badly on small-economy paragraphs. Average accuracy hides this.</p>
+    </div>
+  </div>
+  <p class="lede" style="margin-top: 22px; font-size: 22px;">Each threat has a measurement remedy. Each remedy needs the same prerequisite.</p>
+  <div class="slide-footer"><span>Day 2 &middot; Movement 01</span><span>07 / 30</span></div>
+</section>
+
+<!-- 8. THE PREREQUISITE -->
+<section class="slide">
+  <div class="eyebrow">The prerequisite</div>
+  <h2>You cannot validate<br>what you cannot compare to.</h2>
+  <div class="rule"></div>
+  <div style="flex: 1; display: flex; align-items: center; justify-content: center; min-height: 0;">
+    <svg viewBox="0 0 980 280" style="width: 100%; max-width: 920px;">
+      <rect x="40" y="60" width="220" height="160" rx="4" class="fill-bg" />
+      <text x="150" y="92" text-anchor="middle" class="label" style="text-transform: uppercase; font-size: 10px; letter-spacing: 0.14em;">MODEL OUTPUT</text>
+      <text x="150" y="130" text-anchor="middle" style="font-size: 16px; font-weight: 600; fill: var(--accent);">200 paragraphs</text>
+      <text x="150" y="155" text-anchor="middle" style="font-size: 14px; fill: var(--ink-soft);">scored by zero-shot</text>
+      <text x="150" y="190" text-anchor="middle" class="mono" style="font-size: 11px; fill: var(--ink-faint);">cheap, fast, scalable</text>
+
+      <text x="490" y="120" text-anchor="middle" style="font-size: 64px; fill: var(--rule); font-family: 'Crimson Pro', serif;">vs</text>
+      <text x="490" y="180" text-anchor="middle" class="mono" style="font-size: 11px; fill: var(--highlight);">CORRELATION? KAPPA?</text>
+
+      <rect x="720" y="60" width="220" height="160" rx="4" class="fill-bg" style="stroke: var(--highlight); stroke-width: 2;" />
+      <text x="830" y="92" text-anchor="middle" class="label" style="text-transform: uppercase; font-size: 10px; letter-spacing: 0.14em; fill: var(--highlight);">GOLD SET</text>
+      <text x="830" y="130" text-anchor="middle" style="font-size: 16px; font-weight: 600; fill: var(--accent);">30 paragraphs</text>
+      <text x="830" y="155" text-anchor="middle" style="font-size: 14px; fill: var(--ink-soft);">hand-coded by you</text>
+      <text x="830" y="190" text-anchor="middle" class="mono" style="font-size: 11px; fill: var(--ink-faint);">slow, but the only ground truth</text>
+    </svg>
+  </div>
+  <p class="lede" style="text-align: center; font-size: 22px;">Without the gold set on the right, the box on the left is just a number. With it, the number becomes a measurement.</p>
+  <div class="slide-footer"><span>Day 2 &middot; Movement 01</span><span>08 / 30</span></div>
+</section>
+
+<!-- 9. WHY 30 -->
+<section class="slide">
+  <div class="eyebrow">Sample size</div>
+  <h2>Why thirty paragraphs<br>is the right number to start.</h2>
+  <div class="rule"></div>
+  <div class="two-col">
+    <div>
+      <h4>Why not five</h4>
+      <p style="font-size: 18px;">Five paragraphs cannot distinguish a 60% accurate model from an 80% accurate one. The gold set has to be big enough to detect the differences you care about.</p>
+      <h4 style="margin-top: 22px;">Why not three hundred</h4>
+      <p style="font-size: 18px;">Three hundred paragraphs is a week of work. You will not actually do it before the workshop ends. The point is to get a real number on the board.</p>
+    </div>
+    <div>
+      <h4>Thirty is</h4>
+      <ul class="bare">
+        <li>Enough to compute kappa with a usable confidence interval.</li>
+        <li>Small enough that two coders can finish in an afternoon.</li>
+        <li>Big enough to spot subgroup drift if you stratify the sample.</li>
+        <li>The right scale for an iterative loop. Code thirty, refine the codebook, code thirty more if you need them.</li>
+      </ul>
+    </div>
+  </div>
+  <p class="tiny" style="margin-top: 16px;">Park's published proxy used 200 hand-coded paragraphs in the final validation. Thirty gets you to a defensible first cut. The rest is iteration.</p>
+  <div class="slide-footer"><span>Day 2 &middot; Movement 01</span><span>09 / 30</span></div>
+</section>
+
+<!-- 10. SECTION DIVIDER 2 -->
+<section class="slide section-divider dark">
+  <div class="num">02</div>
+  <div class="eyebrow">Second movement &middot; 30 minutes</div>
+  <h1>Hand-coding<br>the gold set.</h1>
+  <p class="lede">A codebook in three sentences. Five paragraphs scored live. The reliability check that catches bad codebooks before they spread.</p>
+  <div class="slide-footer"><span>Day 2</span><span>10 / 30</span></div>
+</section>
+
+<!-- 11. CODEBOOK FIRST -->
+<section class="slide">
+  <div class="eyebrow">Step one</div>
+  <h2>Write the codebook<br>before you touch the keyboard.</h2>
+  <div class="rule"></div>
+  <div class="codebook">
+    <div class="head">SCORE</div>
+    <div class="head">Meaning</div>
+    <div class="head">Decision rule</div>
+
+    <div class="score-cell">+1</div>
+    <div>US praises the country's IP regime.</div>
+    <div>Paragraph contains positive framing of enforcement, treaty accession, or removal from list, with no offsetting criticism in the same paragraph.</div>
+
+    <div class="score-cell">0</div>
+    <div>Mixed or unclear.</div>
+    <div>Paragraph contains both praise and concern. Or contains neither. Or only describes facts without evaluation.</div>
+
+    <div class="score-cell">&minus;1</div>
+    <div>US criticizes the country's IP regime.</div>
+    <div>Paragraph contains explicit concern about piracy, enforcement gaps, or Watch List status, with no offsetting praise in the same paragraph.</div>
+  </div>
+  <p class="tiny" style="margin-top: 14px;">Three sentences. Three rules. Anything beyond this is iteration. The codebook will get longer as you discover edge cases.</p>
+  <div class="slide-footer"><span>Day 2 &middot; Movement 02</span><span>11 / 30</span></div>
+</section>
+
+<!-- 12. CODEBOOK PRINCIPLES -->
+<section class="slide">
+  <div class="eyebrow">Three rules for the codebook</div>
+  <h2>What separates a codebook<br>from a wish.</h2>
+  <div class="rule"></div>
+  <div class="three-col">
+    <div class="card">
+      <div class="label">Rule 01</div>
+      <h3>Operational</h3>
+      <p>Each rule names a feature you can find in the text. "Mentions Watch List" is operational. "Has a critical tone" is not.</p>
+    </div>
+    <div class="card">
+      <div class="label">Rule 02</div>
+      <h3>Disjoint</h3>
+      <p>No paragraph fits two rules. If your codebook says +1 for "praise" and 0 for "mixed," then "praise with one concern" must resolve to one of the two and not float.</p>
+    </div>
+    <div class="card">
+      <div class="label">Rule 03</div>
+      <h3>Testable</h3>
+      <p>Two coders applying the rules to the same paragraph reach the same answer most of the time. If they do not, the codebook has to be rewritten.</p>
+    </div>
+  </div>
+  <p class="lede" style="margin-top: 22px; font-size: 22px;">Operational, disjoint, testable. Spend longer on the codebook than on the coding. Bad codebooks compound.</p>
+  <div class="slide-footer"><span>Day 2 &middot; Movement 02</span><span>12 / 30</span></div>
+</section>
+
+<!-- 13. LIVE DEMO MARKER -->
+<section class="slide">
+  <div class="eyebrow">[ DEMO ] &middot; live</div>
+  <h2>Five real paragraphs.<br>One coder applying the codebook.</h2>
+  <div class="rule"></div>
+  <div class="hyp-stack" style="gap: 10px; margin-top: 14px;">
+    <div class="hyp-row">
+      <div class="idx">PERU 2015</div>
+      <div class="text">"Pirated and counterfeit goods remain widely available. Peru was listed on the Watch List in the 2013 Special 301 Report."</div>
+      <div class="w neg">&minus;1</div>
+    </div>
+    <div class="hyp-row">
+      <div class="idx">JORDAN 2016</div>
+      <div class="text">"The Jordanian government continues to take steps to provide more comprehensive protection of intellectual property rights."</div>
+      <div class="w pos">+1</div>
+    </div>
+    <div class="hyp-row">
+      <div class="idx">BAHRAIN 2005</div>
+      <div class="text">"Bahrain is in the process of joining the WIPO Copyright Treaty. Significant progress in reducing copyright piracy."</div>
+      <div class="w pos">+1</div>
+    </div>
+    <div class="hyp-row">
+      <div class="idx">TURKEY 2017</div>
+      <div class="text">"Turkey remained on the Watch List. Law enforcement efforts to improve IPR enforcement have decreased in the past year."</div>
+      <div class="w neg">&minus;1</div>
+    </div>
+    <div class="hyp-row">
+      <div class="idx">ISRAEL 2017</div>
+      <div class="text">"The United States removed Israel from the Special 301 Report in 2014. The United States remains concerned with deficiencies in protections for copyrighted works."</div>
+      <div class="w" style="color: var(--ink-faint); font-weight: 600;">0</div>
+    </div>
+  </div>
+  <p class="tiny" style="margin-top: 14px;">Israel is the interesting case. The codebook says "praise plus concern resolves to 0." Day 1's three-label classifier read it as positive.</p>
+  <div class="slide-footer"><span>Day 2 &middot; Movement 02</span><span>13 / 30</span></div>
+</section>
+
+<!-- 14. INTERCODER RELIABILITY -->
+<section class="slide">
+  <div class="eyebrow">Two coders</div>
+  <h2>Cohen's kappa is the metric<br>your reviewer expects.</h2>
+  <div class="rule"></div>
+  <div class="two-col">
+    <div>
+      <h4>What it measures</h4>
+      <p>Agreement between two coders, corrected for agreement that would happen by chance alone. Range from 0 to 1.</p>
+      <h4 style="margin-top: 22px;">Rule of thumb</h4>
+      <ul class="bare">
+        <li><span class="mono" style="color: var(--highlight);">&gt; 0.80</span> &nbsp; Excellent. Codebook is mature.</li>
+        <li><span class="mono" style="color: var(--highlight);">0.60 to 0.80</span> &nbsp; Acceptable for publication.</li>
+        <li><span class="mono" style="color: var(--highlight);">0.40 to 0.60</span> &nbsp; Codebook needs work.</li>
+        <li><span class="mono" style="color: var(--highlight);">&lt; 0.40</span> &nbsp; Stop. Rewrite the codebook.</li>
+      </ul>
+    </div>
+    <div>
+      <h4>The python call</h4>
+      <pre><span class="kw">from</span> sklearn.metrics <span class="kw">import</span> cohen_kappa_score
+<span class="com"># two coders, same 30 paragraphs</span>
+k = <span class="fn">cohen_kappa_score</span>(coder_a, coder_b)
+<span class="fn">print</span>(<span class="str">f"kappa = {k:.2f}"</span>)</pre>
+      <p class="tiny" style="margin-top: 14px;">If your kappa is 0.45, do not run any models. Sit with your co-author and rewrite the codebook. The downstream pipeline will only ever be as reliable as the gold set.</p>
+    </div>
+  </div>
+  <div class="slide-footer"><span>Day 2 &middot; Movement 02</span><span>14 / 30</span></div>
+</section>
+
+<!-- 15. WHAT IT FEELS LIKE -->
+<section class="slide">
+  <div class="eyebrow">A note from someone who has done this</div>
+  <h2>It feels tedious.<br>It is the most important hour of the project.</h2>
+  <div class="rule"></div>
+  <div style="flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 48px; min-height: 0;">
+    <div>
+      <p>Coding thirty paragraphs takes an afternoon. There will be a moment around paragraph fifteen when the temptation is to skim, click, and move on.</p>
+      <p>Resist that. Every ambiguous paragraph you skim is an edge case the model will fail on later. Note it in the margin. Discuss it with your co-author. Update the codebook.</p>
+      <p style="font-family: 'Crimson Pro', serif; font-style: italic; font-size: 22px; color: var(--accent); margin-top: 18px;">"The hour I spent coding the gold set is the hour that made the rest of the paper defensible."</p>
+    </div>
+    <div style="display: flex; align-items: center; justify-content: center;">
+      <svg viewBox="0 0 360 280" style="width: 100%; max-width: 320px;">
+        <rect x="40" y="40" width="280" height="36" class="fill-bg" />
+        <text x="180" y="63" text-anchor="middle" style="font-size: 14px; fill: var(--ink-soft);">paragraph 1: confident</text>
+        <rect x="40" y="86" width="280" height="36" class="fill-bg" />
+        <text x="180" y="109" text-anchor="middle" style="font-size: 14px; fill: var(--ink-soft);">paragraph 7: edge case</text>
+        <rect x="40" y="132" width="280" height="36" class="fill-pop" />
+        <text x="180" y="155" text-anchor="middle" style="font-size: 14px; fill: var(--accent); font-weight: 600;">codebook revision</text>
+        <rect x="40" y="178" width="280" height="36" class="fill-bg" />
+        <text x="180" y="201" text-anchor="middle" style="font-size: 14px; fill: var(--ink-soft);">paragraph 15: confident again</text>
+        <rect x="40" y="224" width="280" height="36" class="fill-bg" />
+        <text x="180" y="247" text-anchor="middle" style="font-size: 14px; fill: var(--ink-soft);">paragraph 30: kappa 0.78</text>
+      </svg>
+    </div>
+  </div>
+  <div class="slide-footer"><span>Day 2 &middot; Movement 02</span><span>15 / 30</span></div>
+</section>
+
+<!-- 16. BREAK -->
+<section class="slide">
+  <div class="eyebrow">Break</div>
+  <h2 style="font-size: 110px; margin-top: 60px;">10 minutes.</h2>
+  <div class="rule"></div>
+  <p class="lede">When we come back, the gold set we coded becomes the answer key for everything that follows.</p>
+  <p class="small" style="margin-top: 24px;">Stretch. Refill. The next movement is where Day 1's three-line script becomes thirteen lines of hypothesis engineering.</p>
+  <div class="slide-footer"><span>Day 2 &middot; Break</span><span>16 / 30</span></div>
+</section>
+
+<!-- 17. SECTION DIVIDER 3 -->
+<section class="slide section-divider dark">
+  <div class="num">03</div>
+  <div class="eyebrow">Third movement &middot; 40 minutes</div>
+  <h1>Hypothesis<br>engineering.</h1>
+  <p class="lede">One hypothesis becomes thirteen. Each one is a different way of asking the same question. Their weighted average is the proxy.</p>
+  <div class="slide-footer"><span>Day 2</span><span>17 / 30</span></div>
+</section>
+
+<!-- 18. ONE HYPOTHESIS -->
+<section class="slide">
+  <div class="eyebrow">The Day 1 baseline</div>
+  <h2>One hypothesis,<br>three labels, one prediction.</h2>
+  <div class="rule"></div>
+  <div class="two-col">
+    <div>
+      <h4>What we did yesterday</h4>
+      <pre>candidate_labels = [
+    <span class="str">"the country has weak IP protection"</span>,
+    <span class="str">"the country has strong IP protection"</span>,
+    <span class="str">"unrelated to IP protection"</span>,
+]
+out = <span class="fn">zsc</span>(text, candidate_labels)</pre>
+      <p class="small" style="margin-top: 14px;">Each label is a hypothesis the model checks for entailment. The model picks the most-entailed label as the prediction.</p>
+    </div>
+    <div>
+      <h4>Why it stops working</h4>
+      <p>One hypothesis is one prompt. Israel 2017 mentioned both removal and concerns. The model picked the dominant signal.</p>
+      <p>Reasonable wordings of the same hypothesis will produce different predictions on the same paragraph. The single-hypothesis pipeline cannot use that signal.</p>
+      <p class="small" style="margin-top: 12px;"><span class="highlight">Insight.</span> If thirteen wordings agree, you have signal. If they disagree, you have a hard case the codebook should flag.</p>
+    </div>
+  </div>
+  <div class="slide-footer"><span>Day 2 &middot; Movement 03</span><span>18 / 30</span></div>
+</section>
+
+<!-- 19. MULTIPLE HYPOTHESES -->
+<section class="slide">
+  <div class="eyebrow">From one hypothesis to many</div>
+  <h2>The same concept,<br>thirteen different ways.</h2>
+  <div class="rule"></div>
+  <div class="hyp-stack" style="margin-top: 8px;">
+    <div class="hyp-row"><div class="idx">H01</div><div class="text">The text praises the country's IP enforcement.</div><div class="w pos">+1.0</div></div>
+    <div class="hyp-row"><div class="idx">H02</div><div class="text">The text describes the country making progress on IP protection.</div><div class="w pos">+1.0</div></div>
+    <div class="hyp-row"><div class="idx">H03</div><div class="text">The text mentions the country acceding to a WIPO treaty.</div><div class="w pos">+0.7</div></div>
+    <div class="hyp-row"><div class="idx">H04</div><div class="text">The text mentions the country being removed from the Special 301 Report.</div><div class="w pos">+0.7</div></div>
+    <div class="hyp-row"><div class="idx">H05</div><div class="text">The text reflects strong cooperation between the US and the country on IP.</div><div class="w pos">+0.5</div></div>
+    <div class="hyp-row neg"><div class="idx">H06</div><div class="text">The text criticizes the country's IP enforcement.</div><div class="w neg">&minus;1.0</div></div>
+    <div class="hyp-row neg"><div class="idx">H07</div><div class="text">The text reports widespread piracy in the country.</div><div class="w neg">&minus;1.0</div></div>
+    <div class="hyp-row neg"><div class="idx">H08</div><div class="text">The text describes the country being placed on the Watch List or Priority Watch List.</div><div class="w neg">&minus;0.8</div></div>
+    <div class="hyp-row neg"><div class="idx">H09</div><div class="text">The text expresses US concern about counterfeiting in the country.</div><div class="w neg">&minus;0.7</div></div>
+    <div class="hyp-row neg"><div class="idx">H10</div><div class="text">The text reports law enforcement gaps on IP in the country.</div><div class="w neg">&minus;0.6</div></div>
+  </div>
+  <p class="tiny" style="margin-top: 12px;">Three more hypotheses cover sector-specific concerns (pharmaceutical, copyright, trademark). Total of thirteen. Weights set by the codebook author.</p>
+  <div class="slide-footer"><span>Day 2 &middot; Movement 03</span><span>19 / 30</span></div>
+</section>
+
+<!-- 20. WEIGHTED ENSEMBLE -->
+<section class="slide">
+  <div class="eyebrow">How the score is computed</div>
+  <h2>Weighted average<br>of thirteen entailment probabilities.</h2>
+  <div class="rule"></div>
+  <div style="flex: 1; display: flex; align-items: center; justify-content: center; min-height: 0;">
+    <svg viewBox="0 0 980 280" style="width: 100%; max-width: 940px;">
+      <rect x="20" y="100" width="220" height="80" class="fill-bg" />
+      <text x="130" y="135" text-anchor="middle" style="font-size: 14px;">"Israel was removed</text>
+      <text x="130" y="155" text-anchor="middle" style="font-size: 14px;">from the list. Concern</text>
+      <text x="130" y="175" text-anchor="middle" style="font-size: 14px;">remains over copyright."</text>
+      <text x="130" y="200" text-anchor="middle" class="label" style="text-transform: uppercase; letter-spacing: 0.14em; font-size: 10px;">PARAGRAPH</text>
+
+      <line x1="260" y1="140" x2="320" y2="140" class="stroke" />
+      <polygon points="320,140 312,135 312,145" class="fill-cool" />
+
+      <rect x="340" y="40" width="280" height="200" rx="4" class="fill-cool" opacity="0.92" />
+      <text x="480" y="70" text-anchor="middle" style="fill: white; font-size: 14px; font-weight: 600;">DeBERTa NLI head</text>
+      <text x="480" y="95" text-anchor="middle" style="fill: rgba(255,255,255,0.85); font-size: 11px;">checks each hypothesis against</text>
+      <text x="480" y="110" text-anchor="middle" style="fill: rgba(255,255,255,0.85); font-size: 11px;">the paragraph in turn</text>
+      <text x="380" y="142" style="fill: white; font-size: 12px; font-family: 'JetBrains Mono', monospace;">P(H01 | text) = 0.34</text>
+      <text x="380" y="160" style="fill: white; font-size: 12px; font-family: 'JetBrains Mono', monospace;">P(H02 | text) = 0.42</text>
+      <text x="380" y="178" style="fill: white; font-size: 12px; font-family: 'JetBrains Mono', monospace;">P(H04 | text) = 0.81</text>
+      <text x="380" y="196" style="fill: white; font-size: 12px; font-family: 'JetBrains Mono', monospace;">P(H06 | text) = 0.66</text>
+      <text x="380" y="214" style="fill: white; font-size: 12px; font-family: 'JetBrains Mono', monospace;">P(H07 | text) = 0.12</text>
+      <text x="380" y="232" style="fill: white; font-size: 12px; font-family: 'JetBrains Mono', monospace;">... 8 more</text>
+
+      <line x1="640" y1="140" x2="700" y2="140" class="stroke" />
+      <polygon points="700,140 692,135 692,145" class="fill-cool" />
+
+      <rect x="720" y="80" width="240" height="120" rx="4" class="fill-bg" style="stroke: var(--highlight); stroke-width: 2;" />
+      <text x="840" y="115" text-anchor="middle" class="label" style="text-transform: uppercase; letter-spacing: 0.14em; font-size: 10px; fill: var(--highlight);">SCORE</text>
+      <text x="840" y="155" text-anchor="middle" style="font-size: 32px; font-weight: 700; fill: var(--accent); font-family: 'Crimson Pro', serif;">&minus;0.07</text>
+      <text x="840" y="180" text-anchor="middle" style="font-size: 12px; fill: var(--ink-soft);">weighted average</text>
+    </svg>
+  </div>
+  <p class="lede" style="text-align: center; font-size: 22px;">A near-zero score is exactly what the codebook called for on a mixed paragraph.</p>
+  <div class="slide-footer"><span>Day 2 &middot; Movement 03</span><span>20 / 30</span></div>
+</section>
+
+<!-- 21. DEMO: SINGLE VS ENSEMBLE -->
+<section class="slide">
+  <div class="eyebrow">[ DEMO ] &middot; on the gold set</div>
+  <h2>Kappa goes from 0.43 to 0.71<br>when one hypothesis becomes thirteen.</h2>
+  <div class="rule"></div>
+  <div class="bars" style="margin-top: 8px;">
+    <div class="bar-row">
+      <div class="name">Single hypothesis</div>
+      <div class="track"><div class="fill muted" style="width: 43%;"></div></div>
+      <div class="val">0.43</div>
+    </div>
+    <div class="bar-row">
+      <div class="name">3 hypotheses, equal weights</div>
+      <div class="track"><div class="fill" style="width: 56%;"></div></div>
+      <div class="val">0.56</div>
+    </div>
+    <div class="bar-row">
+      <div class="name">7 hypotheses, equal weights</div>
+      <div class="track"><div class="fill" style="width: 64%;"></div></div>
+      <div class="val">0.64</div>
+    </div>
+    <div class="bar-row">
+      <div class="name">13 hypotheses, codebook weights</div>
+      <div class="track"><div class="fill warm" style="width: 71%;"></div></div>
+      <div class="val">0.71</div>
+    </div>
+    <div class="bar-row">
+      <div class="name">Two human coders</div>
+      <div class="track"><div class="fill pop" style="width: 81%;"></div></div>
+      <div class="val">0.81</div>
+    </div>
+  </div>
+  <div style="margin-top: 22px; padding: 18px 22px; background: var(--bg-tint); border-left: 3px solid var(--highlight); border-radius: 2px;">
+    <p style="font-size: 17px; line-height: 1.5;">The model is now agreeing with hand-coding at the level of two grad students agreeing with each other on the same task. That is the bar political-science readers expect.</p>
+  </div>
+  <p class="tiny" style="margin-top: 12px;">Numbers from a 30-paragraph gold set on the NTE corpus. Your numbers will differ. The shape of the curve is robust.</p>
+  <div class="slide-footer"><span>Day 2 &middot; Movement 03</span><span>21 / 30</span></div>
+</section>
+
+<!-- 22. WHY ENSEMBLE WORKS -->
+<section class="slide">
+  <div class="eyebrow">Why the ensemble works</div>
+  <h2>Each wording has its own noise.<br>Averaging cancels it.</h2>
+  <div class="rule"></div>
+  <div class="three-col">
+    <div class="card">
+      <div class="label">Mechanism 01</div>
+      <h3>Lexical coverage</h3>
+      <p>"Praise" alone misses paragraphs where the praise comes through "removed from list" or "acceded to treaty." Each hypothesis covers a different lexical surface.</p>
+    </div>
+    <div class="card">
+      <div class="label">Mechanism 02</div>
+      <h3>Wording variance</h3>
+      <p>Two ways of phrasing the same hypothesis produce slightly different probabilities. Their average is more stable than either one alone.</p>
+    </div>
+    <div class="card">
+      <div class="label">Mechanism 03</div>
+      <h3>Disagreement is signal</h3>
+      <p>When the thirteen hypotheses disagree, the score lands near zero. That matches the codebook's treatment of mixed paragraphs.</p>
+    </div>
+  </div>
+  <p class="lede" style="margin-top: 22px; font-size: 22px;">The ensemble does not make the model smarter. It uses the model's existing answers more carefully.</p>
+  <div class="slide-footer"><span>Day 2 &middot; Movement 03</span><span>22 / 30</span></div>
+</section>
+
+<!-- 23. THE LIMITS -->
+<section class="slide">
+  <div class="eyebrow">What ensembles cannot do</div>
+  <h2>The ceiling of an encoder<br>is still the encoder's ceiling.</h2>
+  <div class="rule"></div>
+  <div class="two-col">
+    <div>
+      <h4>What ensembling fixes</h4>
+      <ul class="bare">
+        <li>Single-wording brittleness.</li>
+        <li>Mixed-paragraph collapse to one label.</li>
+        <li>Lexical blind spots.</li>
+        <li>Calibration on the middle of the scale.</li>
+      </ul>
+    </div>
+    <div>
+      <h4>What it does not</h4>
+      <ul class="bare">
+        <li>Long-context reasoning across paragraphs.</li>
+        <li>Sarcasm, hedging, or implicature.</li>
+        <li>Domain shift to text the encoder never saw in pretraining.</li>
+        <li>Quantitative claims like "this is more critical than the prior year's paragraph."</li>
+      </ul>
+    </div>
+  </div>
+  <p class="small" style="margin-top: 22px;">For most political-science measurement tasks, the encoder ceiling is high enough. When it is not, Day 3 introduces the next tool.</p>
+  <div class="slide-footer"><span>Day 2 &middot; Movement 03</span><span>23 / 30</span></div>
+</section>
+
+<!-- 24. SECTION DIVIDER 4 -->
+<section class="slide section-divider dark">
+  <div class="num">04</div>
+  <div class="eyebrow">Fourth movement &middot; 35 minutes</div>
+  <h1>From paragraph<br>to country-year.</h1>
+  <p class="lede">Aggregation is a research-design choice, not a default. Plot the proxy. Compare against known events. Ship the CSV.</p>
+  <div class="slide-footer"><span>Day 2</span><span>24 / 30</span></div>
+</section>
+
+<!-- 25. AGGREGATION CHOICES -->
+<section class="slide">
+  <div class="eyebrow">Aggregation</div>
+  <h2>Three ways to roll<br>paragraph scores up to country-year.</h2>
+  <div class="rule"></div>
+  <div class="three-col">
+    <div class="card">
+      <div class="label">Option 01</div>
+      <h3>Mean</h3>
+      <p>Average every paragraph score in the country-year. Simple. Treats all paragraphs as equally informative.</p>
+      <p class="small"><span class="highlight">Risk.</span> A country with one critical paragraph and forty boilerplate paragraphs gets a near-zero average.</p>
+    </div>
+    <div class="card">
+      <div class="label">Option 02</div>
+      <h3>Length-weighted mean</h3>
+      <p>Weight each paragraph by token count. Captures the intuition that long paragraphs carry more substantive content.</p>
+      <p class="small"><span class="highlight">Risk.</span> Verbose paragraphs are not always informative. Re-read your data before assuming this.</p>
+    </div>
+    <div class="card">
+      <div class="label">Option 03</div>
+      <h3>Top-K aggregation</h3>
+      <p>Keep only the most extreme K paragraphs per country-year. Useful when most paragraphs are administrative and only a few carry a real assessment.</p>
+      <p class="small"><span class="highlight">Risk.</span> K is a hyper-parameter. Validate it against the gold set.</p>
+    </div>
+  </div>
+  <p class="lede" style="margin-top: 22px; font-size: 22px;">There is no neutral aggregation. The question your paper asks decides which one fits.</p>
+  <div class="slide-footer"><span>Day 2 &middot; Movement 04</span><span>25 / 30</span></div>
+</section>
+
+<!-- 26. DEMO: TIME SERIES -->
+<section class="slide">
+  <div class="eyebrow">[ DEMO ] &middot; the proxy as a plot</div>
+  <h2>Israel removed in 2014.<br>Turkey deteriorating after 2016.</h2>
+  <div class="rule"></div>
+  <div class="ts-chart">
+    <svg viewBox="0 0 980 320" style="width: 100%; max-width: 940px;">
+      <line x1="60" y1="280" x2="940" y2="280" class="stroke-thin" />
+      <line x1="60" y1="40" x2="60" y2="280" class="stroke-thin" />
+      <line x1="60" y1="160" x2="940" y2="160" class="stroke-thin" stroke-dasharray="3 4" />
+
+      <text x="50" y="46" text-anchor="end" class="label">+1</text>
+      <text x="50" y="166" text-anchor="end" class="label">0</text>
+      <text x="50" y="286" text-anchor="end" class="label">&minus;1</text>
+
+      <text x="60" y="306" class="label">2010</text>
+      <text x="280" y="306" class="label">2013</text>
+      <text x="500" y="306" class="label">2016</text>
+      <text x="720" y="306" class="label">2019</text>
+      <text x="940" y="306" text-anchor="end" class="label">2022</text>
+
+      <polyline points="60,220 140,210 220,200 300,170 380,130 460,90 540,60 620,55 700,52 780,50 860,48 940,50" class="stroke-warm" style="stroke-width: 2.5;" />
+      <text x="950" y="55" style="font-size: 13px; fill: var(--highlight); font-weight: 600;">Israel</text>
+
+      <polyline points="60,150 140,140 220,135 300,130 380,135 460,140 540,160 620,200 700,235 780,250 860,255 940,258" class="stroke" style="stroke-width: 2.5;" />
+      <text x="950" y="260" style="font-size: 13px; fill: var(--accent); font-weight: 600;">Turkey</text>
+
+      <line x1="380" y1="40" x2="380" y2="280" stroke="#B1F1B1" stroke-width="2" stroke-dasharray="4 4" />
+      <text x="386" y="56" style="font-size: 11px; fill: var(--accent); font-weight: 600;">2014: removal</text>
+
+      <line x1="540" y1="40" x2="540" y2="280" stroke="#B1F1B1" stroke-width="2" stroke-dasharray="4 4" />
+      <text x="546" y="56" style="font-size: 11px; fill: var(--accent); font-weight: 600;">2016 coup attempt</text>
+    </svg>
+  </div>
+  <p class="small" style="margin-top: 14px;">The Israel curve crosses zero in the year the US removed it from the Special 301 Report. The Turkey curve drops in the years following the failed coup. Neither was hand-engineered. Both fall out of the aggregation step.</p>
+  <div class="slide-footer"><span>Day 2 &middot; Movement 04</span><span>26 / 30</span></div>
+</section>
+
+<!-- 27. CONFUSION MATRIX -->
+<section class="slide">
+  <div class="eyebrow">Reading the validation output</div>
+  <h2>The numbers your reviewer<br>will actually look at.</h2>
+  <div class="rule"></div>
+  <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 40px; flex: 1; min-height: 0; align-items: center;">
+    <div>
+      <h4 style="margin-bottom: 12px;">Confusion matrix on the 30-paragraph gold set</h4>
+      <div class="cmatrix">
+        <div class="corner">predicted &rarr;</div>
+        <div class="head">&minus;1</div>
+        <div class="head">0</div>
+        <div class="head">+1</div>
+
+        <div class="row-head">&minus;1</div>
+        <div class="diag">9</div>
+        <div class="off">2</div>
+        <div class="off">0</div>
+
+        <div class="row-head">0</div>
+        <div class="off">1</div>
+        <div class="diag">5</div>
+        <div class="off">1</div>
+
+        <div class="row-head">+1</div>
+        <div class="off">0</div>
+        <div class="off">2</div>
+        <div class="diag">10</div>
+      </div>
+      <p class="tiny" style="margin-top: 12px;">Diagonal cells are agreements. Off-diagonal cells are disagreements you should re-read by hand.</p>
+    </div>
+    <div>
+      <h4>Headline numbers</h4>
+      <p style="font-size: 18px;"><span class="highlight">Cohen's kappa</span> &nbsp; 0.71 &nbsp;<span class="muted">(acceptable)</span></p>
+      <p style="font-size: 18px;"><span class="highlight">Pearson correlation</span> &nbsp; 0.83 &nbsp;<span class="muted">(model score vs gold)</span></p>
+      <p style="font-size: 18px;"><span class="highlight">Accuracy</span> &nbsp; 24/30 = 0.80</p>
+      <p class="small" style="margin-top: 14px;">All three numbers belong in the appendix. Kappa is the headline. Accuracy alone misleads when classes are unbalanced.</p>
+    </div>
+  </div>
+  <div class="slide-footer"><span>Day 2 &middot; Movement 04</span><span>27 / 30</span></div>
+</section>
+
+<!-- 28. THE CHECKLIST -->
+<section class="slide">
+  <div class="eyebrow">For publication</div>
+  <h2>The validation appendix<br>your reviewer is looking for.</h2>
+  <div class="rule"></div>
+  <div class="two-col">
+    <div>
+      <h4>Must-have</h4>
+      <ul class="bare">
+        <li>Codebook reproduced in full.</li>
+        <li>Gold-set sample size and selection method.</li>
+        <li>Cohen's kappa between coders, on the gold set.</li>
+        <li>Cohen's kappa between model and gold set.</li>
+        <li>Confusion matrix or correlation against gold.</li>
+        <li>Model ID, version pin, hypothesis list, weights.</li>
+      </ul>
+    </div>
+    <div>
+      <h4>Often asked for</h4>
+      <ul class="bare">
+        <li>Subgroup performance (region, time period, length).</li>
+        <li>Hypothesis-level ablation. Drop one, re-run.</li>
+        <li>Held-out sample, re-coded after the fact.</li>
+        <li>Comparison against a simpler baseline (lexicon, single hypothesis).</li>
+        <li>The notebook and the gold-set CSV in the replication package.</li>
+      </ul>
+    </div>
+  </div>
+  <p class="lede" style="text-align: center; margin-top: 14px; font-size: 22px;">If the appendix has all of column one, the proxy is defensible. Column two is where revisions go.</p>
+  <div class="slide-footer"><span>Day 2 &middot; Movement 04</span><span>28 / 30</span></div>
+</section>
+
+<!-- 29. DAY 3 PREVIEW -->
+<section class="slide">
+  <div class="eyebrow">Tomorrow</div>
+  <h2>What encoders cannot<br>easily do.</h2>
+  <div class="rule"></div>
+  <div class="three-col">
+    <div class="card warm">
+      <div class="label">Day 3 &middot; Job 01</div>
+      <h3>Free-text extraction</h3>
+      <p>Pull structured fields from a press release, even when the fields are not labels you can list in advance.</p>
+    </div>
+    <div class="card warm">
+      <div class="label">Day 3 &middot; Job 02</div>
+      <h3>Normalization</h3>
+      <p>Resolve "USA," "United States," and "U.S." to a single ISO code across messy crawled text.</p>
+    </div>
+    <div class="card warm">
+      <div class="label">Day 3 &middot; Job 03</div>
+      <h3>Lightweight crawling</h3>
+      <p>Pull paragraphs off a public site, store the raw HTML, feed the cleaned text to a generative model. End-to-end pipeline.</p>
+    </div>
+  </div>
+  <p class="lede" style="margin-top: 22px; font-size: 22px;">Same reproducibility demands. New tools. The same intuition you built today carries over.</p>
+  <div class="slide-footer"><span>Day 2 &middot; Day 3 preview</span><span>29 / 30</span></div>
+</section>
+
+<!-- 30. CLOSING -->
+<section class="slide dark">
+  <div class="eyebrow">End of Day 2</div>
+  <h2 style="color: var(--bg);">Today you turned a notebook<br>into a measurement.</h2>
+  <div class="rule" style="background: var(--pop);"></div>
+  <div class="two-col" style="margin-top: 8px;">
+    <div>
+      <h4>What you built</h4>
+      <ul class="bare">
+        <li style="color: var(--bg);">A codebook with three rules.</li>
+        <li style="color: var(--bg);">A 30-paragraph gold set.</li>
+        <li style="color: var(--bg);">A 13-hypothesis ensemble pipeline.</li>
+        <li style="color: var(--bg);">A country-year CSV plotted against known events.</li>
+        <li style="color: var(--bg);">A validation appendix that satisfies most reviewers.</li>
+      </ul>
+    </div>
+    <div>
+      <h4>Optional reading</h4>
+      <p style="color: var(--bg); font-size: 17px; line-height: 1.5;">Adcock and Collier (2001, APSR), "Measurement Validity." The framework that decides which of today's checks belong in the paper and which stay in the notebook.</p>
+      <p style="color: var(--bg); font-size: 17px; line-height: 1.5; margin-top: 14px;">Park (2026, R&amp;R at RIO), the appendix. The 13-hypothesis weighted ensemble in full, with subgroup tables.</p>
+    </div>
+  </div>
+  <div class="slide-footer"><span>End of Day 2</span><span>30 / 30</span></div>
+</section>
+
+</div>
+<div class="hud">
+  <button id="prev">PREV</button>
+  <span id="counter">1 / 30</span>
+  <button id="next">NEXT</button>
+</div>
+<div class="progress-bar" id="bar" style="width: 3.3%"></div>
+
+<script>
+const slides = Array.from(document.querySelectorAll('.slide'));
+const total = slides.length;
+let idx = 0;
+
+function fit() {
+  const s = Math.min(window.innerWidth / 1280, window.innerHeight / 720) * 0.95;
+  document.documentElement.style.setProperty('--s', s);
+}
+window.addEventListener('resize', fit);
+fit();
+
+function show(i) {
+  i = Math.max(0, Math.min(i, total - 1));
+  slides[idx].classList.remove('active');
+  slides[i].classList.add('active');
+  idx = i;
+  document.getElementById('counter').textContent = `${idx+1} / ${total}`;
+  document.getElementById('bar').style.width = `${((idx+1)/total)*100}%`;
+  history.replaceState(null, '', `#${idx+1}`);
+}
+
+document.addEventListener('keydown', (e) => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { show(idx+1); e.preventDefault(); }
+  else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { show(idx-1); e.preventDefault(); }
+  else if (e.key === 'Home') { show(0); e.preventDefault(); }
+  else if (e.key === 'End') { show(total-1); e.preventDefault(); }
+  else if (e.key === 'f' || e.key === 'F') {
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+    else document.exitFullscreen();
+  }
+});
+
+document.getElementById('prev').addEventListener('click', () => show(idx-1));
+document.getElementById('next').addEventListener('click', () => show(idx+1));
+
+const initial = parseInt((location.hash || '#1').slice(1)) - 1;
+if (!isNaN(initial) && initial >= 0 && initial < total) show(initial);
+</script>
+</body>
+</html>

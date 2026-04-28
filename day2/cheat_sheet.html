@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Day 2 Cheat Sheet · LLMs for Political Scientists</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #D4E8D9;
+  --bg-tint: #E5EFE8;
+  --bg-deep: #BFD9C4;
+  --ink: #132025;
+  --ink-soft: #2D493C;
+  --ink-faint: #5C7B6A;
+  --rule: #A8C9AE;
+  --accent: #2D493C;
+  --highlight: #334B99;
+  --pop: #B1F1B1;
+  --dark: #132025;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  background: #14202E;
+  font-family: 'Inter', -apple-system, sans-serif;
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  line-height: 1.5;
+}
+.page {
+  background: var(--bg);
+  width: 8.5in;
+  min-height: 11in;
+  margin: 24px auto;
+  padding: 0.55in 0.6in;
+  box-shadow: 0 30px 90px rgba(0,0,0,0.55);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Header */
+.head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--accent);
+}
+.head .title-block { display: flex; flex-direction: column; }
+.head .eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--highlight);
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+.head h1 {
+  font-family: 'Crimson Pro', serif;
+  font-weight: 700;
+  font-size: 28px;
+  line-height: 1.05;
+  color: var(--accent);
+  letter-spacing: -0.02em;
+}
+.head .meta {
+  text-align: right;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  line-height: 1.5;
+}
+.head .meta strong { color: var(--accent); }
+
+section h2 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--highlight);
+  margin-bottom: 6px;
+}
+
+/* Five-step pipeline */
+.pipeline {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  font-size: 9.5px;
+}
+.pipeline .step {
+  background: var(--bg-tint);
+  padding: 10px 12px;
+  border-top: 3px solid var(--highlight);
+  border-radius: 2px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+.pipeline .step::after {
+  content: '\2192';
+  position: absolute;
+  right: -10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--highlight);
+  font-size: 14px;
+  font-weight: 600;
+  z-index: 2;
+}
+.pipeline .step:last-child::after { display: none; }
+.pipeline .step .num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  color: var(--ink-faint);
+  margin-bottom: 4px;
+}
+.pipeline .step h3 {
+  font-family: 'Crimson Pro', serif;
+  font-size: 14px;
+  color: var(--accent);
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+.pipeline .step p { font-size: 9.5px; line-height: 1.4; color: var(--ink-soft); }
+
+/* Codebook block */
+.codebook-tips {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+}
+.codebook-tips .rule-card {
+  background: var(--bg-tint);
+  padding: 10px 12px;
+  border-left: 3px solid var(--accent);
+  border-radius: 2px;
+}
+.codebook-tips .rule-card h3 {
+  font-family: 'Crimson Pro', serif;
+  font-size: 14px;
+  color: var(--accent);
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.codebook-tips .rule-card p { font-size: 9.5px; line-height: 1.45; color: var(--ink-soft); }
+.codebook-tips .rule-card .tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 0.12em;
+  color: var(--ink-faint);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+/* Kappa thresholds */
+.kappa-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 14px;
+  align-items: stretch;
+}
+.kappa-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 10px;
+}
+.kappa-table th, .kappa-table td {
+  padding: 5px 8px;
+  text-align: left;
+  border-bottom: 1px solid var(--rule);
+  vertical-align: top;
+}
+.kappa-table th {
+  font-weight: 600;
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent);
+  border-bottom: 2px solid var(--accent);
+  padding-bottom: 4px;
+}
+.kappa-table td.range {
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--highlight);
+  font-weight: 600;
+  width: 22%;
+}
+.kappa-table td.verdict { font-weight: 600; color: var(--accent); width: 26%; }
+.kappa-table tr.tier-good { background: rgba(177,241,177,0.18); }
+.kappa-table tr.tier-ok { background: rgba(51,75,153,0.05); }
+.kappa-table tr.tier-warn { background: rgba(45,73,60,0.05); }
+.kappa-table tr.tier-bad { background: rgba(45,73,60,0.12); }
+
+.aggregation-card {
+  background: var(--bg-tint);
+  padding: 10px 12px;
+  border-left: 3px solid var(--pop);
+  border-radius: 2px;
+  font-size: 9.5px;
+  line-height: 1.5;
+}
+.aggregation-card h3 {
+  font-family: 'Crimson Pro', serif;
+  font-size: 13px;
+  color: var(--accent);
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.aggregation-card .opt {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: var(--highlight);
+  font-weight: 500;
+  margin-top: 5px;
+}
+
+/* Hypothesis recipe */
+.hyp-recipe {
+  background: var(--bg-tint);
+  padding: 10px 14px;
+  border-radius: 2px;
+  border-left: 3px solid var(--pop);
+  font-size: 10px;
+  line-height: 1.5;
+}
+.hyp-recipe strong { color: var(--accent); }
+.hyp-recipe code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9.5px;
+  color: var(--highlight);
+}
+
+/* Code blocks */
+.code-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.code-block {
+  background: var(--bg-deep);
+  padding: 10px 12px;
+  border-left: 2px solid var(--highlight);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  line-height: 1.5;
+  white-space: pre;
+  overflow: hidden;
+  border-radius: 2px;
+}
+.code-block.warm { border-left-color: var(--accent); }
+.code-block .kw { color: var(--highlight); font-weight: 500; }
+.code-block .str { color: var(--accent); }
+.code-block .com { color: var(--ink-faint); font-style: italic; }
+.code-block .fn { color: var(--accent); font-weight: 500; }
+.code-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+
+/* Bottom row */
+.bottom {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 14px;
+  margin-top: auto;
+}
+.appendix-list { font-size: 10px; line-height: 1.5; }
+.appendix-list dt {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9.5px;
+  color: var(--highlight);
+  margin-top: 3px;
+  font-weight: 500;
+}
+.appendix-list dd {
+  color: var(--ink-soft);
+  font-size: 9.5px;
+  margin-bottom: 4px;
+}
+.pitfalls { font-size: 10px; line-height: 1.5; }
+.pitfalls li {
+  list-style: none;
+  margin-bottom: 5px;
+  padding-left: 14px;
+  position: relative;
+}
+.pitfalls li::before {
+  content: '!';
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: var(--highlight);
+  font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+}
+.pitfalls strong { color: var(--accent); }
+
+.foot {
+  border-top: 1px solid var(--rule);
+  padding-top: 8px;
+  display: flex;
+  justify-content: space-between;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+@media print {
+  html, body { background: white; }
+  .page {
+    box-shadow: none;
+    margin: 0;
+    width: 100%;
+    min-height: auto;
+    padding: 0.5in;
+  }
+  @page {
+    size: letter;
+    margin: 0;
+  }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="head">
+  <div class="title-block">
+    <div class="eyebrow">Workshop &middot; Day 02 &middot; Cheat Sheet</div>
+    <h1>From a model to a measurement.<br>The five-step proxy workflow.</h1>
+  </div>
+  <div class="meta">
+    Workshop materials<br>
+    github.com/jacqpark/<br>
+    <strong>instats-llm-workshop</strong>
+  </div>
+</div>
+
+<section>
+  <h2>The pipeline &middot; from text to regression-ready CSV</h2>
+  <div class="pipeline">
+    <div class="step">
+      <div class="num">01</div>
+      <h3>Codebook</h3>
+      <p>3 rules, operational, disjoint, testable. Spend longer here than on the coding.</p>
+    </div>
+    <div class="step">
+      <div class="num">02</div>
+      <h3>Gold set</h3>
+      <p>30 paragraphs, stratified. Two coders. Cohen kappa &gt; 0.6 before continuing.</p>
+    </div>
+    <div class="step">
+      <div class="num">03</div>
+      <h3>Hypothesis ensemble</h3>
+      <p>3 to 13 hypotheses, weighted. Score = weighted average of entailment probs.</p>
+    </div>
+    <div class="step">
+      <div class="num">04</div>
+      <h3>Validate</h3>
+      <p>Kappa, Pearson r, confusion matrix. Re-read off-diagonals by hand.</p>
+    </div>
+    <div class="step">
+      <div class="num">05</div>
+      <h3>Aggregate</h3>
+      <p>Group by country-year. Pick mean, length-weighted, or top-K. Plot.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>Codebook &middot; three rules that separate codebook from wish</h2>
+  <div class="codebook-tips">
+    <div class="rule-card">
+      <div class="tag">Rule 01</div>
+      <h3>Operational</h3>
+      <p>Each rule names a feature you can find in the text. "Mentions Watch List" works. "Has a critical tone" does not.</p>
+    </div>
+    <div class="rule-card">
+      <div class="tag">Rule 02</div>
+      <h3>Disjoint</h3>
+      <p>No paragraph fits two rules. Praise + one concern resolves to exactly one bin.</p>
+    </div>
+    <div class="rule-card">
+      <div class="tag">Rule 03</div>
+      <h3>Testable</h3>
+      <p>Two coders applying the rules to the same paragraph reach the same answer most of the time.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>Cohen kappa &middot; what your reviewer expects</h2>
+  <div class="kappa-grid">
+    <table class="kappa-table">
+      <thead><tr><th>Range</th><th>Verdict</th><th>What to do</th></tr></thead>
+      <tbody>
+        <tr class="tier-good"><td class="range">&gt; 0.80</td><td class="verdict">Excellent</td><td>Codebook is mature. Ship it.</td></tr>
+        <tr class="tier-ok"><td class="range">0.60 to 0.80</td><td class="verdict">Acceptable</td><td>Publishable. Disclose the gold-set protocol in the appendix.</td></tr>
+        <tr class="tier-warn"><td class="range">0.40 to 0.60</td><td class="verdict">Codebook needs work</td><td>Re-read disagreements. Add or rewrite rules. Re-code.</td></tr>
+        <tr class="tier-bad"><td class="range">&lt; 0.40</td><td class="verdict">Stop</td><td>The concept is too fuzzy. Sit with a co-author and rewrite.</td></tr>
+      </tbody>
+    </table>
+    <div class="aggregation-card">
+      <h3>Aggregation choices</h3>
+      <div class="opt">Mean</div>
+      Simple. Treats every paragraph as equally informative.
+      <div class="opt">Length-weighted</div>
+      Verbose paragraphs count more. Re-read your data first.
+      <div class="opt">Top-K</div>
+      Keep the K most extreme paragraphs. Validate K against gold.
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>Hypothesis engineering &middot; the recipe</h2>
+  <div class="hyp-recipe">
+    <strong>Start simple.</strong> Three hypotheses. One positive, one negative, one for the residual class. Use <code>multi_label=True</code> so each hypothesis returns its own entailment probability. <strong>Score formula.</strong> <code>score = sum(weight_i &times; prob_i) / sum(|weight_i|)</code>. <strong>Add hypotheses in response to gold-set misses.</strong> Re-read 10 disagreements. Group by failure mode. For each mode, add one targeted hypothesis. Set weights by codebook judgment, not by tuning. <strong>Stop adding hypotheses</strong> when kappa stops improving. More than 15 rarely helps.
+  </div>
+</section>
+
+<section>
+  <h2>Code &middot; two snippets to keep</h2>
+  <div class="code-row">
+    <div>
+      <div class="code-label">Ensemble &middot; weighted entailment scores</div>
+      <div class="code-block"><span class="kw">from</span> transformers <span class="kw">import</span> pipeline
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+zsc = <span class="fn">pipeline</span>(<span class="str">"zero-shot-classification"</span>,
+  model=<span class="str">"MoritzLaurer/DeBERTa-v3-"</span>
+        <span class="str">"base-mnli-fever-anli"</span>)
+hyps = [<span class="str">"text praises target"</span>,
+        <span class="str">"text criticizes target"</span>]
+w = np.<span class="fn">array</span>([+<span class="kw">1.0</span>, -<span class="kw">1.0</span>])
+
+p = zsc(text, hyps, multi_label=<span class="kw">True</span>)
+prob = np.<span class="fn">array</span>([
+  p[<span class="str">"scores"</span>][p[<span class="str">"labels"</span>].<span class="fn">index</span>(h)]
+  <span class="kw">for</span> h <span class="kw">in</span> hyps])
+score = (prob*w).<span class="fn">sum</span>() / np.<span class="fn">abs</span>(w).<span class="fn">sum</span>()</div>
+    </div>
+    <div>
+      <div class="code-label">Validation &middot; kappa, correlation, confusion</div>
+      <div class="code-block warm"><span class="kw">from</span> sklearn.metrics <span class="kw">import</span> (
+  cohen_kappa_score, confusion_matrix)
+<span class="kw">from</span> scipy.stats <span class="kw">import</span> pearsonr
+
+k = <span class="fn">cohen_kappa_score</span>(gold, pred)
+r, _ = <span class="fn">pearsonr</span>(score, gold)
+cm = <span class="fn">confusion_matrix</span>(gold, pred,
+       labels=[-<span class="kw">1</span>,<span class="kw">0</span>,<span class="kw">1</span>])
+
+<span class="fn">print</span>(<span class="str">f"kappa {k:+.3f}  r {r:+.3f}"</span>)
+<span class="fn">print</span>(cm)
+<span class="com"># re-read off-diagonals by hand</span></div>
+    </div>
+  </div>
+</section>
+
+<div class="bottom">
+  <section>
+    <h2>Validation appendix &middot; what to ship</h2>
+    <dl class="appendix-list">
+      <dt>Codebook</dt>
+      <dd>The full text of every rule. The dated version that produced the gold set.</dd>
+      <dt>Gold set</dt>
+      <dd>Sample size, sampling method, number of coders, kappa between them.</dd>
+      <dt>Model and hypotheses</dt>
+      <dd>HF model ID with version pin, every hypothesis, every weight.</dd>
+      <dt>Validation numbers</dt>
+      <dd>Kappa vs gold, Pearson r, confusion matrix, accuracy.</dd>
+      <dt>Replication package</dt>
+      <dd>Notebook, gold-set CSV, scored-paragraph CSV, aggregated CSV.</dd>
+    </dl>
+  </section>
+  <section>
+    <h2>Pitfalls</h2>
+    <ul class="pitfalls">
+      <li><strong>Skipping the gold set.</strong> No gold means no kappa means no defense. Code 30 paragraphs.</li>
+      <li><strong>Tuning weights to the gold.</strong> Weights come from the codebook. If you train them, you need a held-out set.</li>
+      <li><strong>Single hypothesis on mixed text.</strong> The model picks the dominant signal. Use an ensemble.</li>
+      <li><strong>Accuracy alone.</strong> A class-imbalanced corpus produces 80% accuracy from a constant predictor. Always report kappa.</li>
+      <li><strong>Mean aggregation on uneven coverage.</strong> A country-year with one paragraph is not the same as one with forty. Always report n.</li>
+      <li><strong>Forgetting subgroups.</strong> Headline kappa hides drift. Stratify by region or time period in the appendix.</li>
+    </ul>
+  </section>
+</div>
+
+<div class="foot">
+  <span>Day 02 of 03 &middot; LLMs for Political Scientists</span>
+  <span>Workshop materials &middot; github.com/jacqpark/instats-llm-workshop</span>
+</div>
+
+</div>
+</body>
+</html>

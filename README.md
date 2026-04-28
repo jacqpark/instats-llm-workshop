@@ -13,7 +13,12 @@ Files in [`day1/`](./day1/).
 
 ## Day 2. From a model to a measurement.
 
-Coming soon.
+Files in [`day2/`](./day2/).
+
+- `slides.html`. Self-contained HTML slide deck. Open in any browser.
+- `demo.ipynb`. Instructor notebook. Runs on paid Colab Pro with GPU. Reuses the NTE corpus from Day 1. Builds a 30-paragraph gold set, runs single-hypothesis baseline vs 13-hypothesis weighted ensemble, computes Cohen's kappa and Pearson correlation, aggregates to country-year, and plots Israel and Turkey time series against external events.
+- `validation_template.ipynb`. Reusable template. Adapt the CSV path, column names, and hypothesis list to validate your own zero-shot pipeline against your own gold set.
+- `cheat_sheet.html`. One-page printable. Five-step pipeline, codebook rules, kappa thresholds, hypothesis-engineering recipe, validation appendix checklist.
 
 ## Day 3. Generative LLMs for wrangling and crawling.
 
