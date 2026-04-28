@@ -1,0 +1,1372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Day 3 · LLMs for Political Scientists</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #D4E8D9;
+  --bg-tint: #E5EFE8;
+  --bg-deep: #BFD9C4;
+  --ink: #132025;
+  --ink-soft: #2D493C;
+  --ink-faint: #5C7B6A;
+  --rule: #A8C9AE;
+  --accent: #2D493C;
+  --highlight: #334B99;
+  --pop: #B1F1B1;
+  --dark: #132025;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  background: var(--dark);
+  font-family: 'Inter', -apple-system, sans-serif;
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+.deck { position: relative; width: 100vw; height: 100vh; }
+.slide {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 1280px;
+  height: 720px;
+  background: var(--bg);
+  box-shadow: 0 30px 90px rgba(0,0,0,0.55);
+  padding: 64px 80px;
+  display: flex;
+  flex-direction: column;
+  transform: translate(-50%, -50%) scale(var(--s, 1));
+  transform-origin: center center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.35s ease;
+  overflow: hidden;
+}
+.slide.active { opacity: 1; visibility: visible; }
+.slide.dark { background: var(--dark); color: var(--bg); }
+.slide.dark h1, .slide.dark h2 { color: var(--bg); }
+.slide.dark .lede, .slide.dark p, .slide.dark .small, .slide.dark .tiny { color: var(--bg); }
+.slide.dark .eyebrow { color: var(--pop); }
+.slide.dark h4 { color: var(--pop); }
+
+.eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--highlight);
+  margin-bottom: 18px;
+  font-weight: 500;
+}
+h1 {
+  font-family: 'Crimson Pro', serif;
+  font-weight: 700;
+  font-size: 88px;
+  line-height: 1.02;
+  color: var(--accent);
+  letter-spacing: -0.025em;
+}
+h2 {
+  font-family: 'Crimson Pro', serif;
+  font-weight: 600;
+  font-size: 52px;
+  line-height: 1.06;
+  color: var(--accent);
+  letter-spacing: -0.018em;
+  margin-bottom: 24px;
+}
+h3 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 22px;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+h4 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.14em;
+  color: var(--highlight);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+p { font-size: 18px; line-height: 1.55; color: var(--ink); margin-bottom: 14px; }
+p.lede { font-size: 24px; line-height: 1.45; color: var(--ink-soft); margin-bottom: 18px; max-width: 1000px; }
+p.small { font-size: 16px; line-height: 1.55; color: var(--ink-soft); margin-bottom: 12px; }
+p.tiny { font-size: 14px; line-height: 1.5; color: var(--ink-faint); }
+code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.92em;
+  background: var(--bg-tint);
+  padding: 1px 6px;
+  border-radius: 2px;
+  color: var(--accent);
+}
+.highlight { color: var(--highlight); font-weight: 600; }
+.rule { width: 64px; height: 2px; background: var(--accent); margin-bottom: 24px; flex-shrink: 0; }
+
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 36px; flex: 1; min-height: 0; }
+.three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 22px; flex: 1; min-height: 0; }
+.four-col { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; flex: 1; min-height: 0; }
+
+ul.bare { list-style: none; }
+ul.bare li {
+  font-size: 17px;
+  line-height: 1.55;
+  margin-bottom: 8px;
+  padding-left: 16px;
+  position: relative;
+}
+ul.bare li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 12px;
+  width: 6px;
+  height: 6px;
+  background: var(--highlight);
+  border-radius: 50%;
+}
+
+.card {
+  background: var(--bg-tint);
+  padding: 22px 24px;
+  border-top: 3px solid var(--highlight);
+  display: flex;
+  flex-direction: column;
+  border-radius: 2px;
+}
+.card.cool { border-top-color: var(--highlight); background: #DCE8F0; }
+.card.warm { border-top-color: var(--accent); background: var(--bg-tint); }
+.card .label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-bottom: 8px;
+}
+.card h3 { font-size: 20px; margin-bottom: 10px; color: var(--accent); }
+.card p { font-size: 16px; line-height: 1.45; color: var(--ink); margin-bottom: 8px; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 16px;
+  font-variant-numeric: tabular-nums;
+}
+th, td {
+  padding: 10px 14px;
+  text-align: left;
+  border-bottom: 1px solid var(--rule);
+  vertical-align: top;
+  line-height: 1.4;
+}
+thead th {
+  font-weight: 600;
+  color: var(--accent);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-bottom: 2px solid var(--accent);
+  padding-bottom: 8px;
+}
+
+/* Title slide */
+.slide-title { padding: 0; }
+.slide-title-inner {
+  flex: 1;
+  padding: 64px 80px 56px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+}
+.slide-title h1 { font-size: 104px; max-width: 940px; line-height: 0.98; }
+.slide-title .lede { font-size: 26px; max-width: 740px; margin-top: 24px; }
+.slide-title .meta {
+  display: flex;
+  gap: 48px;
+  padding-top: 18px;
+  border-top: 1px solid var(--rule);
+  font-size: 14px;
+  color: var(--ink-soft);
+}
+.slide-title .meta .label {
+  display: block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-bottom: 6px;
+}
+.slide-title .corner {
+  position: absolute;
+  top: 64px;
+  right: 80px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  color: var(--highlight);
+  text-transform: uppercase;
+}
+
+/* Section divider */
+.slide.section-divider {
+  background-color: #2D493C !important;
+  padding: 80px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  overflow: hidden;
+}
+.slide.section-divider::before {
+  content: '';
+  position: absolute;
+  top: 80px;
+  left: 80px;
+  width: 56px;
+  height: 3px;
+  background: #B1F1B1;
+  z-index: 4;
+}
+.slide.section-divider .num {
+  font-family: 'Crimson Pro', Georgia, serif;
+  font-weight: 200;
+  font-size: 200px;
+  line-height: 0.85;
+  color: rgba(177, 241, 177, 0.45);
+  position: absolute;
+  bottom: 56px;
+  right: 80px;
+  letter-spacing: -0.04em;
+  z-index: 1;
+}
+.slide.section-divider h1 {
+  color: #D4E8D9 !important;
+  font-size: 84px !important;
+  line-height: 1.02 !important;
+  position: relative;
+  z-index: 3;
+  max-width: 900px;
+  font-family: 'Crimson Pro', Georgia, serif !important;
+  font-weight: 700 !important;
+}
+.slide.section-divider p.lede {
+  color: #B1F1B1 !important;
+  margin-top: 24px !important;
+  position: relative;
+  z-index: 3;
+  max-width: 760px;
+  font-size: 24px !important;
+  font-style: italic !important;
+  font-family: 'Crimson Pro', Georgia, serif !important;
+  font-weight: 400 !important;
+  line-height: 1.4 !important;
+}
+.slide.section-divider .eyebrow {
+  position: relative;
+  z-index: 3;
+  margin-bottom: 24px !important;
+  color: #B1F1B1 !important;
+}
+.slide.section-divider .slide-footer { color: rgba(212, 232, 217, 0.5) !important; z-index: 4; }
+
+/* Footer */
+.slide-footer {
+  position: absolute;
+  bottom: 22px;
+  left: 80px;
+  right: 80px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+.slide.dark .slide-footer { color: rgba(212,232,217,0.45); }
+
+/* HUD */
+.hud {
+  position: fixed;
+  bottom: 14px;
+  right: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: rgba(212,232,217,0.55);
+  letter-spacing: 0.08em;
+  z-index: 100;
+}
+.hud button {
+  background: rgba(212,232,217,0.08);
+  border: 1px solid rgba(212,232,217,0.15);
+  color: rgba(212,232,217,0.7);
+  padding: 4px 10px;
+  font-family: inherit;
+  font-size: 10px;
+  cursor: pointer;
+  letter-spacing: 0.08em;
+}
+.hud button:hover { background: rgba(212,232,217,0.15); }
+.progress-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  background: var(--pop);
+  transition: width 0.35s ease;
+  z-index: 100;
+}
+.help-text {
+  position: fixed;
+  top: 14px;
+  left: 14px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: rgba(212,232,217,0.35);
+  letter-spacing: 0.1em;
+  z-index: 100;
+  pointer-events: none;
+}
+
+/* Code block */
+.codeblock {
+  background: #14202E;
+  color: #D4E8D9;
+  padding: 18px 22px;
+  border-radius: 2px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  line-height: 1.6;
+  white-space: pre;
+  overflow: hidden;
+}
+.codeblock .kw { color: #B1F1B1; font-weight: 500; }
+.codeblock .str { color: #FFD580; }
+.codeblock .com { color: #5C7B6A; font-style: italic; }
+.codeblock .num { color: #FFB1B1; }
+.codeblock .fn { color: #BCD4F1; }
+
+/* JSON-style schema box */
+.schema-box {
+  background: #14202E;
+  color: #D4E8D9;
+  padding: 22px 28px;
+  border-radius: 2px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 16px;
+  line-height: 1.7;
+  border-left: 4px solid var(--pop);
+}
+.schema-box .key { color: #B1F1B1; }
+.schema-box .type { color: #FFB1B1; font-style: italic; }
+.schema-box .desc { color: #5C7B6A; font-style: italic; font-size: 13px; }
+
+/* Pipeline (5 steps) */
+.pipeline-five {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 14px;
+  align-items: stretch;
+  flex: 1;
+  min-height: 0;
+}
+.pipeline-five .step {
+  background: var(--bg-tint);
+  padding: 18px 16px;
+  border-top: 3px solid var(--highlight);
+  border-radius: 2px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+.pipeline-five .step::after {
+  content: '\2192';
+  position: absolute;
+  right: -14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--highlight);
+  font-size: 22px;
+  font-weight: 600;
+  z-index: 2;
+}
+.pipeline-five .step:last-child::after { display: none; }
+.pipeline-five .step .num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  color: var(--ink-faint);
+  margin-bottom: 6px;
+}
+.pipeline-five .step h3 {
+  font-family: 'Crimson Pro', serif;
+  font-size: 22px;
+  color: var(--accent);
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+.pipeline-five .step p { font-size: 14px; line-height: 1.45; color: var(--ink-soft); margin-bottom: 4px; }
+.pipeline-five .step .out {
+  margin-top: auto;
+  padding-top: 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--highlight);
+  letter-spacing: 0.06em;
+}
+
+/* Robots.txt callout */
+.robots-box {
+  background: #14202E;
+  color: #D4E8D9;
+  padding: 22px 28px;
+  border-radius: 2px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  line-height: 1.65;
+  border-left: 4px solid var(--pop);
+  overflow: hidden;
+}
+.robots-box .allow { color: #B1F1B1; }
+.robots-box .deny  { color: #FFB1B1; }
+.robots-box .ua    { color: #FFD580; }
+.robots-box .com   { color: #5C7B6A; }
+
+/* Validators result strip */
+.val-strip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-top: 8px;
+}
+.val-strip .vcard {
+  background: var(--bg-tint);
+  border-left: 3px solid var(--pop);
+  padding: 14px 18px;
+  border-radius: 2px;
+}
+.val-strip .vcard h3 {
+  font-family: 'Crimson Pro', serif;
+  font-size: 16px;
+  margin-bottom: 4px;
+  color: var(--accent);
+  font-weight: 600;
+}
+.val-strip .vcard .big {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--accent);
+  margin-bottom: 4px;
+}
+.val-strip .vcard p { font-size: 13px; color: var(--ink-soft); margin: 0; line-height: 1.4; }
+
+/* Diff prompts (system vs user) */
+.prompt-pair { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 22px; flex: 1; min-height: 0; }
+.prompt-cell {
+  background: var(--bg-tint);
+  border-radius: 2px;
+  padding: 18px 22px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  line-height: 1.55;
+  white-space: pre-wrap;
+  display: flex;
+  flex-direction: column;
+}
+.prompt-cell.system { border-left: 3px solid var(--highlight); }
+.prompt-cell.user   { border-left: 3px solid var(--accent); }
+.prompt-cell .tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  color: var(--ink-faint);
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+.prompt-cell .body { font-size: 13.5px; line-height: 1.55; color: var(--ink); flex: 1; }
+.prompt-cell .meta {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  color: var(--ink-faint);
+  margin-top: 12px;
+  border-top: 1px dashed var(--rule);
+  padding-top: 8px;
+}
+
+/* Cost summary card */
+.cost-card {
+  background: var(--bg-tint);
+  border-left: 3px solid var(--pop);
+  padding: 22px 26px;
+  border-radius: 2px;
+  font-size: 16px;
+  line-height: 1.55;
+}
+.cost-card .row {
+  display: grid;
+  grid-template-columns: 1fr 120px;
+  gap: 14px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  padding: 4px 0;
+  border-bottom: 1px dashed var(--rule);
+}
+.cost-card .row.head { font-weight: 600; border-bottom: 2px solid var(--accent); padding-bottom: 6px; color: var(--accent); }
+.cost-card .row .val { text-align: right; color: var(--accent); }
+
+/* Demo card (live) */
+.demo-card {
+  background: #14202E;
+  color: #D4E8D9;
+  padding: 28px 32px;
+  border-radius: 2px;
+  border-left: 4px solid var(--pop);
+}
+.demo-card h3 { color: var(--pop); margin-bottom: 12px; font-size: 22px; }
+.demo-card p { color: #D4E8D9; font-size: 16px; line-height: 1.55; margin-bottom: 8px; }
+.demo-card code { background: rgba(177,241,177,0.1); color: var(--pop); }
+
+/* Decision matrix */
+.dmatrix {
+  display: grid;
+  grid-template-columns: 160px repeat(2, 1fr);
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+  font-size: 14px;
+}
+.dmatrix > div {
+  background: var(--bg);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.dmatrix .head { background: var(--accent); color: var(--bg); font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600; }
+.dmatrix .row-head { background: var(--bg-tint); font-weight: 600; color: var(--accent); }
+.dmatrix .pick-encoder { background: rgba(51,75,153,0.06); border-left: 3px solid var(--highlight); }
+.dmatrix .pick-decoder { background: rgba(45,73,60,0.06); border-left: 3px solid var(--accent); }
+.dmatrix .pick-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.dmatrix .pick-encoder .pick-tag { color: var(--highlight); }
+.dmatrix .pick-decoder .pick-tag { color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="help-text">&larr; &rarr; arrows &middot; F fullscreen</div>
+<div class="deck" id="deck">
+
+<!-- 1. TITLE -->
+<section class="slide slide-title active">
+  <div class="slide-title-inner">
+    <div class="corner">Day 03 / 03</div>
+    <div style="margin-top: 88px;">
+      <div class="eyebrow">A 3-day workshop on LLMs for measurement</div>
+      <h1>Generative LLMs<br>for wrangling and crawling.</h1>
+      <p class="lede">Free-text extraction, polite crawling, and an end-to-end pipeline. Same reproducibility demands as Day 2. New tool.</p>
+    </div>
+    <div class="meta">
+      <div><span class="label">Instructor</span>Jihye Park &middot; University of Geneva</div>
+      <div><span class="label">Prerequisite</span>Day 2 hands-on cell finished running</div>
+      <div><span class="label">Duration</span>2 hours 30 minutes</div>
+    </div>
+  </div>
+</section>
+
+<!-- 2. ROADMAP -->
+<section class="slide">
+  <div class="eyebrow">Today</div>
+  <h2>Four movements,<br>from one prompt to a pipeline.</h2>
+  <div class="rule"></div>
+  <div class="four-col">
+    <div class="card">
+      <div class="label">Movement 01 &middot; 17 min</div>
+      <h3>Why generative</h3>
+      <p>The decision rule. When the encoder runs out of road and the generative tool becomes the right one.</p>
+    </div>
+    <div class="card">
+      <div class="label">Movement 02 &middot; 35 min</div>
+      <h3>Structured extraction</h3>
+      <p>Fifty news leads, four JSON fields, prompt caching, and validation that does not need any hand-coding.</p>
+    </div>
+    <div class="card">
+      <div class="label">Movement 03 &middot; 35 min</div>
+      <h3>Lightweight crawling</h3>
+      <p>Robots.txt live on screen. A polite Python fetcher. Raw HTML stored for reproducibility.</p>
+    </div>
+    <div class="card">
+      <div class="label">Movement 04 &middot; 25 min</div>
+      <h3>End-to-end pipeline</h3>
+      <p>Crawl, parse, extract, validate, save. Run together on five fresh articles. One full row of output.</p>
+    </div>
+  </div>
+  <p class="small" style="margin-top: 18px;">One ten-minute break after Movement 2. Closing reproducibility checklist in the last fifteen minutes.</p>
+  <div class="slide-footer"><span>Day 3 &middot; Roadmap</span><span>02 / 30</span></div>
+</section>
+
+<!-- 3. RECAP -->
+<section class="slide">
+  <div class="eyebrow">Where we have been</div>
+  <h2>Days 1 and 2 in one slide.</h2>
+  <div class="rule"></div>
+  <div class="three-col">
+    <div class="card cool">
+      <div class="label">Day 01</div>
+      <h3>The model zoo</h3>
+      <p>Two families of LLMs. Encoders read text and return labels. Generative models continue text. Day 1 ran zero-shot DeBERTa on five paragraphs of US trade-policy text.</p>
+    </div>
+    <div class="card cool">
+      <div class="label">Day 02</div>
+      <h3>From a model to a measurement</h3>
+      <p>Codebook, thirty-paragraph gold set, thirteen-hypothesis ensemble, country-year proxy plotted against external events, and a validation appendix.</p>
+    </div>
+    <div class="card warm">
+      <div class="label">Day 03</div>
+      <h3>The other family</h3>
+      <p>Today we leave the encoder behind. We pick up the generative model and use it for tasks the encoder cannot easily do.</p>
+    </div>
+  </div>
+  <p class="lede" style="text-align: center; margin-top: 18px; font-size: 24px;">The encoder is the right tool for closed labels. There are tasks for which it is not. Today is about those tasks.</p>
+  <div class="slide-footer"><span>Day 3 &middot; Recap</span><span>03 / 30</span></div>
+</section>
+
+<!-- 4. THE GAP -->
+<section class="slide">
+  <div class="eyebrow">The gap</div>
+  <h2>Three jobs the encoder<br>cannot easily do.</h2>
+  <div class="rule"></div>
+  <div class="three-col">
+    <div class="card warm">
+      <div class="label">Job 01</div>
+      <h3>Free-text extraction</h3>
+      <p>"France and Kenya signed a bilateral health-sector aid agreement worth EUR 80 million."</p>
+      <p class="small" style="font-style: italic;">Encoder can tell you it mentions a signing. It cannot tell you who signed, or for how much.</p>
+    </div>
+    <div class="card warm">
+      <div class="label">Job 02</div>
+      <h3>Normalization</h3>
+      <p>"USA," "United States," "U.S.," "the United States of America."</p>
+      <p class="small" style="font-style: italic;">Encoder labels each. Generative resolves them all to a single canonical form in one prompt.</p>
+    </div>
+    <div class="card warm">
+      <div class="label">Job 03</div>
+      <h3>Light summarization</h3>
+      <p>A 600-word press release with three buried facts about the agreement.</p>
+      <p class="small" style="font-style: italic;">Encoder needs a fixed schema of labels in advance. Generative picks out the three facts on first read.</p>
+    </div>
+  </div>
+  <p class="lede" style="text-align: center; margin-top: 16px;">Same reproducibility demands as yesterday. New tool. The intuition carries over.</p>
+  <div class="slide-footer"><span>Day 3 &middot; The gap</span><span>04 / 30</span></div>
+</section>
+
+<!-- 5. SECTION DIVIDER 01 -->
+<section class="slide section-divider dark">
+  <div class="num">01</div>
+  <div class="eyebrow">First movement &middot; 17 minutes</div>
+  <h1>Why reach<br>for generative.</h1>
+  <p class="lede">The decision rule that tells you when the encoder runs out of road.</p>
+  <div class="slide-footer"><span>Day 3</span><span>05 / 30</span></div>
+</section>
+
+<!-- 6. THREE JOBS IN DETAIL -->
+<section class="slide">
+  <div class="eyebrow">The three jobs, with the diagnostic question</div>
+  <h2>One question tells you<br>which family fits.</h2>
+  <div class="rule"></div>
+  <div class="three-col">
+    <div class="card">
+      <div class="label">Diagnostic 01</div>
+      <h3>Closed list?</h3>
+      <p>Can the answer be expressed as a value from a finite list you wrote down before reading any text?</p>
+      <p class="small"><span class="highlight">Yes.</span> Encoder. <br><span class="highlight">No.</span> Generative.</p>
+    </div>
+    <div class="card">
+      <div class="label">Diagnostic 02</div>
+      <h3>Messy input?</h3>
+      <p>Is your input messy in a way an encoder hypothesis cannot fix? Country-name variants, date formats, alias resolution.</p>
+      <p class="small"><span class="highlight">Yes.</span> Generative.</p>
+    </div>
+    <div class="card">
+      <div class="label">Diagnostic 03</div>
+      <h3>Variable schema?</h3>
+      <p>Do you need three or four pieces of information that may or may not appear, with different surface forms each time?</p>
+      <p class="small"><span class="highlight">Yes.</span> Generative.</p>
+    </div>
+  </div>
+  <p class="tiny" style="margin-top: 16px;">If two of three are yes, the generative tool is almost certainly the right starting point. If two of three are no, run an encoder first and reach for a generative model only if the encoder ceiling is hit.</p>
+  <div class="slide-footer"><span>Day 3 &middot; Movement 01</span><span>06 / 30</span></div>
+</section>
+
+<!-- 7. TRADEOFFS -->
+<section class="slide">
+  <div class="eyebrow">Three real costs that come with the new tool</div>
+  <h2>Tradeoffs that go<br>in your replication appendix.</h2>
+  <div class="rule"></div>
+  <div class="three-col">
+    <div class="card warm">
+      <div class="label">Cost 01</div>
+      <h3>Per-token billing</h3>
+      <p>Generative API calls are billed per input and output token. Today's demo on Anthropic Haiku 4.5 costs roughly five US cents for fifty leads plus five end-to-end articles.</p>
+      <p class="small" style="font-style: italic;">Fine for a paper. Becomes a research-design constraint at million-paragraph corpus scale.</p>
+    </div>
+    <div class="card warm">
+      <div class="label">Cost 02</div>
+      <h3>Non-determinism</h3>
+      <p>Even at temperature zero, two calls with the same prompt can produce slightly different outputs. Providers also retire models behind the scenes.</p>
+      <p class="small" style="font-style: italic;">Pin model version. Run the determinism cell. Report the number.</p>
+    </div>
+    <div class="card warm">
+      <div class="label">Cost 03</div>
+      <h3>Prompt versioning</h3>
+      <p>The prompt is a new artifact in your replication package. If the prompt changes, the output changes. Same for the model version.</p>
+      <p class="small" style="font-style: italic;">Ship system prompt verbatim. Include date finalized. Hash it for the audit log.</p>
+    </div>
+  </div>
+  <p class="tiny" style="margin-top: 16px;">None of the three costs existed in yesterday's encoder appendix. All three are now part of the methods burden.</p>
+  <div class="slide-footer"><span>Day 3 &middot; Movement 01</span><span>07 / 30</span></div>
+</section>
+
+<!-- 8. DECISION RULE MATRIX -->
+<section class="slide">
+  <div class="eyebrow">The 30-second decision</div>
+  <h2>When to reach<br>for which family.</h2>
+  <div class="rule"></div>
+  <div class="dmatrix" style="flex: 1; min-height: 0;">
+    <div class="head"></div>
+    <div class="head">Closed labels</div>
+    <div class="head">Free-form, messy, or variable</div>
+
+    <div class="row-head">Large corpus<br><span style="font-weight: 400; color: var(--ink-faint); font-size: 12px;">tens of thousands+</span></div>
+    <div class="pick-encoder">
+      <div class="pick-tag">Encoder, fine-tuned</div>
+      <p style="font-size: 14px; margin: 0;">Yesterday's pipeline. Hand-coded gold, weighted ensemble. Determinism by construction.</p>
+    </div>
+    <div class="pick-decoder">
+      <div class="pick-tag">Generative + encoder hybrid</div>
+      <p style="font-size: 14px; margin: 0;">Generative on upstream extraction. Encoder on downstream classification. Both validation tracks.</p>
+    </div>
+
+    <div class="row-head">Small corpus<br><span style="font-weight: 400; color: var(--ink-faint); font-size: 12px;">hundreds to a few thousand</span></div>
+    <div class="pick-encoder">
+      <div class="pick-tag">Encoder, zero-shot</div>
+      <p style="font-size: 14px; margin: 0;">Day 1's pipeline. NLI hypotheses. Cheap, deterministic. Often enough on its own.</p>
+    </div>
+    <div class="pick-decoder">
+      <div class="pick-tag">Generative, prompt-only</div>
+      <p style="font-size: 14px; margin: 0;">Today's pipeline. Schema, system prompt, validators, audit log. Iteration speed for the win.</p>
+    </div>
+  </div>
+  <p class="tiny" style="margin-top: 14px;">Most political-science measurement projects sit in the bottom-left cell. Today is about the right column. Hybrid pipelines combine them.</p>
+  <div class="slide-footer"><span>Day 3 &middot; Movement 01</span><span>08 / 30</span></div>
+</section>
+
+<!-- 9. SECTION DIVIDER 02 -->
+<section class="slide section-divider dark">
+  <div class="num">02</div>
+  <div class="eyebrow">Second movement &middot; 35 minutes</div>
+  <h1>Structured<br>extraction.</h1>
+  <p class="lede">Fifty news leads. Four JSON fields. The single most common pattern political scientists need from a generative model.</p>
+  <div class="slide-footer"><span>Day 3</span><span>09 / 30</span></div>
+</section>
+
+<!-- 10. THE SCHEMA -->
+<section class="slide">
+  <div class="eyebrow">The one-hour decision that makes everything else defensible</div>
+  <h2>Decide the schema<br>before you touch any code.</h2>
+  <div class="rule"></div>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 28px; flex: 1; min-height: 0;">
+    <div class="schema-box">{
+  <span class="key">"signatories"</span>: <span class="type">list[str]</span>,
+    <span class="desc"># parties to the agreement</span>
+  <span class="key">"agreement_type"</span>: <span class="type">enum</span>,
+    <span class="desc"># closed taxonomy, 12 values</span>
+  <span class="key">"year"</span>: <span class="type">int | null</span>,
+    <span class="desc"># 1990-2030 or null</span>
+  <span class="key">"sector"</span>: <span class="type">enum</span>,
+    <span class="desc"># closed taxonomy, 13 values</span>
+}</div>
+    <div>
+      <h4>Three properties</h4>
+      <ul class="bare">
+        <li><span class="highlight">Finite.</span> The field set is decided in advance. Adding a new field after the fact means re-running every call.</li>
+        <li><span class="highlight">Typed.</span> Every field has a type and, where possible, a closed taxonomy. The validator in section 5 of the notebook reads off the type signatures.</li>
+        <li><span class="highlight">Pinned.</span> The schema is documented in the system prompt and in the replication package. Future-you needs both.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="slide-footer"><span>Day 3 &middot; Movement 02</span><span>10 / 30</span></div>
+</section>
+
+<!-- 11. PROMPT DESIGN -->
+<section class="slide">
+  <div class="eyebrow">Two prompts, one extraction</div>
+  <h2>System prompt holds the schema.<br>User prompt holds the lead.</h2>
+  <div class="rule"></div>
+  <div class="prompt-pair">
+    <div class="prompt-cell system">
+      <div class="tag">System prompt &middot; cached &middot; same every call</div>
+      <div class="body">You are an information extraction system. Extract a JSON object with exactly four fields.
+
+  "signatories": list of strings, normalized to short country names.
+  "agreement_type": one of [bilateral_trade, multilateral_trade, climate, defense, health, financial_assistance, IP, security_cooperation, infrastructure, technology, diplomatic_normalization, other].
+  "year": four-digit integer or null.
+  "sector": one of [trade, climate, defense, health, finance, IP, security, infrastructure, technology, energy, agriculture, migration, other].
+
+Return ONLY the JSON object. Do not wrap in markdown.
+
+Example input:
+"On 12 March 2024, France and Kenya signed a bilateral health-sector aid agreement..."
+Example output:
+{"signatories": ["France", "Kenya"], "agreement_type": "health", "year": 2024, "sector": "health"}</div>
+      <div class="meta">Cached at ~10% of base rate across 50 calls. The example is the highest-leverage line.</div>
+    </div>
+    <div class="prompt-cell user">
+      <div class="tag">User prompt &middot; per row &middot; not cached</div>
+      <div class="body">"On 8 September 2020, the United Arab Emirates and Israel signed the Abraham Accords, normalizing diplomatic relations and establishing cooperation in security, technology, and tourism."</div>
+      <div class="meta">One news lead per call. Variable. Not cacheable.</div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>Day 3 &middot; Movement 02</span><span>11 / 30</span></div>
+</section>
+
+<!-- 12. LIVE DEMO HEADER -->
+<section class="slide">
+  <div class="eyebrow">[ DEMO ] &middot; live</div>
+  <h2>Switch to <code>demo.ipynb</code><br>sections 1 to 4.</h2>
+  <div class="rule"></div>
+  <div class="demo-card" style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
+    <h3>Run together</h3>
+    <p>Section 1. Mount Drive. Install Anthropic SDK. Pull <code>ANTHROPIC_API_KEY</code> from <code>userdata</code>.</p>
+    <p>Section 2. Load <code>news_leads.csv</code>. Inspect three sample leads.</p>
+    <p>Section 3. Define the schema. Print the system prompt and the closed taxonomies.</p>
+    <p>Section 4. Run extraction on a single lead. Inspect the parsed JSON, input and output token counts, and any cache-related counters in the response.</p>
+  </div>
+  <p class="tiny" style="margin-top: 14px;">If the API call returns a 401, double-check that the key is saved under the key icon in Colab and that the cell pulled it via <code>userdata.get()</code>.</p>
+  <div class="slide-footer"><span>Day 3 &middot; Movement 02</span><span>12 / 30</span></div>
+</section>
+
+<!-- 13. VALIDATION WITHOUT A GOLD SET -->
+<section class="slide">
+  <div class="eyebrow">Validation, no-hand-coding edition</div>
+  <h2>Four checks you get for free<br>without writing any gold.</h2>
+  <div class="rule"></div>
+  <div class="four-col">
+    <div class="card">
+      <div class="label">Check 01</div>
+      <h3>Schema validation</h3>
+      <p>Every output parses as JSON. Every required field is present. Every value matches its declared type or taxonomy. Programmatic.</p>
+    </div>
+    <div class="card">
+      <div class="label">Check 02</div>
+      <h3>Determinism</h3>
+      <p>Same prompt, two runs, temperature zero. Count identical outputs. The drift you see is the floor on reproducibility.</p>
+    </div>
+    <div class="card">
+      <div class="label">Check 03</div>
+      <h3>Sample audit</h3>
+      <p>Read five random outputs by hand. Ten minutes of human time. Smallest defensible spot-check.</p>
+    </div>
+    <div class="card">
+      <div class="label">Check 04</div>
+      <h3>Audit log</h3>
+      <p>One row per call. Lead, prompt hash, timestamp, response, token counts, cost. The replication artifact.</p>
+    </div>
+  </div>
+  <div style="margin-top: 22px; padding: 18px 22px; background: var(--bg-tint); border-left: 3px solid var(--accent); border-radius: 2px;">
+    <p style="font-size: 18px; line-height: 1.5; margin: 0;"><span class="highlight">Necessary, but not sufficient.</span> These four checks are prerequisites for any further validation. They do not replace a hand-coded gold set. Slide 28 is where the gold set comes back as the missing piece for a publishable paper.</p>
+  </div>
+  <div class="slide-footer"><span>Day 3 &middot; Movement 02</span><span>13 / 30</span></div>
+</section>
+
+<!-- 14. WHAT THE VALIDATORS CAUGHT -->
+<section class="slide">
+  <div class="eyebrow">[ DEMO ] &middot; live &middot; sections 5 to 8</div>
+  <h2>What you should expect<br>to see when the cells run.</h2>
+  <div class="rule"></div>
+  <div class="val-strip">
+    <div class="vcard">
+      <h3>Schema pass rate</h3>
+      <div class="big">~98%</div>
+      <p>50 leads, four-field schema with one example. Modern Haiku-class models clear the high-90s on first pass.</p>
+    </div>
+    <div class="vcard">
+      <h3>Determinism</h3>
+      <div class="big">~9 / 10</div>
+      <p>10-lead subset, two runs, temperature 0. The drift comes from leads with ambiguous sector tagging.</p>
+    </div>
+    <div class="vcard">
+      <h3>Audit rows</h3>
+      <div class="big">50</div>
+      <p>One per call. System-prompt hash identical across all 50 because the prompt is cached.</p>
+    </div>
+    <div class="vcard">
+      <h3>Estimated cost</h3>
+      <div class="big">~$0.01</div>
+      <p>50 calls at Haiku 4.5 pricing with prompt caching. Well within the few-cents per replication budget.</p>
+    </div>
+  </div>
+  <p class="tiny" style="margin-top: 16px;">Numbers are illustrative based on typical runs. The exact values from the live demo will appear in the notebook output. If Anthropic ships a model update between sessions, expect the determinism number to shift before you re-pin.</p>
+  <div class="slide-footer"><span>Day 3 &middot; Movement 02</span><span>14 / 30</span></div>
+</section>
+
+<!-- 15. MOVEMENT 2 RECAP -->
+<section class="slide">
+  <div class="eyebrow">What we just built</div>
+  <h2>From a schema to an audit log<br>in five notebook sections.</h2>
+  <div class="rule"></div>
+  <div class="two-col">
+    <div>
+      <h4>What you built</h4>
+      <ul class="bare">
+        <li>A four-field schema with closed taxonomies pinned in the system prompt.</li>
+        <li>A two-part prompt with a stable system message and a per-row user message.</li>
+        <li>Fifty extraction calls with prompt caching at ~10% of base input rate.</li>
+        <li>Programmatic schema validators and a determinism check.</li>
+        <li>A five-record sample audit and a full audit log with cost.</li>
+      </ul>
+    </div>
+    <div>
+      <h4>What is still missing</h4>
+      <ul class="bare">
+        <li>A hand-coded gold set with field-level F1 against truth.</li>
+        <li>A subgroup breakdown of pass rate. Sector, year, signatory count.</li>
+        <li>A simpler-baseline comparison. Rule-based extraction or a smaller model.</li>
+        <li>A cost projection at production scale.</li>
+      </ul>
+      <p class="small" style="margin-top: 12px;">Slide 28 brings these back. Today's pipeline is the template you reuse when you have the budget for one.</p>
+    </div>
+  </div>
+  <div class="slide-footer"><span>Day 3 &middot; Movement 02</span><span>15 / 30</span></div>
+</section>
+
+<!-- 16. BREAK -->
+<section class="slide dark">
+  <div class="eyebrow">Break</div>
+  <h2 style="color: var(--bg);">Ten minutes.</h2>
+  <div class="rule" style="background: var(--pop);"></div>
+  <p style="color: var(--bg); font-size: 22px; line-height: 1.55; max-width: 860px;">Stretch. Refill. When we come back, we point a polite Python crawler at a real public site and watch how it behaves.</p>
+  <div style="position: absolute; bottom: 80px; left: 80px; right: 80px; padding-top: 16px; border-top: 1px solid rgba(212,232,217,0.18);">
+    <p style="color: rgba(212,232,217,0.55); font-family: 'JetBrains Mono', monospace; font-size: 13px; letter-spacing: 0.18em; text-transform: uppercase; margin: 0;">Movement 03 starts at 01:10</p>
+  </div>
+  <div class="slide-footer"><span>Day 3 &middot; Break</span><span>16 / 30</span></div>
+</section>
+
+<!-- 17. SECTION DIVIDER 03 -->
+<section class="slide section-divider dark">
+  <div class="num">03</div>
+  <div class="eyebrow">Third movement &middot; 35 minutes</div>
+  <h1>Crawling,<br>with manners.</h1>
+  <p class="lede">The two-screen check that decides whether you can crawl a site at all. The five-line Python that does the actual work.</p>
+  <div class="slide-footer"><span>Day 3</span><span>17 / 30</span></div>
+</section>
+
+<!-- 18. ROBOTS.TXT -->
+<section class="slide">
+  <div class="eyebrow">[ DEMO ] &middot; live &middot; on screen</div>
+  <h2>Read robots.txt<br>before any code runs.</h2>
+  <div class="rule"></div>
+  <div style="display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 28px; flex: 1; min-height: 0;">
+    <div class="robots-box"><span class="com"># https://www.csis.org/robots.txt</span>
+
+<span class="ua">User-agent: *</span>
+<span class="allow">Allow: /analysis/</span>
+<span class="allow">Allow: /*?page=</span>
+<span class="deny">Disallow: /admin/</span>
+<span class="deny">Disallow: /search/</span>
+<span class="deny">Disallow: /user/</span>
+<span class="deny">Disallow: /comment/</span>
+
+<span class="ua">User-agent: Bytespider</span>
+<span class="deny">Disallow: /</span>
+
+<span class="com"># Verified 2026-04-28. Re-check
+# before any second-pass crawl.</span></div>
+    <div>
+      <h4>Three things to find</h4>
+      <ul class="bare">
+        <li><span class="highlight">User-agent.</span> Which crawlers each rule block applies to.</li>
+        <li><span class="highlight">Allow.</span> Paths you may fetch.</li>
+        <li><span class="highlight">Disallow.</span> Paths you may not fetch.</li>
+      </ul>
+      <h4 style="margin-top: 18px;">Why it matters before any code</h4>
+      <p class="small">Robots.txt is a social contract. It does not have legal force in most jurisdictions. It is the first thing a methods reviewer will ask whether you checked. Document the date you read it. Save a copy. Re-check before any second pass.</p>
+    </div>
+  </div>
+  <div class="slide-footer"><span>Day 3 &middot; Movement 03</span><span>18 / 30</span></div>
+</section>
+
+<!-- 19. ANATOMY OF A REQUEST -->
+<section class="slide">
+  <div class="eyebrow">Five things in every fetch</div>
+  <h2>The Python is short.<br>The hygiene is the whole job.</h2>
+  <div class="rule"></div>
+  <div style="display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 28px; flex: 1; min-height: 0;">
+    <div class="codeblock"><span class="com"># A polite fetch in 8 lines.</span>
+<span class="kw">import</span> requests, time
+
+UA = <span class="str">'workshop-demo (mailto:you@univ.edu)'</span>
+
+<span class="kw">def</span> <span class="fn">polite_fetch</span>(url):
+    r = requests.<span class="fn">get</span>(url,
+        headers={<span class="str">'User-Agent'</span>: UA},
+        timeout=<span class="num">10</span>)
+    <span class="kw">if</span> r.status_code != <span class="num">200</span>:
+        <span class="kw">return</span> <span class="kw">None</span>
+    time.<span class="fn">sleep</span>(<span class="num">1.0</span>)
+    <span class="kw">return</span> r.text  <span class="com"># raw HTML</span></div>
+    <div>
+      <ul class="bare">
+        <li><span class="highlight">User-Agent.</span> A real string that identifies you and gives a contact email. Sysadmins should be able to reach you instead of blocking your IP.</li>
+        <li><span class="highlight">Status check.</span> 200 is the only happy path. 403 means blocked. 404 means moved. 429 means slow down. 503 means try later.</li>
+        <li><span class="highlight">Timeout.</span> Default 10 seconds. Without it your script hangs on a slow page and never tells you why.</li>
+        <li><span class="highlight">Raw HTML.</span> Store the bytes, not just the parsed text. Slide 21 explains why.</li>
+        <li><span class="highlight">Sleep.</span> One second between requests is the floor. Slide 22 details politeness limits.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="slide-footer"><span>Day 3 &middot; Movement 03</span><span>19 / 30</span></div>
+</section>
+
+<!-- 20. LIVE CRAWL DEMO -->
+<section class="slide">
+  <div class="eyebrow">[ DEMO ] &middot; live &middot; sections 9 and 10</div>
+  <h2>Crawl one CSIS analysis page<br>together.</h2>
+  <div class="rule"></div>
+  <div class="demo-card" style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
+    <h3>What we run</h3>
+    <p>Section 9. Define <code>polite_fetch()</code>. User-Agent string. Timeout. Status check. Returns raw HTML and metadata.</p>
+    <p>Section 10. Fetch one article URL. Parse with BeautifulSoup. Pull the headline, publication date, and first paragraphs. Inspect the parsed output. Note the raw HTML length, around 100 KB.</p>
+  </div>
+  <p class="tiny" style="margin-top: 16px;">CSIS is server-rendered HTML. No JavaScript execution required. That is why generic Python crawls work here, and why the same approach can fail elsewhere. If your live test fails, the site is telling you to use their public API.</p>
+  <div class="slide-footer"><span>Day 3 &middot; Movement 03</span><span>20 / 30</span></div>
+</section>
+
+<!-- 21. STORING RAW HTML -->
+<section class="slide">
+  <div class="eyebrow">The reproducibility move</div>
+  <h2>Save the raw HTML<br>after every fetch.</h2>
+  <div class="rule"></div>
+  <div class="three-col">
+    <div class="card">
+      <div class="label">Reason 01</div>
+      <h3>Parsers change</h3>
+      <p>You will discover next month that the date selector also matches a sidebar element. Re-running the parser on stored HTML is a one-line script. Re-crawling the site is a one-day script and a fresh robots check.</p>
+    </div>
+    <div class="card">
+      <div class="label">Reason 02</div>
+      <h3>Sites change</h3>
+      <p>The article you scraped today may not look the same in six months. Stored raw HTML is the only durable evidence that your data existed in the form you claim.</p>
+    </div>
+    <div class="card">
+      <div class="label">Reason 03</div>
+      <h3>Replication packages</h3>
+      <p>You ship the parser plus the raw HTML. A reviewer running your code in 2030 should not need network access to reproduce your dataset.</p>
+    </div>
+  </div>
+  <p class="lede" style="text-align: center; margin-top: 18px; font-size: 22px;">Filename is the URL slug plus a timestamp. Compress as gzip if the corpus grows.</p>
+  <div class="slide-footer"><span>Day 3 &middot; Movement 03</span><span>21 / 30</span></div>
+</section>
+
+<!-- 22. RATE LIMITING -->
+<section class="slide">
+  <div class="eyebrow">The simple rule</div>
+  <h2>Be slower than you think<br>you need to be.</h2>
+  <div class="rule"></div>
+  <div style="display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 32px; flex: 1; min-height: 0;">
+    <div>
+      <h4>Rates of fire</h4>
+      <table>
+        <thead><tr><th>Pace</th><th>Verdict</th></tr></thead>
+        <tbody>
+          <tr><td><strong>0.5 / sec</strong></td><td>Polite. Default for production crawls.</td></tr>
+          <tr><td><strong>1 / sec</strong></td><td>Floor. Today's notebook setting.</td></tr>
+          <tr><td><strong>5 / sec</strong></td><td>Rude on most sites. Avoid.</td></tr>
+          <tr><td><strong>20 / sec</strong></td><td>Denial of service. Never.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div>
+      <h4>Three implementation details</h4>
+      <ul class="bare">
+        <li><span class="highlight">Sleep after each request</span> rather than before the first. The point is to space the load on the server. Spacing your own script is a side effect.</li>
+        <li><span class="highlight">Cache responses by URL hash.</span> If you re-run, do not re-fetch what you already have.</li>
+        <li><span class="highlight">Log every request</span> with a timestamp. If a sysadmin emails you, you can show your traffic pattern from your own logs.</li>
+      </ul>
+      <p class="tiny" style="margin-top: 16px;">CSIS does not publish explicit rate limits. The default in the demo is one second between requests. Tune slower if your IP starts catching 429 responses. Never speed up.</p>
+    </div>
+  </div>
+  <div class="slide-footer"><span>Day 3 &middot; Movement 03</span><span>22 / 30</span></div>
+</section>
+
+<!-- 23. SECTION DIVIDER 04 -->
+<section class="slide section-divider dark">
+  <div class="num">04</div>
+  <div class="eyebrow">Fourth movement &middot; 25 minutes</div>
+  <h1>End-to-end<br>pipeline.</h1>
+  <p class="lede">Crawl, parse, extract, validate, save. Run together on five fresh articles.</p>
+  <div class="slide-footer"><span>Day 3</span><span>23 / 30</span></div>
+</section>
+
+<!-- 24. PIPELINE PICTURE -->
+<section class="slide">
+  <div class="eyebrow">Five steps, each one writes to disk</div>
+  <h2>Architecture decision.<br>Every step is restartable.</h2>
+  <div class="rule"></div>
+  <div class="pipeline-five">
+    <div class="step">
+      <div class="num">01</div>
+      <h3>Crawl</h3>
+      <p>Polite fetcher. User-Agent, timeout, status check, sleep.</p>
+      <div class="out">&rarr; raw_html/*.html, manifest.csv</div>
+    </div>
+    <div class="step">
+      <div class="num">02</div>
+      <h3>Parse</h3>
+      <p>BeautifulSoup pulls headline, date, first three paragraphs.</p>
+      <div class="out">&rarr; parsed.csv</div>
+    </div>
+    <div class="step">
+      <div class="num">03</div>
+      <h3>Extract</h3>
+      <p>Anthropic call. Same schema, same system prompt, per-row user message.</p>
+      <div class="out">&rarr; extracted.csv</div>
+    </div>
+    <div class="step">
+      <div class="num">04</div>
+      <h3>Validate</h3>
+      <p>Schema parse, type check, taxonomy check. Pass-fail flag per row.</p>
+      <div class="out">&rarr; validators_passed col</div>
+    </div>
+    <div class="step">
+      <div class="num">05</div>
+      <h3>Save</h3>
+      <p>Final CSV, audit log, raw HTML. The replication package.</p>
+      <div class="out">&rarr; full_pipeline.csv</div>
+    </div>
+  </div>
+  <p class="lede" style="text-align: center; margin-top: 22px; font-size: 22px;">Each step reads from disk, writes to disk. If extract fails, you do not re-crawl. You re-extract.</p>
+  <div class="slide-footer"><span>Day 3 &middot; Movement 04</span><span>24 / 30</span></div>
+</section>
+
+<!-- 25. LIVE END-TO-END DEMO -->
+<section class="slide">
+  <div class="eyebrow">[ DEMO ] &middot; live &middot; sections 11 to 14</div>
+  <h2>Five fresh CSIS articles<br>through all five steps.</h2>
+  <div class="rule"></div>
+  <div class="demo-card" style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
+    <h3>What we run</h3>
+    <p>Section 11. Five article URLs from the analysis index. Crawl with one-second sleeps. Save raw HTML. Print the manifest.</p>
+    <p>Section 12. Parse each raw HTML with BeautifulSoup. Pull headline, date, first three paragraphs. Save the cleaned CSV.</p>
+    <p>Section 13. Run the extractor on each parsed row. Cached system prompt. Per-row user message. Save extraction results next to the parsed text.</p>
+    <p>Section 14. Run validators. Print the pass rate. Print one full row from URL through validators-passed for inspection.</p>
+  </div>
+  <p class="tiny" style="margin-top: 14px;">If any URL has changed since the workshop was prepared, switch to cached fallback HTML in the workshop GitHub repo at <code>day3/cache/</code>.</p>
+  <div class="slide-footer"><span>Day 3 &middot; Movement 04</span><span>25 / 30</span></div>
+</section>
+
+<!-- 26. ONE FULL ROW -->
+<section class="slide">
+  <div class="eyebrow">The unit of replication</div>
+  <h2>What gets saved.<br>Twelve columns. One row.</h2>
+  <div class="rule"></div>
+  <div style="display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 24px; flex: 1; min-height: 0;">
+    <div class="codeblock" style="font-size: 12px;"><span class="com"># One full row, all columns</span>
+url:                   https://www.csis.org/...
+fetched_at:            2026-04-28T09:14:22Z
+status:                200
+raw_path:              raw_html/<span class="str">ai-and-future...</span>.html
+headline:              <span class="str">"AI and the Future of Mediation"</span>
+date_text:             Apr 27, 2026
+n_paragraphs:          14
+extracted_json:        {<span class="str">"signatories"</span>: [<span class="str">"UN"</span>, <span class="str">"WTO"</span>],
+                        <span class="str">"agreement_type"</span>: <span class="str">"technology"</span>,
+                        <span class="str">"year"</span>: <span class="num">2026</span>,
+                        <span class="str">"sector"</span>: <span class="str">"technology"</span>}
+model_id:              <span class="str">"claude-haiku-4-5-20251001"</span>
+system_prompt_hash:    <span class="num">a1b2c3d4...</span>
+input_tokens:          412
+output_tokens:         48
+validators_passed:     <span class="kw">True</span></div>
+    <div>
+      <h4>Why this row</h4>
+      <p class="small">A reviewer can take this row and trace it back to a fetched HTML file, to a parser version, to a model version, to an exact prompt, to a token cost.</p>
+      <h4 style="margin-top: 18px;">Twelve months from now</h4>
+      <p class="small">You will thank the past version of you who saved every column. The cost of saving more is zero. The cost of saving less is a request for the appendix you did not write.</p>
+      <div style="margin-top: 18px; padding: 14px 18px; background: var(--bg-tint); border-left: 3px solid var(--pop); border-radius: 2px;">
+        <p style="font-size: 14px; margin: 0; line-height: 1.5;">Provenance for one row equals provenance for the dataset. The pipeline either saves it for every row or it saves nothing usable.</p>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>Day 3 &middot; Movement 04</span><span>26 / 30</span></div>
+</section>
+
+<!-- 27. SECTION DIVIDER 05 -->
+<section class="slide section-divider dark">
+  <div class="num">05</div>
+  <div class="eyebrow">Closing &middot; 20 minutes</div>
+  <h1>Reproducibility.</h1>
+  <p class="lede">The appendix your reviewer is looking for. The arc you just completed. What to do this week.</p>
+  <div class="slide-footer"><span>Day 3</span><span>27 / 30</span></div>
+</section>
+
+<!-- 28. THE CHECKLIST -->
+<section class="slide">
+  <div class="eyebrow">For publication</div>
+  <h2>The reproducibility appendix<br>for an LLM-based measurement paper.</h2>
+  <div class="rule"></div>
+  <div class="two-col">
+    <div>
+      <h4>Must-have</h4>
+      <ul class="bare">
+        <li>The full prompt verbatim, system and user, with date finalized.</li>
+        <li>Model ID with version pin. Today's pin is <code>claude-haiku-4-5-20251001</code>.</li>
+        <li>Temperature and any other generation parameters set.</li>
+        <li>Schema with named taxonomies.</li>
+        <li>Schema-validation pass rate on the full corpus.</li>
+        <li>Robots.txt at date of crawl, plus your User-Agent string.</li>
+        <li>Raw-HTML files in the replication package, or a stable archive mirror.</li>
+        <li>Audit log with one row per call.</li>
+      </ul>
+    </div>
+    <div>
+      <h4>Often asked for</h4>
+      <ul class="bare">
+        <li>A small hand-coded gold set with field-level F1 against the model.</li>
+        <li>A determinism rate from running the pipeline twice.</li>
+        <li>Subgroup pass-rate breakdown. Sector, region, length.</li>
+        <li>Total cost summary at production scale.</li>
+        <li>Simpler-baseline comparison. Rule-based or smaller model.</li>
+      </ul>
+      <p class="small" style="margin-top: 12px; font-style: italic;">If column one is in the appendix, the pipeline is defensible. Column two is where revisions go.</p>
+    </div>
+  </div>
+  <div class="slide-footer"><span>Day 3 &middot; Closing</span><span>28 / 30</span></div>
+</section>
+
+<!-- 29. THE ARC -->
+<section class="slide">
+  <div class="eyebrow">What you actually built</div>
+  <h2>The three-day arc.</h2>
+  <div class="rule"></div>
+  <div class="three-col">
+    <div class="card cool">
+      <div class="label">Day 01 &middot; The model zoo</div>
+      <h3>Two families, one decision</h3>
+      <p>You can name the encoder and generative families and articulate the choice. You ran a state-of-the-art encoder on real political text in your browser.</p>
+    </div>
+    <div class="card cool">
+      <div class="label">Day 02 &middot; The measurement</div>
+      <h3>From notebook to proxy</h3>
+      <p>A codebook, a thirty-paragraph gold set, a thirteen-hypothesis ensemble, a country-year proxy plotted against external events, a validation appendix.</p>
+    </div>
+    <div class="card warm">
+      <div class="label">Day 03 &middot; The pipeline</div>
+      <h3>Wrangling and crawling</h3>
+      <p>A structured extraction pipeline, a polite crawler, a five-step end-to-end pipeline, an audit log that ships with the paper.</p>
+    </div>
+  </div>
+  <div style="margin-top: 22px; padding: 18px 24px; background: var(--bg-tint); border-left: 3px solid var(--accent); border-radius: 2px;">
+    <p style="font-size: 19px; line-height: 1.5; margin: 0;">The encoder and the generative model do different jobs in the same project. The hard part of measurement work in 2026 is the codebook, the gold set, the validation, and the audit. Those are the same on both sides. The model just changes which knob you turn.</p>
+  </div>
+  <div class="slide-footer"><span>Day 3 &middot; Closing</span><span>29 / 30</span></div>
+</section>
+
+<!-- 30. CLOSING -->
+<section class="slide dark">
+  <div class="eyebrow">End of the workshop</div>
+  <h2 style="color: var(--bg);">Three days. Two families.<br>One audit log.</h2>
+  <div class="rule" style="background: var(--pop);"></div>
+  <div class="two-col" style="margin-top: 8px;">
+    <div>
+      <h4>Three things to do this week</h4>
+      <ul class="bare">
+        <li style="color: var(--bg);">Re-run the Day 3 notebook on five articles of your own choosing.</li>
+        <li style="color: var(--bg);">Write a one-page replication appendix using slide 28 as the template.</li>
+        <li style="color: var(--bg);">Pick the next concept. Spend an hour with a colleague writing the codebook.</li>
+      </ul>
+    </div>
+    <div>
+      <h4>Optional reading</h4>
+      <p style="color: var(--bg); font-size: 17px; line-height: 1.5;">Grimmer, Roberts, and Stewart, <em>Text as Data</em> (Princeton 2022). The reference text for measurement work in our field. Validation chapters map directly onto the appendix you just learned to ship.</p>
+      <p style="color: var(--bg); font-size: 16px; line-height: 1.5; margin-top: 14px; opacity: 0.85;">Replication package. <code style="color: var(--pop); background: rgba(177,241,177,0.08);">github.com/jacqpark/instats-llm-workshop</code></p>
+    </div>
+  </div>
+  <p class="lede" style="margin-top: 28px; color: var(--pop); font-style: italic; font-size: 22px;">Thanks for spending three days here.</p>
+  <div class="slide-footer"><span>End of Day 3</span><span>30 / 30</span></div>
+</section>
+
+</div>
+<div class="hud">
+  <button id="prev">PREV</button>
+  <span id="counter">1 / 30</span>
+  <button id="next">NEXT</button>
+</div>
+<div class="progress-bar" id="bar" style="width: 3.3%"></div>
+
+<script>
+const slides = Array.from(document.querySelectorAll('.slide'));
+const total = slides.length;
+let idx = 0;
+
+function fit() {
+  const s = Math.min(window.innerWidth / 1280, window.innerHeight / 720) * 0.95;
+  document.documentElement.style.setProperty('--s', s);
+}
+window.addEventListener('resize', fit);
+fit();
+
+function show(i) {
+  i = Math.max(0, Math.min(i, total - 1));
+  slides[idx].classList.remove('active');
+  slides[i].classList.add('active');
+  idx = i;
+  document.getElementById('counter').textContent = `${idx+1} / ${total}`;
+  document.getElementById('bar').style.width = `${((idx+1)/total)*100}%`;
+  history.replaceState(null, '', `#${idx+1}`);
+}
+
+document.addEventListener('keydown', (e) => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { show(idx+1); e.preventDefault(); }
+  else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { show(idx-1); e.preventDefault(); }
+  else if (e.key === 'Home') { show(0); e.preventDefault(); }
+  else if (e.key === 'End') { show(total-1); e.preventDefault(); }
+  else if (e.key === 'f' || e.key === 'F') {
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+    else document.exitFullscreen();
+  }
+});
+
+document.getElementById('prev').addEventListener('click', () => show(idx-1));
+document.getElementById('next').addEventListener('click', () => show(idx+1));
+
+const initial = parseInt((location.hash || '#1').slice(1)) - 1;
+if (!isNaN(initial) && initial >= 0 && initial < total) show(initial);
+</script>
+</body>
+</html>

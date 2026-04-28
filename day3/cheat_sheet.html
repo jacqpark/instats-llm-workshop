@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Day 3 Cheat Sheet · LLMs for Political Scientists</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #D4E8D9;
+  --bg-tint: #E5EFE8;
+  --bg-deep: #BFD9C4;
+  --ink: #132025;
+  --ink-soft: #2D493C;
+  --ink-faint: #5C7B6A;
+  --rule: #A8C9AE;
+  --accent: #2D493C;
+  --highlight: #334B99;
+  --pop: #B1F1B1;
+  --dark: #132025;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  background: #14202E;
+  font-family: 'Inter', -apple-system, sans-serif;
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  line-height: 1.5;
+}
+.page {
+  background: var(--bg);
+  width: 8.5in;
+  min-height: 11in;
+  margin: 24px auto;
+  padding: 0.55in 0.6in;
+  box-shadow: 0 30px 90px rgba(0,0,0,0.55);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Header */
+.head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--accent);
+}
+.head .title-block { display: flex; flex-direction: column; }
+.head .eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--highlight);
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+.head h1 {
+  font-family: 'Crimson Pro', serif;
+  font-weight: 700;
+  font-size: 28px;
+  line-height: 1.05;
+  color: var(--accent);
+  letter-spacing: -0.02em;
+}
+.head .meta {
+  text-align: right;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  line-height: 1.5;
+}
+.head .meta strong { color: var(--accent); }
+
+section h2 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--highlight);
+  margin-bottom: 6px;
+}
+
+/* Three-job grid */
+.jobs {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+}
+.job {
+  background: var(--bg-tint);
+  padding: 10px 12px;
+  border-top: 3px solid var(--accent);
+  border-radius: 2px;
+}
+.job .tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 0.14em;
+  color: var(--ink-faint);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.job h3 {
+  font-family: 'Crimson Pro', serif;
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--accent);
+  margin-bottom: 4px;
+}
+.job p { font-size: 9.5px; line-height: 1.45; color: var(--ink-soft); }
+
+/* Pipeline */
+.pipeline {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  font-size: 9.5px;
+}
+.pipeline .step {
+  background: var(--bg-tint);
+  padding: 8px 10px;
+  border-top: 3px solid var(--highlight);
+  border-radius: 2px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+.pipeline .step::after {
+  content: '\2192';
+  position: absolute;
+  right: -8px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--highlight);
+  font-size: 13px;
+  font-weight: 600;
+  z-index: 2;
+}
+.pipeline .step:last-child::after { display: none; }
+.pipeline .step .num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 0.14em;
+  color: var(--ink-faint);
+  margin-bottom: 3px;
+}
+.pipeline .step h3 {
+  font-family: 'Crimson Pro', serif;
+  font-size: 13px;
+  color: var(--accent);
+  margin-bottom: 2px;
+  font-weight: 600;
+}
+.pipeline .step p { font-size: 9px; line-height: 1.35; color: var(--ink-soft); }
+
+/* Schema box */
+.schema {
+  background: var(--dark);
+  color: var(--bg);
+  padding: 10px 14px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  line-height: 1.6;
+  white-space: pre;
+  border-radius: 2px;
+  border-left: 3px solid var(--pop);
+}
+.schema .key { color: var(--pop); }
+.schema .type { color: #FFB1B1; font-style: italic; }
+.schema .desc { color: var(--ink-faint); font-style: italic; font-size: 9px; }
+
+/* Validation strip */
+.val-strip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+.val-strip .vcard {
+  background: var(--bg-tint);
+  border-left: 3px solid var(--pop);
+  padding: 8px 10px;
+  border-radius: 2px;
+}
+.val-strip .vcard .vtag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 0.12em;
+  color: var(--ink-faint);
+  margin-bottom: 3px;
+}
+.val-strip .vcard h3 {
+  font-family: 'Crimson Pro', serif;
+  font-size: 13px;
+  color: var(--accent);
+  margin-bottom: 3px;
+  font-weight: 600;
+}
+.val-strip .vcard p { font-size: 9px; line-height: 1.4; color: var(--ink-soft); margin: 0; }
+
+/* Checklist box (the centerpiece) */
+.checklist {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  background: var(--bg-tint);
+  padding: 12px 14px;
+  border-left: 3px solid var(--accent);
+  border-radius: 2px;
+}
+.checklist h3 {
+  font-family: 'Crimson Pro', serif;
+  font-size: 13px;
+  color: var(--accent);
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+.checklist .ctag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 0.14em;
+  color: var(--ink-faint);
+  text-transform: uppercase;
+  margin-bottom: 3px;
+}
+.checklist ul { list-style: none; font-size: 9.5px; line-height: 1.45; }
+.checklist ul li {
+  padding-left: 12px;
+  position: relative;
+  margin-bottom: 3px;
+  color: var(--ink);
+}
+.checklist ul li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 6px;
+  width: 5px;
+  height: 5px;
+  background: var(--highlight);
+  border-radius: 50%;
+}
+.checklist .col-2 ul li::before { background: var(--accent); opacity: 0.6; }
+.checklist code { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--highlight); background: rgba(51,75,153,0.06); padding: 0 3px; }
+
+/* Crawl etiquette */
+.etiquette {
+  background: var(--bg-tint);
+  padding: 10px 14px;
+  border-radius: 2px;
+  border-left: 3px solid var(--pop);
+  font-size: 10px;
+  line-height: 1.5;
+}
+.etiquette strong { color: var(--accent); }
+.etiquette code { font-family: 'JetBrains Mono', monospace; font-size: 9.5px; color: var(--highlight); }
+
+/* Code blocks */
+.code-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.code-block {
+  background: var(--bg-deep);
+  padding: 8px 10px;
+  border-left: 2px solid var(--highlight);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8.5px;
+  line-height: 1.5;
+  white-space: pre;
+  overflow: hidden;
+  border-radius: 2px;
+}
+.code-block.warm { border-left-color: var(--accent); }
+.code-block .kw { color: var(--highlight); font-weight: 500; }
+.code-block .str { color: var(--accent); }
+.code-block .com { color: var(--ink-faint); font-style: italic; }
+.code-block .fn { color: var(--accent); font-weight: 500; }
+.code-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+
+/* Bottom row */
+.bottom {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-top: auto;
+}
+.pitfalls { font-size: 10px; line-height: 1.5; }
+.pitfalls li {
+  list-style: none;
+  margin-bottom: 5px;
+  padding-left: 14px;
+  position: relative;
+}
+.pitfalls li::before {
+  content: '!';
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: var(--highlight);
+  font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+}
+.pitfalls strong { color: var(--accent); }
+
+.foot {
+  border-top: 1px solid var(--rule);
+  padding-top: 8px;
+  display: flex;
+  justify-content: space-between;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+@media print {
+  html, body { background: white; }
+  .page {
+    box-shadow: none;
+    margin: 0;
+    width: 100%;
+    min-height: auto;
+    padding: 0.5in;
+  }
+  @page { size: letter; margin: 0; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="head">
+  <div class="title-block">
+    <div class="eyebrow">Workshop &middot; Day 03 &middot; Cheat Sheet</div>
+    <h1>Generative LLMs for wrangling.<br>The reproducibility checklist.</h1>
+  </div>
+  <div class="meta">
+    Workshop materials<br>
+    github.com/jacqpark/<br>
+    <strong>instats-llm-workshop</strong>
+  </div>
+</div>
+
+<section>
+  <h2>Three jobs the encoder cannot easily do</h2>
+  <div class="jobs">
+    <div class="job">
+      <div class="tag">Job 01</div>
+      <h3>Free-text extraction</h3>
+      <p>Turn a paragraph into structured fields the encoder cannot list as labels in advance. Signatories, agreement type, year, sector.</p>
+    </div>
+    <div class="job">
+      <div class="tag">Job 02</div>
+      <h3>Normalization</h3>
+      <p>Resolve "USA," "U.S.," "United States" to one canonical form across messy crawled text. One prompt with examples.</p>
+    </div>
+    <div class="job">
+      <div class="tag">Job 03</div>
+      <h3>Light summarization</h3>
+      <p>Pick three or four facts out of a longer paragraph where the field set varies by document.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>The five-step pipeline &middot; restartable from any stage</h2>
+  <div class="pipeline">
+    <div class="step">
+      <div class="num">01</div>
+      <h3>Crawl</h3>
+      <p>Polite fetcher. UA, timeout, status, sleep. Save raw HTML.</p>
+    </div>
+    <div class="step">
+      <div class="num">02</div>
+      <h3>Parse</h3>
+      <p>BeautifulSoup. Pull headline, date, first paragraphs.</p>
+    </div>
+    <div class="step">
+      <div class="num">03</div>
+      <h3>Extract</h3>
+      <p>Anthropic call. Cached system prompt. Per-row user message.</p>
+    </div>
+    <div class="step">
+      <div class="num">04</div>
+      <h3>Validate</h3>
+      <p>Schema parse, type check, taxonomy check. One pass-fail flag.</p>
+    </div>
+    <div class="step">
+      <div class="num">05</div>
+      <h3>Save</h3>
+      <p>CSV per stage. Audit log. Raw HTML. Cost summary.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>Schema design &middot; decide before any code runs</h2>
+  <div style="display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 12px;">
+    <div class="schema">{
+  <span class="key">"signatories"</span>: <span class="type">list[str]</span>,
+    <span class="desc"># normalized to short country names</span>
+  <span class="key">"agreement_type"</span>: <span class="type">enum</span>,
+    <span class="desc"># bilateral_trade, climate, defense, ...</span>
+  <span class="key">"year"</span>: <span class="type">int | null</span>,
+    <span class="desc"># 1990-2030 or null</span>
+  <span class="key">"sector"</span>: <span class="type">enum</span>,
+    <span class="desc"># trade, climate, energy, ...</span>
+}</div>
+    <div class="etiquette" style="border-left-color: var(--highlight); font-size: 9.5px;">
+      <strong>Three properties.</strong> The schema is <strong>finite</strong> (decided in advance, adding a field means re-running every call), <strong>typed</strong> (every field has a type and, where possible, a closed taxonomy), and <strong>pinned</strong> (documented in the system prompt and in the replication package).<br><br>
+      <strong>Where it lives.</strong> The system prompt holds the schema and one example of valid output. The example is the highest-leverage line. Cache the system prompt to bill at <code>~10%</code> of base input rate.
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>Validation without a gold set &middot; four checks for free</h2>
+  <div class="val-strip">
+    <div class="vcard">
+      <div class="vtag">Check 01</div>
+      <h3>Schema</h3>
+      <p>Parses as JSON. All required fields. Types and taxonomies match. Programmatic.</p>
+    </div>
+    <div class="vcard">
+      <div class="vtag">Check 02</div>
+      <h3>Determinism</h3>
+      <p>Two runs at temperature 0. Count identical outputs. The drift is your floor.</p>
+    </div>
+    <div class="vcard">
+      <div class="vtag">Check 03</div>
+      <h3>Sample audit</h3>
+      <p>Read 5 random outputs by hand. Smallest defensible spot-check.</p>
+    </div>
+    <div class="vcard">
+      <div class="vtag">Check 04</div>
+      <h3>Audit log</h3>
+      <p>One row per call. Lead, prompt hash, response, tokens, cost.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>Reproducibility appendix &middot; what to ship with the paper</h2>
+  <div class="checklist">
+    <div>
+      <div class="ctag">Must-have</div>
+      <h3>Column 01</h3>
+      <ul>
+        <li>Full prompt verbatim, system + user, with date finalized.</li>
+        <li>Model ID with version pin. <code>claude-haiku-4-5-20251001</code></li>
+        <li>Temperature, max_tokens, any other generation parameter set.</li>
+        <li>Schema with named taxonomies.</li>
+        <li>Schema-validation pass rate on the full corpus.</li>
+        <li>Robots.txt at date of crawl, plus your User-Agent string.</li>
+        <li>Raw-HTML files in package or stable archive mirror.</li>
+        <li>Audit log with one row per call.</li>
+      </ul>
+    </div>
+    <div class="col-2">
+      <div class="ctag">Often asked for in revisions</div>
+      <h3>Column 02</h3>
+      <ul>
+        <li>Hand-coded gold set with field-level F1 against the model.</li>
+        <li>Determinism rate from running the pipeline twice.</li>
+        <li>Subgroup pass-rate breakdown. Sector, region, length.</li>
+        <li>Cost summary at production scale.</li>
+        <li>Simpler-baseline comparison. Rule-based or smaller model.</li>
+        <li>Rerun against an updated model after publication.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>Crawl etiquette &middot; the 5 things in every fetch</h2>
+  <div class="etiquette">
+    <strong>User-Agent</strong> with a real contact email. <strong>Timeout</strong> of 10 seconds. <strong>Status check</strong>, 200 is the only happy path (403 blocked, 429 slow down, 503 try later). <strong>Raw HTML stored</strong> on disk after every fetch. <strong>Sleep at least one second</strong> between requests, slower under 429. Read <code>robots.txt</code> on screen and save a copy with the date. Cache by URL hash so re-runs do not re-fetch.
+  </div>
+</section>
+
+<section>
+  <h2>Code &middot; two snippets to keep</h2>
+  <div class="code-row">
+    <div>
+      <div class="code-label">Generative &middot; structured extraction with caching</div>
+      <div class="code-block warm"><span class="com"># pip install -q anthropic</span>
+<span class="kw">from</span> anthropic <span class="kw">import</span> Anthropic
+<span class="kw">import</span> json
+
+client = <span class="fn">Anthropic</span>()
+resp = client.messages.<span class="fn">create</span>(
+  model=<span class="str">"claude-haiku-4-5-20251001"</span>,
+  max_tokens=<span class="kw">300</span>,
+  temperature=<span class="kw">0</span>,
+  system=[{
+    <span class="str">"type"</span>: <span class="str">"text"</span>,
+    <span class="str">"text"</span>: SYSTEM_PROMPT,
+    <span class="str">"cache_control"</span>: {<span class="str">"type"</span>: <span class="str">"ephemeral"</span>},
+  }],
+  messages=[{<span class="str">"role"</span>: <span class="str">"user"</span>,
+             <span class="str">"content"</span>: lead_text}],
+)
+data = json.<span class="fn">loads</span>(resp.content[<span class="kw">0</span>].text)</div>
+    </div>
+    <div>
+      <div class="code-label">Polite crawl &middot; UA, timeout, status, sleep, save</div>
+      <div class="code-block"><span class="com"># pip install -q requests beautifulsoup4</span>
+<span class="kw">import</span> requests, time, hashlib
+<span class="kw">from</span> pathlib <span class="kw">import</span> Path
+
+UA = <span class="str">"workshop-demo (mailto:you@univ.edu)"</span>
+
+<span class="kw">def</span> <span class="fn">polite_fetch</span>(url, raw_dir):
+  r = requests.<span class="fn">get</span>(url,
+    headers={<span class="str">"User-Agent"</span>: UA},
+    timeout=<span class="kw">10</span>)
+  <span class="kw">if</span> r.status_code != <span class="kw">200</span>:
+    <span class="kw">return</span> <span class="kw">None</span>
+  slug = hashlib.<span class="fn">md5</span>(url.<span class="fn">encode</span>()).<span class="fn">hexdigest</span>()
+  Path(<span class="kw">f</span><span class="str">"{raw_dir}/{slug}.html"</span>) \
+    .<span class="fn">write_text</span>(r.text)
+  time.<span class="fn">sleep</span>(<span class="kw">1.0</span>)
+  <span class="kw">return</span> r.text</div>
+    </div>
+  </div>
+</section>
+
+<div class="bottom">
+  <section>
+    <h2>One full row &middot; the unit of replication</h2>
+    <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; line-height: 1.6; background: var(--dark); color: var(--bg); padding: 10px 14px; border-radius: 2px; border-left: 3px solid var(--pop);">
+url + fetched_at + status + raw_path
++ headline + date + n_paragraphs
++ extracted_json (4 fields)
++ model_id + system_prompt_hash
++ input_tokens + output_tokens
++ validators_passed + cost
+    </div>
+    <p style="font-size: 9.5px; line-height: 1.45; margin-top: 6px; color: var(--ink-soft);">A reviewer can take any one row and trace it back to a fetched HTML file, a parser version, a model version, an exact prompt, and a token cost. Twelve months from now, you will thank past-you who saved every column.</p>
+  </section>
+  <section>
+    <h2>Pitfalls</h2>
+    <ul class="pitfalls">
+      <li><strong>Generative for closed-label tasks.</strong> If the answer fits a list, an encoder is cheaper, faster, and more deterministic.</li>
+      <li><strong>No schema.</strong> Without a pinned schema, every call invents reasonable but inconsistent values. Closed taxonomies fix this.</li>
+      <li><strong>No prompt caching.</strong> The system prompt is identical across calls. Caching bills it at 10% of base.</li>
+      <li><strong>API key in code cells.</strong> Use <code>userdata.get</code>. Never paste a key into a notebook.</li>
+      <li><strong>Crawl without robots.txt.</strong> Read it on screen. Save a copy. Document the date.</li>
+      <li><strong>No raw-HTML storage.</strong> Re-running the parser on stored HTML beats re-crawling every time.</li>
+      <li><strong>Skipping the audit log.</strong> Without per-call logging, the appendix has nothing to ship.</li>
+    </ul>
+  </section>
+</div>
+
+<div class="foot">
+  <span>Day 03 of 03 &middot; LLMs for Political Scientists</span>
+  <span>Workshop materials &middot; github.com/jacqpark/instats-llm-workshop</span>
+</div>
+
+</div>
+</body>
+</html>
