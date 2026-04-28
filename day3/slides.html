@@ -101,7 +101,16 @@ h4 {
   margin-bottom: 12px;
 }
 p { font-size: 18px; line-height: 1.55; color: var(--ink); margin-bottom: 14px; }
-p.lede { font-size: 24px; line-height: 1.45; color: var(--ink-soft); margin-bottom: 18px; max-width: 1000px; }
+p.lede {
+  font-family: 'Crimson Pro', serif;
+  font-size: 30px;
+  font-weight: 400;
+  line-height: 1.35;
+  color: var(--ink-soft);
+  font-style: italic;
+  margin-bottom: 18px;
+  max-width: 1000px;
+}
 p.small { font-size: 16px; line-height: 1.55; color: var(--ink-soft); margin-bottom: 12px; }
 p.tiny { font-size: 14px; line-height: 1.5; color: var(--ink-faint); }
 code {
@@ -193,7 +202,7 @@ thead th {
   position: relative;
 }
 .slide-title h1 { font-size: 104px; max-width: 940px; line-height: 0.98; }
-.slide-title .lede { font-size: 26px; max-width: 740px; margin-top: 24px; }
+.slide-title .lede { font-size: 26px; max-width: 740px; margin-top: 24px; font-style: italic; }
 .slide-title .meta {
   display: flex;
   gap: 48px;
@@ -379,52 +388,64 @@ thead th {
 .schema-box .type { color: #FFB1B1; font-style: italic; }
 .schema-box .desc { color: #5C7B6A; font-style: italic; font-size: 13px; }
 
-/* Pipeline (5 steps) */
-.pipeline-five {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 14px;
+/* Chevron flow (5 steps) */
+.chevron-flow {
+  display: flex;
   align-items: stretch;
   flex: 1;
   min-height: 0;
+  gap: 0;
 }
-.pipeline-five .step {
-  background: var(--bg-tint);
-  padding: 18px 16px;
-  border-top: 3px solid var(--highlight);
-  border-radius: 2px;
+.chevron-flow .chev {
+  flex: 1;
+  padding: 18px 38px 18px 44px;
   display: flex;
   flex-direction: column;
   position: relative;
+  margin-right: -28px;
+  clip-path: polygon(0% 0%, calc(100% - 28px) 0%, 100% 50%, calc(100% - 28px) 100%, 0% 100%, 28px 50%);
 }
-.pipeline-five .step::after {
-  content: '\2192';
-  position: absolute;
-  right: -14px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--highlight);
-  font-size: 22px;
-  font-weight: 600;
-  z-index: 2;
+.chevron-flow .chev:first-child {
+  clip-path: polygon(0% 0%, calc(100% - 28px) 0%, 100% 50%, calc(100% - 28px) 100%, 0% 100%);
+  padding-left: 26px;
 }
-.pipeline-five .step:last-child::after { display: none; }
-.pipeline-five .step .num {
+.chevron-flow .chev:last-child {
+  clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%, 28px 50%);
+  padding-right: 26px;
+  margin-right: 0;
+}
+/* Blue gradient. Five stops, light to deep navy, mirrors flow direction. */
+.chevron-flow .chev:nth-child(1) { background: #E5EAF5; }
+.chevron-flow .chev:nth-child(2) { background: #BFCCE3; }
+.chevron-flow .chev:nth-child(3) { background: #8FA6CF; }
+.chevron-flow .chev:nth-child(4) { background: #5C7AB8; }
+.chevron-flow .chev:nth-child(5) { background: #334B99; }
+.chevron-flow .chev .out { color: var(--accent); }
+/* Flip text on the darker chevrons. */
+.chevron-flow .chev:nth-child(4) h3,
+.chevron-flow .chev:nth-child(5) h3 { color: var(--bg); }
+.chevron-flow .chev:nth-child(4) p,
+.chevron-flow .chev:nth-child(5) p { color: rgba(212,232,217,0.95); }
+.chevron-flow .chev:nth-child(4) .num,
+.chevron-flow .chev:nth-child(5) .num { color: rgba(212,232,217,0.65); }
+.chevron-flow .chev:nth-child(4) .out,
+.chevron-flow .chev:nth-child(5) .out { color: var(--pop); }
+.chevron-flow .chev .num {
   font-family: 'JetBrains Mono', monospace;
   font-size: 11px;
   letter-spacing: 0.16em;
   color: var(--ink-faint);
   margin-bottom: 6px;
 }
-.pipeline-five .step h3 {
+.chevron-flow .chev h3 {
   font-family: 'Crimson Pro', serif;
   font-size: 22px;
   color: var(--accent);
   margin-bottom: 8px;
   font-weight: 600;
 }
-.pipeline-five .step p { font-size: 14px; line-height: 1.45; color: var(--ink-soft); margin-bottom: 4px; }
-.pipeline-five .step .out {
+.chevron-flow .chev p { font-size: 14px; line-height: 1.45; color: var(--ink-soft); margin-bottom: 4px; }
+.chevron-flow .chev .out {
   margin-top: auto;
   padding-top: 8px;
   font-family: 'JetBrains Mono', monospace;
@@ -484,32 +505,39 @@ thead th {
 .prompt-cell {
   background: var(--bg-tint);
   border-radius: 2px;
-  padding: 18px 22px;
+  padding: 14px 18px;
   font-family: 'JetBrains Mono', monospace;
-  font-size: 14px;
-  line-height: 1.55;
+  font-size: 12px;
+  line-height: 1.5;
   white-space: pre-wrap;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 .prompt-cell.system { border-left: 3px solid var(--highlight); }
 .prompt-cell.user   { border-left: 3px solid var(--accent); }
 .prompt-cell .tag {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
+  font-size: 10px;
   letter-spacing: 0.16em;
   color: var(--ink-faint);
-  margin-bottom: 10px;
+  margin-bottom: 8px;
   text-transform: uppercase;
 }
-.prompt-cell .body { font-size: 13.5px; line-height: 1.55; color: var(--ink); flex: 1; }
+.prompt-cell .body {
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--ink);
+  flex: 1;
+  overflow: hidden;
+}
 .prompt-cell .meta {
   font-family: 'Inter', sans-serif;
-  font-size: 12px;
+  font-size: 11px;
   color: var(--ink-faint);
-  margin-top: 12px;
+  margin-top: 10px;
   border-top: 1px dashed var(--rule);
-  padding-top: 8px;
+  padding-top: 6px;
 }
 
 /* Cost summary card */
@@ -651,7 +679,7 @@ thead th {
       <p>Today we leave the encoder behind. We pick up the generative model and use it for tasks the encoder cannot easily do.</p>
     </div>
   </div>
-  <p class="lede" style="text-align: center; margin-top: 18px; font-size: 24px;">The encoder is the right tool for closed labels. There are tasks for which it is not. Today is about those tasks.</p>
+  <p class="lede" style="margin-top: 18px;">The encoder is the right tool for closed labels. There are tasks for which it is not. Today is about those tasks.</p>
   <div class="slide-footer"><span>Day 3 &middot; Recap</span><span>03 / 30</span></div>
 </section>
 
@@ -680,7 +708,7 @@ thead th {
       <p class="small" style="font-style: italic;">Encoder needs a fixed schema of labels in advance. Generative picks out the three facts on first read.</p>
     </div>
   </div>
-  <p class="lede" style="text-align: center; margin-top: 16px;">Same reproducibility demands as yesterday. New tool. The intuition carries over.</p>
+  <p class="lede" style="margin-top: 16px;">Same reproducibility demands as yesterday. New tool. The intuition carries over.</p>
   <div class="slide-footer"><span>Day 3 &middot; The gap</span><span>04 / 30</span></div>
 </section>
 
@@ -833,14 +861,12 @@ thead th {
       <div class="body">You are an information extraction system. Extract a JSON object with exactly four fields.
 
   "signatories": list of strings, normalized to short country names.
-  "agreement_type": one of [bilateral_trade, multilateral_trade, climate, defense, health, financial_assistance, IP, security_cooperation, infrastructure, technology, diplomatic_normalization, other].
+  "agreement_type": one of [bilateral_trade, multilateral_trade, climate, defense, health, financial_assistance, IP, security_cooperation, infrastructure, technology, other].
   "year": four-digit integer or null.
-  "sector": one of [trade, climate, defense, health, finance, IP, security, infrastructure, technology, energy, agriculture, migration, other].
+  "sector": one of [trade, climate, defense, health, finance, IP, security, infrastructure, technology, energy, agriculture, other].
 
-Return ONLY the JSON object. Do not wrap in markdown.
+Return ONLY the JSON. No markdown.
 
-Example input:
-"On 12 March 2024, France and Kenya signed a bilateral health-sector aid agreement..."
 Example output:
 {"signatories": ["France", "Kenya"], "agreement_type": "health", "year": 2024, "sector": "health"}</div>
       <div class="meta">Cached at ~10% of base rate across 50 calls. The example is the highest-leverage line.</div>
@@ -965,14 +991,12 @@ Example output:
 </section>
 
 <!-- 16. BREAK -->
-<section class="slide dark">
+<section class="slide">
   <div class="eyebrow">Break</div>
-  <h2 style="color: var(--bg);">Ten minutes.</h2>
-  <div class="rule" style="background: var(--pop);"></div>
-  <p style="color: var(--bg); font-size: 22px; line-height: 1.55; max-width: 860px;">Stretch. Refill. When we come back, we point a polite Python crawler at a real public site and watch how it behaves.</p>
-  <div style="position: absolute; bottom: 80px; left: 80px; right: 80px; padding-top: 16px; border-top: 1px solid rgba(212,232,217,0.18);">
-    <p style="color: rgba(212,232,217,0.55); font-family: 'JetBrains Mono', monospace; font-size: 13px; letter-spacing: 0.18em; text-transform: uppercase; margin: 0;">Movement 03 starts at 01:10</p>
-  </div>
+  <h2 style="font-size: 110px; margin-top: 60px;">10 minutes.</h2>
+  <div class="rule"></div>
+  <p class="lede">When we come back, we point a polite Python crawler at a real public site and watch how it behaves.</p>
+  <p class="small" style="margin-top: 24px;">Stretch. Refill. The next movement is where the workshop leaves the API behind for a few sections and runs on plain Python <code>requests</code>.</p>
   <div class="slide-footer"><span>Day 3 &middot; Break</span><span>16 / 30</span></div>
 </section>
 
@@ -1088,7 +1112,7 @@ UA = <span class="str">'workshop-demo (mailto:you@univ.edu)'</span>
       <p>You ship the parser plus the raw HTML. A reviewer running your code in 2030 should not need network access to reproduce your dataset.</p>
     </div>
   </div>
-  <p class="lede" style="text-align: center; margin-top: 18px; font-size: 22px;">Filename is the URL slug plus a timestamp. Compress as gzip if the corpus grows.</p>
+  <p class="lede" style="margin-top: 18px;">Filename is the URL slug plus a timestamp. Compress as gzip if the corpus grows.</p>
   <div class="slide-footer"><span>Day 3 &middot; Movement 03</span><span>21 / 30</span></div>
 </section>
 
@@ -1137,39 +1161,39 @@ UA = <span class="str">'workshop-demo (mailto:you@univ.edu)'</span>
   <div class="eyebrow">Five steps, each one writes to disk</div>
   <h2>Architecture decision.<br>Every step is restartable.</h2>
   <div class="rule"></div>
-  <div class="pipeline-five">
-    <div class="step">
+  <div class="chevron-flow">
+    <div class="chev">
       <div class="num">01</div>
       <h3>Crawl</h3>
-      <p>Polite fetcher. User-Agent, timeout, status check, sleep.</p>
-      <div class="out">&rarr; raw_html/*.html, manifest.csv</div>
+      <p>Polite fetcher. UA, timeout, status, sleep.</p>
+      <div class="out">raw_html/*.html</div>
     </div>
-    <div class="step">
+    <div class="chev">
       <div class="num">02</div>
       <h3>Parse</h3>
-      <p>BeautifulSoup pulls headline, date, first three paragraphs.</p>
-      <div class="out">&rarr; parsed.csv</div>
+      <p>BeautifulSoup. Headline, date, first paragraphs.</p>
+      <div class="out">parsed.csv</div>
     </div>
-    <div class="step">
+    <div class="chev">
       <div class="num">03</div>
       <h3>Extract</h3>
-      <p>Anthropic call. Same schema, same system prompt, per-row user message.</p>
-      <div class="out">&rarr; extracted.csv</div>
+      <p>Anthropic call. Cached system, per-row user.</p>
+      <div class="out">extracted.csv</div>
     </div>
-    <div class="step">
+    <div class="chev">
       <div class="num">04</div>
       <h3>Validate</h3>
-      <p>Schema parse, type check, taxonomy check. Pass-fail flag per row.</p>
-      <div class="out">&rarr; validators_passed col</div>
+      <p>Schema, type, taxonomy. Pass-fail per row.</p>
+      <div class="out">validators_passed</div>
     </div>
-    <div class="step">
+    <div class="chev">
       <div class="num">05</div>
       <h3>Save</h3>
-      <p>Final CSV, audit log, raw HTML. The replication package.</p>
-      <div class="out">&rarr; full_pipeline.csv</div>
+      <p>Final CSV, audit log, raw HTML. Replication package.</p>
+      <div class="out">full_pipeline.csv</div>
     </div>
   </div>
-  <p class="lede" style="text-align: center; margin-top: 22px; font-size: 22px;">Each step reads from disk, writes to disk. If extract fails, you do not re-crawl. You re-extract.</p>
+  <p class="lede" style="margin-top: 22px;">Each step reads from disk, writes to disk. If extract fails, you do not re-crawl. You re-extract.</p>
   <div class="slide-footer"><span>Day 3 &middot; Movement 04</span><span>24 / 30</span></div>
 </section>
 
