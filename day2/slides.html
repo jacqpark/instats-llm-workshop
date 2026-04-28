@@ -629,7 +629,7 @@ svg text.mono { font-family: 'JetBrains Mono', monospace; font-size: 10px; fill:
     <div class="card warm">
       <div class="label">Result</div>
       <h3>It mostly worked</h3>
-      <p>Peru and Bahrain came out the way you would expect. Israel did not. That gap is where Day 2 begins.</p>
+      <p>Clear paragraphs landed where the codebook would put them. Mixed paragraphs like Israel 2017, where praise and concern sit side by side, are where off-the-shelf zero-shot becomes brittle. That gap is where Day 2 begins.</p>
     </div>
   </div>
   <p class="lede" style="text-align: center; margin-top: 18px; font-size: 24px;">A notebook that classifies five sentences is a demo. A measurement is something else.</p>
@@ -764,7 +764,7 @@ svg text.mono { font-family: 'JetBrains Mono', monospace; font-size: 10px; fill:
     <div>
       <h4>Thirty is</h4>
       <ul class="bare">
-        <li>Enough to compute kappa with a usable confidence interval.</li>
+        <li>Enough to compute weighted F1 with a usable confidence interval.</li>
         <li>Small enough that two coders can finish in an afternoon.</li>
         <li>Big enough to spot subgroup drift if you stratify the sample.</li>
         <li>The right scale for an iterative loop. Code thirty, refine the codebook, code thirty more if you need them.</li>
@@ -868,34 +868,39 @@ svg text.mono { font-family: 'JetBrains Mono', monospace; font-size: 10px; fill:
       <div class="w" style="color: var(--ink-faint); font-weight: 600;">0</div>
     </div>
   </div>
-  <p class="tiny" style="margin-top: 14px;">Israel is the interesting case. The codebook says "praise plus concern resolves to 0." Day 1's three-label classifier read it as positive.</p>
+  <p class="tiny" style="margin-top: 14px;">Israel is the interesting case. The codebook says "praise plus concern resolves to 0." Park's published proxy puts this exact paragraph at &minus;0.26, which is mixed by the codebook's threshold. We will check what off-the-shelf zero-shot produces in the live demo.</p>
   <div class="slide-footer"><span>Day 2 &middot; Movement 02</span><span>13 / 30</span></div>
 </section>
 
-<!-- 14. INTERCODER RELIABILITY -->
+<!-- 14. METRICS THAT GO IN THE APPENDIX -->
 <section class="slide">
-  <div class="eyebrow">Two coders</div>
-  <h2>Cohen's kappa is the metric<br>your reviewer expects.</h2>
+  <div class="eyebrow">Validation metrics</div>
+  <h2>Four numbers your appendix needs.<br>Following Park (2026).</h2>
   <div class="rule"></div>
   <div class="two-col">
     <div>
-      <h4>What it measures</h4>
-      <p>Agreement between two coders, corrected for agreement that would happen by chance alone. Range from 0 to 1.</p>
-      <h4 style="margin-top: 22px;">Rule of thumb</h4>
+      <h4>Model versus gold set</h4>
       <ul class="bare">
-        <li><span class="mono" style="color: var(--highlight);">&gt; 0.80</span> &nbsp; Excellent. Codebook is mature.</li>
-        <li><span class="mono" style="color: var(--highlight);">0.60 to 0.80</span> &nbsp; Acceptable for publication.</li>
-        <li><span class="mono" style="color: var(--highlight);">0.40 to 0.60</span> &nbsp; Codebook needs work.</li>
-        <li><span class="mono" style="color: var(--highlight);">&lt; 0.40</span> &nbsp; Stop. Rewrite the codebook.</li>
+        <li><span class="highlight">Weighted F1.</span> Class-balanced F1 across classes. The headline.</li>
+        <li><span class="highlight">Accuracy.</span> Diagonal of the confusion matrix. Always disclose, but never alone.</li>
+        <li><span class="highlight">Pearson r.</span> Continuous proxy score against the hand-coded score. Captures information the binarized prediction throws away.</li>
+        <li><span class="highlight">Spearman &rho;.</span> Rank correlation. Robust to outliers and non-linear monotone shifts.</li>
       </ul>
+      <p class="small" style="margin-top: 14px;">Park's published numbers are F1 = 0.787, accuracy = 0.773, Pearson r = 0.676, Spearman &rho; = 0.689 under 10-fold CV.</p>
     </div>
     <div>
       <h4>The python call</h4>
-      <pre><span class="kw">from</span> sklearn.metrics <span class="kw">import</span> cohen_kappa_score
-<span class="com"># two coders, same 30 paragraphs</span>
-k = <span class="fn">cohen_kappa_score</span>(coder_a, coder_b)
-<span class="fn">print</span>(<span class="str">f"kappa = {k:.2f}"</span>)</pre>
-      <p class="tiny" style="margin-top: 14px;">If your kappa is 0.45, do not run any models. Sit with your co-author and rewrite the codebook. The downstream pipeline will only ever be as reliable as the gold set.</p>
+      <pre><span class="kw">from</span> sklearn.metrics <span class="kw">import</span> (
+  f1_score, accuracy_score, confusion_matrix)
+<span class="kw">from</span> scipy.stats <span class="kw">import</span> pearsonr, spearmanr
+
+<span class="com"># model vs hand-coded</span>
+f1  = <span class="fn">f1_score</span>(gold, pred, average=<span class="str">"weighted"</span>)
+acc = <span class="fn">accuracy_score</span>(gold, pred)
+r,_ = <span class="fn">pearsonr</span>(score, gold)
+&rho;,_ = <span class="fn">spearmanr</span>(score, gold)</pre>
+      <h4 style="margin-top: 18px;">Inter-coder agreement is a separate question</h4>
+      <p class="small">If two humans coded the gold set, report Cohen's &kappa; or Krippendorff's &alpha; in the appendix to defend the gold itself. Park's published proxy treats the hand-coded labels as the ground truth, so this number is not in her main metric stack.</p>
     </div>
   </div>
   <div class="slide-footer"><span>Day 2 &middot; Movement 02</span><span>14 / 30</span></div>
@@ -981,21 +986,26 @@ out = <span class="fn">zsc</span>(text, candidate_labels)</pre>
   <h2>Park's thirteen hypotheses.<br>Six factual, seven interpretive.</h2>
   <div class="rule"></div>
   <div class="hyp-stack" style="margin-top: 4px; gap: 4px;">
-    <div class="hyp-row neg" style="padding: 6px 14px;"><div class="idx">H1 <span style="color: var(--highlight); font-weight: 600;">F</span></div><div class="text" style="font-size: 13px;">The country is the Priority Foreign Country.</div><div class="w neg">&minus;2</div></div>
-    <div class="hyp-row neg" style="padding: 6px 14px;"><div class="idx">H2 <span style="color: var(--highlight); font-weight: 600;">F</span></div><div class="text" style="font-size: 13px;">The country is on the Priority Watch List.</div><div class="w neg">&minus;2</div></div>
-    <div class="hyp-row neg" style="padding: 6px 14px;"><div class="idx">H3 <span style="color: var(--highlight); font-weight: 600;">F</span></div><div class="text" style="font-size: 13px;">The country is on the Watch List.</div><div class="w neg">&minus;1.5</div></div>
-    <div class="hyp-row neg" style="padding: 6px 14px;"><div class="idx">H4 <span style="color: var(--highlight); font-weight: 600;">F</span></div><div class="text" style="font-size: 13px;">The country has markets listed as the Notorious Market.</div><div class="w neg">&minus;1.5</div></div>
-    <div class="hyp-row neg" style="padding: 6px 14px;"><div class="idx">H5 <span style="color: var(--accent); font-weight: 600;">I</span></div><div class="text" style="font-size: 13px;">The author believes the country does not put in efforts to combat IP violations.</div><div class="w neg">&minus;1</div></div>
-    <div class="hyp-row" style="padding: 6px 14px;"><div class="idx">H6 <span style="color: var(--accent); font-weight: 600;">I</span></div><div class="text" style="font-size: 13px;">The author believes the country has made efforts to combat IP violations.</div><div class="w pos">+1</div></div>
-    <div class="hyp-row" style="padding: 6px 14px;"><div class="idx">H7 <span style="color: var(--accent); font-weight: 600;">I</span></div><div class="text" style="font-size: 13px;">The author supports the passage of new IP legislation in the country.</div><div class="w pos">+1</div></div>
-    <div class="hyp-row neg" style="padding: 6px 14px;"><div class="idx">H8 <span style="color: var(--accent); font-weight: 600;">I</span></div><div class="text" style="font-size: 13px;">The author opposes the passage of new IP legislation in the country.</div><div class="w neg">&minus;1</div></div>
-    <div class="hyp-row neg" style="padding: 6px 14px;"><div class="idx">H9 <span style="color: var(--accent); font-weight: 600;">I</span></div><div class="text" style="font-size: 13px;">The author believes there is widespread IP violation in the country.</div><div class="w neg">&minus;1.5</div></div>
-    <div class="hyp-row neg" style="padding: 6px 14px;"><div class="idx">H10 <span style="color: var(--accent); font-weight: 600;">I</span></div><div class="text" style="font-size: 13px;">The author believes the country lacks resources to combat IP violations.</div><div class="w neg">&minus;1</div></div>
-    <div class="hyp-row" style="padding: 6px 14px;"><div class="idx">H11 <span style="color: var(--accent); font-weight: 600;">I</span></div><div class="text" style="font-size: 13px;">The author believes the country has strong IP law.</div><div class="w pos">+2</div></div>
-    <div class="hyp-row neg" style="padding: 6px 14px;"><div class="idx">H12 <span style="color: var(--highlight); font-weight: 600;">F</span></div><div class="text" style="font-size: 13px;">The text mentions the increase of IP violations in the country.</div><div class="w neg">&minus;1</div></div>
-    <div class="hyp-row" style="padding: 6px 14px;"><div class="idx">H13 <span style="color: var(--highlight); font-weight: 600;">F</span></div><div class="text" style="font-size: 13px;">The text mentions the decrease of IP violations in the country.</div><div class="w pos">+1</div></div>
+    <div class="hyp-row neg" style="padding: 3px 14px;"><div class="idx">H1 <span style="color: var(--highlight); font-weight: 600;">F</span></div><div class="text" style="font-size: 13px;">The country is the Priority Foreign Country.</div><div class="w neg">&minus;2</div></div>
+    <div class="hyp-row neg" style="padding: 3px 14px;"><div class="idx">H2 <span style="color: var(--highlight); font-weight: 600;">F</span></div><div class="text" style="font-size: 13px;">The country is on the Priority Watch List.</div><div class="w neg">&minus;2</div></div>
+    <div class="hyp-row neg" style="padding: 3px 14px;"><div class="idx">H3 <span style="color: var(--highlight); font-weight: 600;">F</span></div><div class="text" style="font-size: 13px;">The country is on the Watch List.</div><div class="w neg">&minus;1.5</div></div>
+    <div class="hyp-row neg" style="padding: 3px 14px;"><div class="idx">H4 <span style="color: var(--highlight); font-weight: 600;">F</span></div><div class="text" style="font-size: 13px;">The country has markets listed as the Notorious Market.</div><div class="w neg">&minus;1.5</div></div>
+    <div class="hyp-row neg" style="padding: 3px 14px;"><div class="idx">H5 <span style="color: var(--accent); font-weight: 600;">I</span></div><div class="text" style="font-size: 13px;">The author believes the country does not put in efforts to combat IP violations.</div><div class="w neg">&minus;1</div></div>
+    <div class="hyp-row" style="padding: 3px 14px;"><div class="idx">H6 <span style="color: var(--accent); font-weight: 600;">I</span></div><div class="text" style="font-size: 13px;">The author believes the country has made efforts to combat IP violations.</div><div class="w pos">+1</div></div>
+    <div class="hyp-row" style="padding: 3px 14px;"><div class="idx">H7 <span style="color: var(--accent); font-weight: 600;">I</span></div><div class="text" style="font-size: 13px;">The author supports the passage of new IP legislation in the country.</div><div class="w pos">+1</div></div>
+    <div class="hyp-row neg" style="padding: 3px 14px;"><div class="idx">H8 <span style="color: var(--accent); font-weight: 600;">I</span></div><div class="text" style="font-size: 13px;">The author opposes the passage of new IP legislation in the country.</div><div class="w neg">&minus;1</div></div>
+    <div class="hyp-row neg" style="padding: 3px 14px;"><div class="idx">H9 <span style="color: var(--accent); font-weight: 600;">I</span></div><div class="text" style="font-size: 13px;">The author believes there is widespread IP violation in the country.</div><div class="w neg">&minus;1.5</div></div>
+    <div class="hyp-row neg" style="padding: 3px 14px;"><div class="idx">H10 <span style="color: var(--accent); font-weight: 600;">I</span></div><div class="text" style="font-size: 13px;">The author believes the country lacks resources to combat IP violations.</div><div class="w neg">&minus;1</div></div>
+    <div class="hyp-row" style="padding: 3px 14px;"><div class="idx">H11 <span style="color: var(--accent); font-weight: 600;">I</span></div><div class="text" style="font-size: 13px;">The author believes the country has strong IP law.</div><div class="w pos">+2</div></div>
+    <div class="hyp-row neg" style="padding: 3px 14px;"><div class="idx">H12 <span style="color: var(--highlight); font-weight: 600;">F</span></div><div class="text" style="font-size: 13px;">The text mentions the increase of IP violations in the country.</div><div class="w neg">&minus;1</div></div>
+    <div class="hyp-row" style="padding: 3px 14px;"><div class="idx">H13 <span style="color: var(--highlight); font-weight: 600;">F</span></div><div class="text" style="font-size: 13px;">The text mentions the decrease of IP violations in the country.</div><div class="w pos">+1</div></div>
   </div>
-  <p class="tiny" style="margin-top: 8px;"><span class="highlight">F</span> = factual (verifiable from text). <span style="color: var(--accent); font-weight: 600;">I</span> = interpretive (requires reading authorial stance). Weights are <em>ex ante</em>, set from the codebook, never tuned. Watch-List-tied hypotheses get heavier weight because Special 301 placement is an adjudicated USTR process. Source. Park (2026), R&amp;R at RIO, Table A.1.</p>
+  <div style="display: flex; gap: 18px; margin-top: 12px; align-items: baseline;">
+    <span class="tiny"><span class="highlight" style="font-weight: 700;">F</span> &nbsp;factual</span>
+    <span class="tiny"><span style="color: var(--accent); font-weight: 700;">I</span> &nbsp;interpretive</span>
+    <span class="tiny">Weights set <em>ex ante</em> from the codebook, never tuned. Watch-List-tied hypotheses get heavier weight.</span>
+    <span class="tiny" style="margin-left: auto;">Park (2026), R&amp;R at RIO, Table A.1.</span>
+  </div>
   <div class="slide-footer"><span>Day 2 &middot; Movement 03</span><span>19 / 30</span></div>
 </section>
 
@@ -1019,23 +1029,23 @@ out = <span class="fn">zsc</span>(text, candidate_labels)</pre>
       <text x="480" y="70" text-anchor="middle" style="fill: white; font-size: 14px; font-weight: 600;">DeBERTa NLI head</text>
       <text x="480" y="95" text-anchor="middle" style="fill: rgba(255,255,255,0.85); font-size: 11px;">checks each hypothesis against</text>
       <text x="480" y="110" text-anchor="middle" style="fill: rgba(255,255,255,0.85); font-size: 11px;">the paragraph in turn</text>
-      <text x="380" y="142" style="fill: white; font-size: 12px; font-family: 'JetBrains Mono', monospace;">P(H01 | text) = 0.34</text>
-      <text x="380" y="160" style="fill: white; font-size: 12px; font-family: 'JetBrains Mono', monospace;">P(H02 | text) = 0.42</text>
-      <text x="380" y="178" style="fill: white; font-size: 12px; font-family: 'JetBrains Mono', monospace;">P(H04 | text) = 0.81</text>
-      <text x="380" y="196" style="fill: white; font-size: 12px; font-family: 'JetBrains Mono', monospace;">P(H06 | text) = 0.66</text>
-      <text x="380" y="214" style="fill: white; font-size: 12px; font-family: 'JetBrains Mono', monospace;">P(H07 | text) = 0.12</text>
-      <text x="380" y="232" style="fill: white; font-size: 12px; font-family: 'JetBrains Mono', monospace;">... 8 more</text>
+      <text x="380" y="142" style="fill: white; font-size: 12px; font-family: 'JetBrains Mono', monospace;">P(H1  | text)</text>
+      <text x="380" y="160" style="fill: white; font-size: 12px; font-family: 'JetBrains Mono', monospace;">P(H2  | text)</text>
+      <text x="380" y="178" style="fill: white; font-size: 12px; font-family: 'JetBrains Mono', monospace;">P(H3  | text)</text>
+      <text x="380" y="196" style="fill: white; font-size: 12px; font-family: 'JetBrains Mono', monospace;">P(H4  | text)</text>
+      <text x="380" y="214" style="fill: white; font-size: 12px; font-family: 'JetBrains Mono', monospace;">...</text>
+      <text x="380" y="232" style="fill: white; font-size: 12px; font-family: 'JetBrains Mono', monospace;">P(H13 | text)</text>
 
       <line x1="640" y1="140" x2="700" y2="140" class="stroke" />
       <polygon points="700,140 692,135 692,145" class="fill-cool" />
 
       <rect x="720" y="80" width="240" height="120" rx="4" class="fill-bg" style="stroke: var(--highlight); stroke-width: 2;" />
       <text x="840" y="115" text-anchor="middle" class="label" style="text-transform: uppercase; letter-spacing: 0.14em; font-size: 10px; fill: var(--highlight);">SCORE</text>
-      <text x="840" y="155" text-anchor="middle" style="font-size: 32px; font-weight: 700; fill: var(--accent); font-family: 'Crimson Pro', serif;">&minus;0.07</text>
-      <text x="840" y="180" text-anchor="middle" style="font-size: 12px; fill: var(--ink-soft);">weighted average</text>
+      <text x="840" y="158" text-anchor="middle" style="font-size: 22px; font-weight: 700; fill: var(--accent); font-family: 'Crimson Pro', serif;">&Sigma; w&middot;P</text>
+      <text x="840" y="185" text-anchor="middle" style="font-size: 11px; fill: var(--ink-soft);">weighted sum, scaled to &minus;5..+5</text>
     </svg>
   </div>
-  <p class="lede" style="text-align: center; font-size: 22px;">A near-zero score is exactly what the codebook called for on a mixed paragraph.</p>
+  <p class="lede" style="text-align: center; font-size: 22px;">When positive and negative hypotheses are entailed at similar strengths, the weighted sum lands near zero. That is what mixed paragraphs should look like.</p>
   <div class="slide-footer"><span>Day 2 &middot; Movement 03</span><span>20 / 30</span></div>
 </section>
 
@@ -1059,7 +1069,7 @@ out = <span class="fn">zsc</span>(text, candidate_labels)</pre>
       <text x="50" y="286" text-anchor="end" class="label">0.00</text>
       <!-- pooled line at 0.870 -->
       <line x1="60" y1="71.2" x2="940" y2="71.2" stroke="#5C7B6A" stroke-width="1.5" stroke-dasharray="6 4" />
-      <text x="930" y="65" text-anchor="end" style="font-size: 11px; fill: #2D493C; font-weight: 600;">Pooled F1 = 0.870</text>
+      <text x="500" y="20" text-anchor="middle" style="font-size: 11px; fill: #2D493C; font-weight: 600;">- - -  Pooled F1 = 0.870</text>
       <!-- bars -->
       <!-- Factual H1=0.99 -->
       <rect x="80" y="42.4" width="55" height="237.6" fill="#334B99" />
@@ -1317,8 +1327,8 @@ out = <span class="fn">zsc</span>(text, candidate_labels)</pre>
       <ul class="bare">
         <li>Codebook reproduced in full.</li>
         <li>Gold-set sample size and selection method.</li>
-        <li>Cohen's kappa between coders, on the gold set.</li>
-        <li>Weighted F1 and Pearson r between model and gold set.</li>
+        <li>Weighted F1 and accuracy between model and gold set.</li>
+        <li>Pearson r and Spearman &rho; between continuous score and gold.</li>
         <li>Confusion matrix on the gold set.</li>
         <li>Model ID, version pin, hypothesis list, weights.</li>
       </ul>

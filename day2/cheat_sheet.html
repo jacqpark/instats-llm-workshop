@@ -363,7 +363,7 @@ section h2 {
     <div class="step">
       <div class="num">02</div>
       <h3>Gold set</h3>
-      <p>30 paragraphs, stratified. Two coders. Cohen kappa &gt; 0.6 before continuing.</p>
+      <p>30 paragraphs, stratified. Two coders if you can. Disagreements re-read.</p>
     </div>
     <div class="step">
       <div class="num">03</div>
@@ -373,7 +373,7 @@ section h2 {
     <div class="step">
       <div class="num">04</div>
       <h3>Validate</h3>
-      <p>Kappa, Pearson r, confusion matrix. Re-read off-diagonals by hand.</p>
+      <p>Weighted F1, Pearson r, confusion matrix. Re-read off-diagonals.</p>
     </div>
     <div class="step">
       <div class="num">05</div>
@@ -405,15 +405,15 @@ section h2 {
 </section>
 
 <section>
-  <h2>Cohen kappa &middot; what your reviewer expects</h2>
+  <h2>Validation metrics &middot; following Park (2026)</h2>
   <div class="kappa-grid">
     <table class="kappa-table">
-      <thead><tr><th>Range</th><th>Verdict</th><th>What to do</th></tr></thead>
+      <thead><tr><th>Metric</th><th>What it measures</th><th>Park's number</th></tr></thead>
       <tbody>
-        <tr class="tier-good"><td class="range">&gt; 0.80</td><td class="verdict">Excellent</td><td>Codebook is mature. Ship it.</td></tr>
-        <tr class="tier-ok"><td class="range">0.60 to 0.80</td><td class="verdict">Acceptable</td><td>Publishable. Disclose the gold-set protocol in the appendix.</td></tr>
-        <tr class="tier-warn"><td class="range">0.40 to 0.60</td><td class="verdict">Codebook needs work</td><td>Re-read disagreements. Add or rewrite rules. Re-code.</td></tr>
-        <tr class="tier-bad"><td class="range">&lt; 0.40</td><td class="verdict">Stop</td><td>The concept is too fuzzy. Sit with a co-author and rewrite.</td></tr>
+        <tr class="tier-good"><td class="range">Weighted F1</td><td class="verdict">Class-balanced F1</td><td>0.787</td></tr>
+        <tr class="tier-ok"><td class="range">Accuracy</td><td class="verdict">Diagonal of confusion matrix</td><td>0.773</td></tr>
+        <tr class="tier-warn"><td class="range">Pearson r</td><td class="verdict">Continuous score vs gold</td><td>0.676</td></tr>
+        <tr class="tier-bad"><td class="range">Spearman &rho;</td><td class="verdict">Rank correlation</td><td>0.689</td></tr>
       </tbody>
     </table>
     <div class="aggregation-card">
@@ -431,7 +431,7 @@ section h2 {
 <section>
   <h2>Hypothesis engineering &middot; the recipe</h2>
   <div class="hyp-recipe">
-    <strong>Start simple.</strong> Three hypotheses. One positive, one negative, one for the residual class. Use <code>multi_label=True</code> so each hypothesis returns its own entailment probability. <strong>Score formula.</strong> <code>score = sum(weight_i &times; prob_i) / sum(|weight_i|)</code>. <strong>Add hypotheses in response to gold-set misses.</strong> Re-read 10 disagreements. Group by failure mode. For each mode, add one targeted hypothesis. Set weights by codebook judgment, not by tuning. <strong>Stop adding hypotheses</strong> when kappa stops improving. More than 15 rarely helps.
+    <strong>Start simple.</strong> Three hypotheses. One positive, one negative, one for the residual class. Use <code>multi_label=True</code> so each hypothesis returns its own entailment probability. <strong>Score formula.</strong> <code>score = sum(weight_i &times; prob_i) / sum(|weight_i|)</code>. <strong>Add hypotheses in response to gold-set misses.</strong> Re-read 10 disagreements. Group by failure mode. For each mode, add one targeted hypothesis. Set weights by codebook judgment, not by tuning. <strong>Stop adding hypotheses</strong> when weighted F1 stops improving. More than 15 rarely helps.
   </div>
 </section>
 
@@ -457,19 +457,18 @@ prob = np.<span class="fn">array</span>([
 score = (prob*w).<span class="fn">sum</span>() / np.<span class="fn">abs</span>(w).<span class="fn">sum</span>()</div>
     </div>
     <div>
-      <div class="code-label">Validation &middot; kappa, correlation, confusion</div>
+      <div class="code-label">Validation &middot; F1, correlation, confusion</div>
       <div class="code-block warm"><span class="kw">from</span> sklearn.metrics <span class="kw">import</span> (
-  cohen_kappa_score, confusion_matrix)
-<span class="kw">from</span> scipy.stats <span class="kw">import</span> pearsonr
+  f1_score, accuracy_score, confusion_matrix)
+<span class="kw">from</span> scipy.stats <span class="kw">import</span> pearsonr, spearmanr
 
-k = <span class="fn">cohen_kappa_score</span>(gold, pred)
-r, _ = <span class="fn">pearsonr</span>(score, gold)
-cm = <span class="fn">confusion_matrix</span>(gold, pred,
-       labels=[-<span class="kw">1</span>,<span class="kw">0</span>,<span class="kw">1</span>])
+f1  = <span class="fn">f1_score</span>(gold, pred, average=<span class="str">"weighted"</span>)
+acc = <span class="fn">accuracy_score</span>(gold, pred)
+r,_ = <span class="fn">pearsonr</span>(score, gold)
+&rho;,_ = <span class="fn">spearmanr</span>(score, gold)
+cm  = <span class="fn">confusion_matrix</span>(gold, pred)
 
-<span class="fn">print</span>(<span class="str">f"kappa {k:+.3f}  r {r:+.3f}"</span>)
-<span class="fn">print</span>(cm)
-<span class="com"># re-read off-diagonals by hand</span></div>
+<span class="fn">print</span>(<span class="str">f"F1 {f1:.3f}  r {r:.3f}"</span>)</div>
     </div>
   </div>
 </section>
@@ -481,11 +480,11 @@ cm = <span class="fn">confusion_matrix</span>(gold, pred,
       <dt>Codebook</dt>
       <dd>The full text of every rule. The dated version that produced the gold set.</dd>
       <dt>Gold set</dt>
-      <dd>Sample size, sampling method, number of coders, kappa between them.</dd>
+      <dd>Sample size, sampling method, number of coders, agreement statistic if two coders.</dd>
       <dt>Model and hypotheses</dt>
       <dd>HF model ID with version pin, every hypothesis, every weight.</dd>
       <dt>Validation numbers</dt>
-      <dd>Kappa vs gold, Pearson r, confusion matrix, accuracy.</dd>
+      <dd>Weighted F1, accuracy, Pearson r, Spearman &rho; against gold. Confusion matrix.</dd>
       <dt>Replication package</dt>
       <dd>Notebook, gold-set CSV, scored-paragraph CSV, aggregated CSV.</dd>
     </dl>
@@ -493,12 +492,12 @@ cm = <span class="fn">confusion_matrix</span>(gold, pred,
   <section>
     <h2>Pitfalls</h2>
     <ul class="pitfalls">
-      <li><strong>Skipping the gold set.</strong> No gold means no kappa means no defense. Code 30 paragraphs.</li>
+      <li><strong>Skipping the gold set.</strong> No gold means no F1 means no defense. Code 30 paragraphs.</li>
       <li><strong>Tuning weights to the gold.</strong> Weights come from the codebook. If you train them, you need a held-out set.</li>
       <li><strong>Single hypothesis on mixed text.</strong> The model picks the dominant signal. Use an ensemble.</li>
-      <li><strong>Accuracy alone.</strong> A class-imbalanced corpus produces 80% accuracy from a constant predictor. Always report kappa.</li>
+      <li><strong>Accuracy alone.</strong> A class-imbalanced corpus produces 80% accuracy from a constant predictor. Always report weighted F1.</li>
       <li><strong>Mean aggregation on uneven coverage.</strong> A country-year with one paragraph is not the same as one with forty. Always report n.</li>
-      <li><strong>Forgetting subgroups.</strong> Headline kappa hides drift. Stratify by region or time period in the appendix.</li>
+      <li><strong>Forgetting subgroups.</strong> Headline F1 hides drift. Stratify by region or time period in the appendix.</li>
     </ul>
   </section>
 </div>
