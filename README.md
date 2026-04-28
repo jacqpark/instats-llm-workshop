@@ -22,7 +22,12 @@ Files in [`day2/`](./day2/).
 
 ## Day 3. Generative LLMs for wrangling and crawling.
 
-Coming soon.
+Files in [`day3/`](./day3/).
+
+- `slides.html`. Self-contained HTML slide deck. Open in any browser.
+- `demo.ipynb`. Instructor notebook. Runs on paid Colab with an Anthropic API key. Extracts a four-field schema (signatories, agreement type, year, sector) from 50 messy news leads using Claude Haiku 4.5 with prompt caching, runs four programmatic validity checks, then crawls five CSIS analysis articles with a polite Python requests pipeline and re-extracts the same schema from the parsed text. Includes a Qwen 2.5-1.5B no-key fallback cell for participants without an API key.
+- `news_leads.csv`. 50 constructed news leads spanning trade, climate, defense, health, finance, IP, infrastructure, and security. Mix of clean and intentionally messy.
+- `cheat_sheet.html`. One-page printable reference. Schema design, prompt-caching pattern, four programmatic validity checks, robots.txt etiquette, polite-fetch helper.
 
 ## About the workshop
 
