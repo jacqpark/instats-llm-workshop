@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Day 1 Cheat Sheet · LLMs for Political Scientists</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #D4E8D9;
+  --bg-tint: #E5EFE8;
+  --bg-deep: #BFD9C4;
+  --ink: #132025;
+  --ink-soft: #2D493C;
+  --ink-faint: #5C7B6A;
+  --rule: #A8C9AE;
+  --accent: #2D493C;
+  --highlight: #334B99;
+  --pop: #B1F1B1;
+  --dark: #132025;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  background: #14202E;
+  font-family: 'Inter', -apple-system, sans-serif;
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  line-height: 1.5;
+}
+.page {
+  background: var(--bg);
+  width: 8.5in;
+  min-height: 11in;
+  margin: 24px auto;
+  padding: 0.55in 0.6in;
+  box-shadow: 0 30px 90px rgba(0,0,0,0.55);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Header */
+.head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--accent);
+}
+.head .title-block {
+  display: flex;
+  flex-direction: column;
+}
+.head .eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--highlight);
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+.head h1 {
+  font-family: 'Crimson Pro', serif;
+  font-weight: 700;
+  font-size: 28px;
+  line-height: 1.05;
+  color: var(--accent);
+  letter-spacing: -0.02em;
+}
+.head .meta {
+  text-align: right;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  line-height: 1.5;
+}
+.head .meta strong { color: var(--accent); }
+
+/* Section */
+section h2 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--highlight);
+  margin-bottom: 6px;
+}
+
+/* Two-family grid */
+.families {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.family {
+  background: var(--bg-tint);
+  padding: 12px 14px;
+  border-top: 3px solid var(--highlight);
+  border-radius: 2px;
+}
+.family.warm { border-top-color: var(--accent); }
+.family h3 {
+  font-family: 'Crimson Pro', serif;
+  font-weight: 600;
+  font-size: 18px;
+  color: var(--accent);
+  margin-bottom: 4px;
+}
+.family .tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  color: var(--ink-faint);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.family ul {
+  list-style: none;
+  font-size: 10.5px;
+  line-height: 1.45;
+}
+.family ul li {
+  padding-left: 12px;
+  position: relative;
+  margin-bottom: 3px;
+  color: var(--ink);
+}
+.family ul li::before {
+  content: '·';
+  position: absolute;
+  left: 0;
+  color: var(--highlight);
+  font-weight: 700;
+}
+.family.warm ul li::before { color: var(--accent); }
+
+/* Decision matrix */
+.matrix {
+  display: grid;
+  grid-template-columns: 110px repeat(3, 1fr);
+  border: 1px solid var(--rule);
+  font-size: 9.5px;
+  line-height: 1.35;
+}
+.matrix > div {
+  padding: 6px 8px;
+  border-right: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+.matrix .head-cell {
+  background: var(--accent);
+  color: var(--bg);
+  font-weight: 600;
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.matrix .row-head {
+  background: var(--bg-tint);
+  font-weight: 600;
+  color: var(--accent);
+  font-size: 10px;
+}
+.matrix .row-head small { font-weight: 400; color: var(--ink-faint); display: block; font-size: 8.5px; }
+.matrix .pick-encoder { background: rgba(51,75,153,0.05); border-left: 2px solid var(--highlight); }
+.matrix .pick-decoder { background: rgba(45,73,60,0.05); border-left: 2px solid var(--accent); }
+.matrix .pick-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+.matrix .pick-encoder .pick-tag { color: var(--highlight); }
+.matrix .pick-decoder .pick-tag { color: var(--accent); }
+
+/* Comparison table */
+.compare {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 10px;
+}
+.compare th, .compare td {
+  padding: 5px 8px;
+  text-align: left;
+  border-bottom: 1px solid var(--rule);
+  vertical-align: top;
+  line-height: 1.35;
+}
+.compare th {
+  font-weight: 600;
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent);
+  border-bottom: 2px solid var(--accent);
+  padding-bottom: 4px;
+}
+.compare td.label { font-weight: 600; color: var(--accent); width: 22%; }
+.compare td.encoder { background: rgba(51,75,153,0.04); }
+.compare td.decoder { background: rgba(45,73,60,0.04); }
+
+/* Two-up code */
+.code-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.code-block {
+  background: var(--bg-deep);
+  padding: 10px 12px;
+  border-left: 2px solid var(--highlight);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  line-height: 1.5;
+  white-space: pre;
+  overflow: hidden;
+  border-radius: 2px;
+}
+.code-block.warm { border-left-color: var(--accent); }
+.code-block .kw { color: var(--highlight); font-weight: 500; }
+.code-block .str { color: var(--accent); }
+.code-block .com { color: var(--ink-faint); font-style: italic; }
+.code-block .fn { color: var(--accent); font-weight: 500; }
+.code-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+
+/* Bottom row */
+.bottom {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 14px;
+  margin-top: auto;
+}
+.models-list {
+  font-size: 10px;
+  line-height: 1.55;
+}
+.models-list dt {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9.5px;
+  color: var(--highlight);
+  margin-top: 3px;
+  font-weight: 500;
+}
+.models-list dd {
+  color: var(--ink-soft);
+  font-size: 9.5px;
+  margin-bottom: 4px;
+}
+.pitfalls {
+  font-size: 10px;
+  line-height: 1.5;
+}
+.pitfalls li {
+  list-style: none;
+  margin-bottom: 5px;
+  padding-left: 14px;
+  position: relative;
+}
+.pitfalls li::before {
+  content: '!';
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: var(--highlight);
+  font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+}
+.pitfalls strong { color: var(--accent); }
+
+/* NLI box */
+.nli-box {
+  background: var(--bg-tint);
+  padding: 10px 14px;
+  border-radius: 2px;
+  border-left: 3px solid var(--pop);
+  font-size: 10px;
+  line-height: 1.5;
+}
+.nli-box strong { color: var(--accent); }
+.nli-box code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9.5px;
+  color: var(--highlight);
+}
+
+/* Footer */
+.foot {
+  border-top: 1px solid var(--rule);
+  padding-top: 8px;
+  display: flex;
+  justify-content: space-between;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+/* Print */
+@media print {
+  html, body { background: white; }
+  .page {
+    box-shadow: none;
+    margin: 0;
+    width: 100%;
+    min-height: auto;
+    padding: 0.5in;
+  }
+  @page {
+    size: letter;
+    margin: 0;
+  }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="head">
+  <div class="title-block">
+    <div class="eyebrow">Workshop · Day 01 · Cheat Sheet</div>
+    <h1>LLMs for political scientists.<br>What kind do you want?</h1>
+  </div>
+  <div class="meta">
+    Workshop materials<br>
+    github.com/jacqpark/<br>
+    <strong>instats-llm-workshop</strong>
+  </div>
+</div>
+
+<section>
+  <h2>The two families</h2>
+  <div class="families">
+    <div class="family">
+      <h3>Encoder</h3>
+      <div class="tag">Read. Label. Done.</div>
+      <ul>
+        <li>BERT, RoBERTa, DeBERTa, ModernBERT</li>
+        <li>Reads a passage in full, returns a fixed prediction (label, score)</li>
+        <li>Deterministic, cheap, fast</li>
+        <li>Runs on a laptop or free Colab CPU</li>
+        <li>Good for stance, sentiment, topic, NER, any closed-label task</li>
+        <li>Park's measurement strategy</li>
+      </ul>
+    </div>
+    <div class="family warm">
+      <h3>Generative</h3>
+      <div class="tag">Continue the text.</div>
+      <ul>
+        <li>Claude, GPT, Gemini, LLaMA, Qwen</li>
+        <li>Given a prompt, produces more text</li>
+        <li>Stochastic, costly per call, slower</li>
+        <li>Usually called via API</li>
+        <li>Good for extraction, summarization, free-form judgment</li>
+        <li>Reach for it when the answer cannot fit in a fixed label set</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>Decision · 30-second version</h2>
+  <div class="matrix">
+    <div class="head-cell"></div>
+    <div class="head-cell">Closed label set</div>
+    <div class="head-cell">Free-form output</div>
+    <div class="head-cell">Mixed</div>
+
+    <div class="row-head">Small data<small>~hundreds to thousands</small></div>
+    <div class="pick-encoder"><div class="pick-tag">Encoder, zero-shot</div>Laurer DeBERTa-v3 with your own labels. No training.</div>
+    <div class="pick-decoder"><div class="pick-tag">Generative, few-shot</div>Claude or Gemini with 3 to 5 examples in the prompt.</div>
+    <div class="pick-decoder"><div class="pick-tag">Generative, prompted</div>LLM with clear schema and validators.</div>
+
+    <div class="row-head">Large data<small>~tens of thousands+</small></div>
+    <div class="pick-encoder"><div class="pick-tag">Encoder, fine-tuned</div>300 hand-labels, train an encoder. Park's pattern.</div>
+    <div class="pick-decoder"><div class="pick-tag">Encoder + generative</div>Encoder filter, generative for hard cases.</div>
+    <div class="pick-decoder"><div class="pick-tag">Hybrid pipeline</div>Generative for extraction, encoder to classify.</div>
+  </div>
+</section>
+
+<section>
+  <h2>Cost · Speed · Reproducibility</h2>
+  <table class="compare">
+    <thead><tr><th>Axis</th><th>Encoder</th><th>Generative</th></tr></thead>
+    <tbody>
+      <tr><td class="label">Cost / 1k texts</td><td class="encoder">~$0 after model download</td><td class="decoder">A few cents to a few dollars (per token)</td></tr>
+      <tr><td class="label">Speed</td><td class="encoder">~50 to 500 texts / sec on free GPU</td><td class="decoder">~1 to 5 calls / sec over network</td></tr>
+      <tr><td class="label">Determinism</td><td class="encoder">Same input, same output, every time</td><td class="decoder">Stochastic; pin temperature 0 + version</td></tr>
+      <tr><td class="label">Validation</td><td class="encoder">k-fold CV, confusion matrix, kappa</td><td class="decoder">Spot-check, schema validation, audits</td></tr>
+      <tr><td class="label">Replication</td><td class="encoder">Pin model ID, ship weights with code</td><td class="decoder">Pin version; log every prompt + response</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2>The NLI trick · why an encoder can do almost anything</h2>
+  <div class="nli-box">
+    An NLI-trained encoder learns one job. Given a <strong>premise</strong> and a <strong>hypothesis</strong>, decide entailment / neutral / contradiction. Any classification can be rewritten as a yes-or-no entailment question. <code>zero-shot-classification</code> does this for you with a list of candidate labels. Park aggregates 13 such hypotheses with weights into a continuous -5 to +5 stance score.
+  </div>
+</section>
+
+<section>
+  <h2>Code · two snippets to keep</h2>
+  <div class="code-row">
+    <div>
+      <div class="code-label">Encoder · zero-shot classification</div>
+      <div class="code-block"><span class="com"># pip install -q transformers</span>
+<span class="kw">from</span> transformers <span class="kw">import</span> pipeline
+
+clf = <span class="fn">pipeline</span>(
+  <span class="str">"zero-shot-classification"</span>,
+  model=<span class="str">"MoritzLaurer/DeBERTa-v3-"</span>
+        <span class="str">"base-mnli-fever-anli"</span>,
+)
+<span class="fn">clf</span>(text, candidate_labels=[
+  <span class="str">"weak IP protection"</span>,
+  <span class="str">"strong IP protection"</span>,
+  <span class="str">"unrelated"</span>,
+])</div>
+    </div>
+    <div>
+      <div class="code-label">Generative · structured extraction</div>
+      <div class="code-block warm"><span class="com"># pip install -q anthropic</span>
+<span class="kw">from</span> anthropic <span class="kw">import</span> Anthropic
+<span class="kw">import</span> json
+
+client = <span class="fn">Anthropic</span>()
+resp = client.messages.<span class="fn">create</span>(
+  model=<span class="str">"claude-haiku-4-5-20251001"</span>,
+  max_tokens=<span class="kw">300</span>,
+  messages=[{<span class="str">"role"</span>: <span class="str">"user"</span>,
+    <span class="str">"content"</span>: f<span class="str">"Return JSON: {schema}"</span>}],
+)
+data = json.<span class="fn">loads</span>(resp.content[<span class="kw">0</span>].text)</div>
+    </div>
+  </div>
+</section>
+
+<div class="bottom">
+  <section>
+    <h2>Models picked for this workshop</h2>
+    <dl class="models-list">
+      <dt>MoritzLaurer/DeBERTa-v3-base-mnli-fever-anli</dt>
+      <dd>Encoder · zero-shot via NLI · ~735 MB · MIT · primary measurement workhorse</dd>
+      <dt>cardiffnlp/twitter-roberta-base-sentiment-latest</dt>
+      <dd>Encoder · 3-class sentiment · ~500 MB · CC-BY-4.0 · sentiment baseline</dd>
+      <dt>claude-haiku-4-5-20251001</dt>
+      <dd>Generative · cheap and fast · Anthropic API · Day 3 extraction tasks</dd>
+      <dt>Qwen/Qwen2.5-1.5B-Instruct</dt>
+      <dd>Generative · open weights · runs on free Colab GPU · no-key fallback</dd>
+    </dl>
+  </section>
+  <section>
+    <h2>Pitfalls</h2>
+    <ul class="pitfalls">
+      <li><strong>"Looks impressive" ≠ publishable.</strong> Always validate against a hand-coded gold set.</li>
+      <li><strong>Off-the-shelf trips on interpretive text.</strong> Mixed praise + criticism needs hand-labels.</li>
+      <li><strong>Wording of candidate labels matters.</strong> The model reads them as hypotheses, not keywords.</li>
+      <li><strong>Pin model versions.</strong> Cloud APIs retire models. HF model IDs survive.</li>
+      <li><strong>Never paste API keys in code cells.</strong> Use Colab's <code>userdata</code> sidebar.</li>
+    </ul>
+  </section>
+</div>
+
+<div class="foot">
+  <span>Day 01 of 03 · LLMs for Political Scientists</span>
+  <span>Workshop materials · github.com/jacqpark/instats-llm-workshop</span>
+</div>
+
+</div>
+</body>
+</html>

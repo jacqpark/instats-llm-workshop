@@ -1,0 +1,1397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Day 1 · LLMs for Political Scientists</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #D4E8D9;
+  --bg-tint: #E5EFE8;
+  --bg-deep: #BFD9C4;
+  --ink: #132025;
+  --ink-soft: #2D493C;
+  --ink-faint: #5C7B6A;
+  --rule: #A8C9AE;
+  --accent: #2D493C;
+  --highlight: #334B99;
+  --pop: #B1F1B1;
+  --dark: #132025;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  background: var(--dark);
+  font-family: 'Inter', -apple-system, sans-serif;
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+.deck {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+}
+.slide {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 1280px;
+  height: 720px;
+  background: var(--bg);
+  box-shadow: 0 30px 90px rgba(0,0,0,0.55);
+  padding: 64px 80px;
+  display: flex;
+  flex-direction: column;
+  transform: translate(-50%, -50%) scale(var(--s, 1));
+  transform-origin: center center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.35s ease;
+  overflow: hidden;
+}
+.slide.active {
+  opacity: 1;
+  visibility: visible;
+}
+.slide.dark {
+  background: var(--dark);
+  color: var(--bg);
+}
+.slide.dark h1, .slide.dark h2 { color: var(--bg); }
+.slide.dark .lede, .slide.dark p, .slide.dark .small, .slide.dark .tiny { color: var(--bg); }
+.slide.dark .eyebrow { color: var(--pop); }
+.slide.dark h4 { color: var(--pop); }
+
+/* Typography */
+.eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--highlight);
+  margin-bottom: 18px;
+  font-weight: 500;
+}
+.eyebrow.subtle { color: var(--ink-faint); }
+h1 {
+  font-family: 'Crimson Pro', serif;
+  font-weight: 700;
+  font-size: 88px;
+  line-height: 1.02;
+  color: var(--accent);
+  letter-spacing: -0.025em;
+}
+h2 {
+  font-family: 'Crimson Pro', serif;
+  font-weight: 600;
+  font-size: 52px;
+  line-height: 1.06;
+  color: var(--accent);
+  letter-spacing: -0.018em;
+  margin-bottom: 24px;
+}
+h3 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 24px;
+  color: var(--ink);
+  margin-bottom: 10px;
+  letter-spacing: -0.005em;
+}
+h4 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--highlight);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+p {
+  font-size: 21px;
+  line-height: 1.5;
+  color: var(--ink);
+  margin-bottom: 12px;
+}
+p.lede {
+  font-family: 'Crimson Pro', serif;
+  font-size: 30px;
+  font-weight: 400;
+  line-height: 1.35;
+  color: var(--ink-soft);
+  font-style: italic;
+}
+.small { font-size: 16px; color: var(--ink-soft); line-height: 1.5; margin-bottom: 8px; }
+.tiny { font-size: 13px; color: var(--ink-faint); line-height: 1.4; }
+.accent { color: var(--accent); }
+.highlight { color: var(--highlight); font-weight: 600; }
+.muted { color: var(--ink-faint); }
+.serif { font-family: 'Crimson Pro', serif; }
+
+.rule {
+  width: 56px;
+  height: 3px;
+  background: var(--highlight);
+  margin-bottom: 24px;
+}
+.rule.thin { height: 1px; background: var(--rule); width: 100%; }
+
+ul.bare { list-style: none; }
+ul.bare li {
+  font-size: 19px;
+  line-height: 1.5;
+  margin-bottom: 12px;
+  padding-left: 28px;
+  position: relative;
+  color: var(--ink);
+}
+ul.bare li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 13px;
+  width: 16px;
+  height: 1px;
+  background: var(--highlight);
+}
+
+code, pre, .mono { font-family: 'JetBrains Mono', monospace; font-variant-numeric: tabular-nums; }
+pre {
+  background: var(--bg-deep);
+  padding: 18px 22px;
+  border-left: 3px solid var(--highlight);
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--ink);
+  overflow: hidden;
+  border-radius: 2px;
+}
+pre .kw { color: var(--highlight); font-weight: 500; }
+pre .str { color: var(--accent); }
+pre .com { color: var(--ink-faint); font-style: italic; }
+pre .fn { color: var(--accent); font-weight: 500; }
+
+.flex { display: flex; }
+.col { display: flex; flex-direction: column; }
+.flex-1 { flex: 1; min-height: 0; }
+
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  flex: 1;
+  min-height: 0;
+}
+.three-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 24px;
+  flex: 1;
+  min-height: 0;
+}
+.card {
+  background: var(--bg-tint);
+  padding: 22px 24px;
+  border-top: 3px solid var(--highlight);
+  display: flex;
+  flex-direction: column;
+  border-radius: 2px;
+}
+.card.cool { border-top-color: var(--highlight); background: #DCE8F0; }
+.card.warm { border-top-color: var(--accent); background: var(--bg-tint); }
+.card .label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-bottom: 8px;
+}
+.card h3 { font-size: 20px; margin-bottom: 10px; color: var(--accent); }
+.card p { font-size: 16px; line-height: 1.45; color: var(--ink); margin-bottom: 8px; }
+.card .tag {
+  display: inline-block;
+  padding: 3px 10px;
+  background: var(--pop);
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  font-family: 'JetBrains Mono', monospace;
+  margin-top: auto;
+  align-self: flex-start;
+  border-radius: 2px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 16px;
+  font-variant-numeric: tabular-nums;
+}
+th, td {
+  padding: 10px 14px;
+  text-align: left;
+  border-bottom: 1px solid var(--rule);
+  vertical-align: top;
+  line-height: 1.4;
+}
+thead th {
+  font-weight: 600;
+  color: var(--accent);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-bottom: 2px solid var(--accent);
+  padding-bottom: 8px;
+}
+td.encoder { background: rgba(51,75,153,0.06); }
+td.decoder { background: rgba(45,73,60,0.06); }
+
+/* Title slide */
+.slide-title { padding: 0; }
+.slide-title-inner {
+  flex: 1;
+  padding: 64px 80px 56px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+}
+.slide-title h1 { font-size: 104px; max-width: 940px; line-height: 0.98; }
+.slide-title .lede { font-size: 26px; max-width: 740px; margin-top: 24px; }
+.slide-title .meta {
+  display: flex;
+  gap: 48px;
+  padding-top: 18px;
+  border-top: 1px solid var(--rule);
+  font-size: 14px;
+  color: var(--ink-soft);
+  letter-spacing: 0.02em;
+}
+.slide-title .meta .label {
+  display: block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-bottom: 6px;
+}
+.slide-title .corner {
+  position: absolute;
+  top: 64px;
+  right: 80px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  color: var(--highlight);
+  text-transform: uppercase;
+}
+
+/* Section divider */
+.slide.section-divider {
+  background-color: #2D493C !important;
+  padding: 80px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  overflow: hidden;
+}
+.slide.section-divider::before {
+  content: '';
+  position: absolute;
+  top: 80px;
+  left: 80px;
+  width: 56px;
+  height: 3px;
+  background: #B1F1B1;
+  z-index: 4;
+}
+.slide.section-divider .num {
+  font-family: 'Crimson Pro', Georgia, serif;
+  font-weight: 200;
+  font-size: 200px;
+  line-height: 0.85;
+  color: rgba(177, 241, 177, 0.45);
+  position: absolute;
+  bottom: 56px;
+  right: 80px;
+  letter-spacing: -0.04em;
+  pointer-events: none;
+  z-index: 1;
+  margin: 0;
+}
+.slide.section-divider h1 {
+  color: #D4E8D9 !important;
+  font-size: 84px !important;
+  line-height: 1.02 !important;
+  position: relative;
+  z-index: 3;
+  max-width: 900px;
+  margin: 0;
+  font-family: 'Crimson Pro', Georgia, serif !important;
+  font-weight: 700 !important;
+}
+.slide.section-divider p.lede {
+  color: #B1F1B1 !important;
+  margin-top: 24px !important;
+  margin-bottom: 0 !important;
+  position: relative;
+  z-index: 3;
+  max-width: 760px;
+  font-size: 24px !important;
+  font-style: italic !important;
+  font-family: 'Crimson Pro', Georgia, serif !important;
+  font-weight: 400 !important;
+  line-height: 1.4 !important;
+}
+.slide.section-divider .eyebrow {
+  position: relative;
+  z-index: 3;
+  margin-bottom: 24px !important;
+  color: #B1F1B1 !important;
+  font-family: 'JetBrains Mono', 'Courier New', monospace !important;
+  font-size: 12px !important;
+  letter-spacing: 0.2em !important;
+  text-transform: uppercase !important;
+  font-weight: 500 !important;
+}
+.slide.section-divider h4 {
+  color: #B1F1B1 !important;
+  position: relative;
+  z-index: 3;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 14px !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+  margin-bottom: 10px !important;
+}
+.slide.section-divider p {
+  color: #D4E8D9 !important;
+  font-family: 'Inter', sans-serif;
+}
+.slide.section-divider .slide-footer {
+  color: rgba(212, 232, 217, 0.5) !important;
+  z-index: 4;
+}
+
+/* Quote slide */
+.slide-quote { justify-content: center; padding: 80px 110px; }
+.slide-quote .qmark {
+  font-family: 'Crimson Pro', serif;
+  font-size: 180px;
+  line-height: 0.6;
+  color: var(--rule);
+  margin-bottom: -32px;
+}
+.slide-quote blockquote {
+  font-family: 'Crimson Pro', serif;
+  font-size: 38px;
+  line-height: 1.3;
+  color: var(--ink);
+  font-weight: 400;
+  margin-bottom: 24px;
+  max-width: 980px;
+}
+.slide-quote .qbody {
+  font-size: 19px;
+  color: var(--ink-soft);
+  max-width: 920px;
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+.slide-quote cite {
+  font-style: normal;
+  font-size: 14px;
+  color: var(--ink-faint);
+  letter-spacing: 0.04em;
+  font-family: 'JetBrains Mono', monospace;
+  text-transform: uppercase;
+}
+
+/* SVG illustrations */
+svg .stroke { stroke: var(--accent); stroke-width: 1.5; fill: none; }
+svg .stroke-thin { stroke: var(--ink-faint); stroke-width: 1; fill: none; }
+svg .stroke-warm { stroke: var(--highlight); stroke-width: 1.5; fill: none; }
+svg .fill-warm { fill: var(--highlight); }
+svg .fill-cool { fill: var(--accent); }
+svg .fill-bg { fill: var(--bg-tint); }
+svg .fill-pop { fill: var(--pop); }
+svg text { font-family: 'Inter', sans-serif; font-size: 13px; fill: var(--ink); }
+svg text.label { font-size: 11px; fill: var(--ink-soft); }
+svg text.mono { font-family: 'JetBrains Mono', monospace; font-size: 10px; fill: var(--ink-faint); }
+
+/* Bar chart */
+.bars { display: flex; flex-direction: column; gap: 10px; }
+.bar-row { display: grid; grid-template-columns: 220px 1fr 80px; align-items: center; gap: 14px; }
+.bar-row .name { font-size: 14px; color: var(--ink); font-weight: 500; }
+.bar-row .track { background: var(--bg-deep); height: 18px; position: relative; border-radius: 1px; }
+.bar-row .fill { background: var(--highlight); height: 100%; border-radius: 1px; }
+.bar-row .fill.warm { background: var(--accent); }
+.bar-row .fill.muted { background: var(--ink-faint); }
+.bar-row .val { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--ink-soft); text-align: right; font-variant-numeric: tabular-nums; }
+
+/* Decision matrix */
+.matrix {
+  display: grid;
+  grid-template-columns: 200px repeat(3, 1fr);
+  border: 1px solid var(--rule);
+  flex: 1;
+  min-height: 0;
+  background: var(--bg);
+}
+.matrix > div {
+  padding: 12px 14px;
+  border-right: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  font-size: 14px;
+  line-height: 1.4;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.matrix .head {
+  background: var(--accent);
+  color: var(--bg);
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.matrix .row-head {
+  background: var(--bg-tint);
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--accent);
+}
+.matrix .pick-encoder {
+  background: rgba(51,75,153,0.05);
+  border-left: 3px solid var(--highlight);
+}
+.matrix .pick-decoder {
+  background: rgba(45,73,60,0.05);
+  border-left: 3px solid var(--accent);
+}
+.matrix .pick-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+.matrix .pick-encoder .pick-tag { color: var(--highlight); }
+.matrix .pick-decoder .pick-tag { color: var(--accent); }
+
+/* Footer */
+.slide-footer {
+  position: absolute;
+  bottom: 22px;
+  left: 80px;
+  right: 80px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+.slide.dark .slide-footer { color: rgba(212,232,217,0.45); }
+.slide-title .slide-footer { left: 80px; right: 80px; }
+
+/* HUD */
+.hud {
+  position: fixed;
+  bottom: 14px;
+  right: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: rgba(212,232,217,0.55);
+  letter-spacing: 0.08em;
+  z-index: 100;
+}
+.hud button {
+  background: rgba(212,232,217,0.08);
+  border: 1px solid rgba(212,232,217,0.15);
+  color: rgba(212,232,217,0.7);
+  padding: 4px 10px;
+  font-family: inherit;
+  font-size: 10px;
+  cursor: pointer;
+  letter-spacing: 0.08em;
+}
+.hud button:hover { background: rgba(212,232,217,0.15); }
+.progress-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  background: var(--pop);
+  transition: width 0.35s ease;
+  z-index: 100;
+}
+.help-text {
+  position: fixed;
+  top: 14px;
+  left: 14px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: rgba(212,232,217,0.35);
+  letter-spacing: 0.1em;
+  z-index: 100;
+  pointer-events: none;
+}
+</style>
+</head>
+<body>
+<div class="help-text">← → arrows · F fullscreen</div>
+<div class="deck" id="deck">
+
+<!-- 1. TITLE -->
+<section class="slide slide-title active">
+  <div class="slide-title-inner">
+    <div class="corner">Day 01 / 03</div>
+    <div style="margin-top: 88px;">
+      <div class="eyebrow">A 3-day workshop on LLMs for measurement</div>
+      <h1>What is an LLM,<br>and which kind<br>do I want?</h1>
+      <p class="lede">An intuition-first tour through encoder and generative models, and the small set of decisions that separates them.</p>
+    </div>
+    <div class="meta">
+      <div><span class="label">Instructor</span>Jihye Park · University of Geneva</div>
+      <div><span class="label">Audience</span>Political scientists, no Python required</div>
+      <div><span class="label">Duration</span>2 hours 30 minutes</div>
+    </div>
+  </div>
+</section>
+
+<!-- 2. ROADMAP -->
+<section class="slide">
+  <div class="eyebrow">Today</div>
+  <h2>Three big movements,<br>plus your first Colab.</h2>
+  <div class="rule"></div>
+  <div class="three-col">
+    <div class="card">
+      <div class="label">Movement 01 · 35 min</div>
+      <h3>The model zoo</h3>
+      <p>Encoders read sentences and return labels. Generative models continue text. Why the distinction shapes your research design.</p>
+    </div>
+    <div class="card">
+      <div class="label">Movement 02 · 30 min</div>
+      <h3>The Colab tour</h3>
+      <p>What Google Colab is, why it has a GPU, and how it lets you run a state-of-the-art model from your browser.</p>
+    </div>
+    <div class="card">
+      <div class="label">Movement 03 · 50 min</div>
+      <h3>A working stance demo</h3>
+      <p>We run a real zero-shot encoder on real US trade-policy text and see what it gets right, what it misses, and why.</p>
+    </div>
+  </div>
+  <p class="small" style="margin-top: 20px;">Closing 15 minutes are hands-on. You open free Colab on your own Google account and run a tiny version yourself.</p>
+  <div class="slide-footer"><span>Day 1 · Roadmap</span><span>02 / 30</span></div>
+</section>
+
+<!-- 3. WHY THIS MATTERS -->
+<section class="slide">
+  <div class="eyebrow">Why this matters</div>
+  <h2>Three recent papers,<br>three different LLM jobs.</h2>
+  <div class="rule"></div>
+  <div class="three-col">
+    <div class="card cool">
+      <div class="label">Job 01 · Stance</div>
+      <h3>Park (2026)</h3>
+      <p><em>Aid, Lending, and TRIPS.</em> R&amp;R at Review of International Organizations.</p>
+      <p>Builds a -5 to +5 country-year proxy for US assessments of foreign IP regimes from 28 years of trade reports.</p>
+      <p><span class="highlight">Encoder.</span> DeBERTa-v3-large, 13 weighted hypotheses.</p>
+      <span class="tag">ENCODER</span>
+    </div>
+    <div class="card cool">
+      <div class="label">Job 02 · Stance vs sentiment</div>
+      <h3>Bestvater &amp; Monroe (2023)</h3>
+      <p><em>Sentiment Is Not Stance.</em> Political Analysis 31(2).</p>
+      <p>Off-the-shelf sentiment scores conflate affect with stance toward a target.</p>
+      <p><span class="highlight">Encoder.</span> Target-aware supervised classification.</p>
+      <span class="tag">ENCODER</span>
+    </div>
+    <div class="card warm">
+      <div class="label">Job 03 · Extraction</div>
+      <h3>Ornstein et al. (2025)</h3>
+      <p><em>How to Train Your Stochastic Parrot.</em> PSRM 13(2).</p>
+      <p>Few-shot prompts to LLMs match conventional supervised pipelines on text-as-data tasks.</p>
+      <p><span class="highlight">Generative.</span></p>
+      <span class="tag">GENERATIVE</span>
+    </div>
+  </div>
+  <p class="tiny" style="margin-top: 16px;">Same field, same year span, two model families. Today we learn how to choose between them.</p>
+  <div class="slide-footer"><span>Day 1 · Why this matters</span><span>03 / 30</span></div>
+</section>
+
+<!-- 4. SECTION DIVIDER 1 -->
+<section class="slide section-divider dark">
+  <div class="num">01</div>
+  <div class="eyebrow">First movement · 35 minutes</div>
+  <h1>The plain-language<br>model zoo.</h1>
+  <p class="lede">Two families of models. Five questions to decide which one your research question wants.</p>
+  <div class="slide-footer"><span>Day 1</span><span>04 / 30</span></div>
+</section>
+
+<!-- 5. THE BIG IDEA -->
+<section class="slide">
+  <div class="eyebrow">The big idea, in one slide</div>
+  <h2>An LLM turns text into numbers,<br>then numbers into predictions.</h2>
+  <div class="rule"></div>
+  <div style="flex: 1; display: flex; align-items: center; justify-content: center; min-height: 0;">
+    <svg viewBox="0 0 980 240" style="width: 100%; max-width: 940px;">
+      <rect x="20" y="80" width="200" height="80" class="fill-bg" />
+      <text x="120" y="115" text-anchor="middle" style="font-size: 15px;">"The country has</text>
+      <text x="120" y="138" text-anchor="middle" style="font-size: 15px;">strong IP law."</text>
+      <text x="120" y="184" text-anchor="middle" class="label" style="text-transform: uppercase; letter-spacing: 0.14em; font-size: 10px;">RAW TEXT</text>
+      <line x1="240" y1="120" x2="320" y2="120" class="stroke" />
+      <polygon points="320,120 312,115 312,125" class="fill-cool" />
+      <rect x="340" y="60" width="280" height="120" rx="4" class="fill-cool" opacity="0.92" />
+      <text x="480" y="108" text-anchor="middle" style="fill: white; font-size: 20px; font-weight: 600; font-family: 'Crimson Pro', serif;">The model</text>
+      <text x="480" y="135" text-anchor="middle" style="fill: rgba(255,255,255,0.85); font-size: 13px;">a function with</text>
+      <text x="480" y="155" text-anchor="middle" style="fill: rgba(255,255,255,0.85); font-size: 13px;">~100M to ~1T parameters</text>
+      <line x1="640" y1="120" x2="720" y2="120" class="stroke" />
+      <polygon points="720,120 712,115 712,125" class="fill-cool" />
+      <rect x="740" y="80" width="220" height="80" class="fill-bg" />
+      <text x="850" y="122" text-anchor="middle" style="font-size: 17px; font-weight: 600; fill: var(--accent);">positive · 0.91</text>
+      <text x="850" y="184" text-anchor="middle" class="label" style="text-transform: uppercase; letter-spacing: 0.14em; font-size: 10px;">PREDICTION</text>
+    </svg>
+  </div>
+  <p class="lede" style="text-align: center; margin-top: 8px; font-size: 24px;">The interesting question is what the function predicts and how it produces the answer.</p>
+  <div class="slide-footer"><span>Day 1 · Movement 01</span><span>05 / 30</span></div>
+</section>
+
+<!-- 6. WORDS AS VECTORS -->
+<section class="slide">
+  <div class="eyebrow">Step 01 · Text becomes geometry</div>
+  <h2>Words live in a high-dimensional space.<br>Similar meanings sit close together.</h2>
+  <div class="rule"></div>
+  <div style="flex: 1; display: grid; grid-template-columns: 1.1fr 1fr; gap: 48px; align-items: center; min-height: 0;">
+    <div>
+      <p>Modern models do not store words as letters. Each token is stored as a list of about a thousand numbers. That list is a position in a "meaning space" learned from billions of training sentences.</p>
+      <p>The geometry is what makes everything else possible. Once "Watch List" and "violation" sit near each other, every downstream task that uses those numbers gets a head start.</p>
+      <p class="small" style="margin-top: 14px;">Think of it as a structured replacement for bag-of-words and TF-IDF, where the structure is meaning rather than co-occurrence.</p>
+    </div>
+    <div style="display: flex; justify-content: center;">
+      <svg viewBox="0 0 380 320" style="width: 100%; max-width: 340px;">
+        <line x1="40" y1="280" x2="360" y2="280" class="stroke-thin" />
+        <line x1="40" y1="280" x2="40" y2="40" class="stroke-thin" />
+        <text x="200" y="305" text-anchor="middle" class="label">dimension 1</text>
+        <text x="22" y="160" text-anchor="middle" class="label" transform="rotate(-90 22 160)">dimension 2</text>
+        <circle cx="120" cy="80" r="6" class="fill-warm" />
+        <text x="132" y="85" style="font-size: 12px;">violation</text>
+        <circle cx="105" cy="115" r="6" class="fill-warm" />
+        <text x="118" y="120" style="font-size: 12px;">infringement</text>
+        <circle cx="155" cy="105" r="6" class="fill-warm" />
+        <text x="168" y="110" style="font-size: 12px;">Watch List</text>
+        <circle cx="135" cy="140" r="6" class="fill-warm" />
+        <text x="148" y="145" style="font-size: 12px;">piracy</text>
+        <text x="120" y="62" text-anchor="middle" class="mono" style="font-size: 10px; fill: var(--highlight);">CRITICISM</text>
+        <circle cx="270" cy="200" r="6" class="fill-cool" />
+        <text x="282" y="205" style="font-size: 12px;">strong law</text>
+        <circle cx="290" cy="230" r="6" class="fill-cool" />
+        <text x="302" y="235" style="font-size: 12px;">progress</text>
+        <circle cx="240" cy="220" r="6" class="fill-cool" />
+        <text x="180" y="225" text-anchor="end" style="font-size: 12px;">enforcement</text>
+        <text x="270" y="180" text-anchor="middle" class="mono" style="font-size: 10px; fill: var(--accent);">PRAISE</text>
+      </svg>
+    </div>
+  </div>
+  <div class="slide-footer"><span>Day 1 · Movement 01</span><span>06 / 30</span></div>
+</section>
+
+<!-- 7. TWO FAMILIES INTRO -->
+<section class="slide">
+  <div class="eyebrow">Step 02 · The split</div>
+  <h2>Same starting geometry,<br>two very different jobs.</h2>
+  <div class="rule"></div>
+  <div class="two-col">
+    <div class="card cool">
+      <div class="label">Family 01</div>
+      <h3 style="font-family: 'Crimson Pro', serif; font-size: 32px; color: var(--accent); font-weight: 600;">Encoder models</h3>
+      <p style="font-size: 18px; line-height: 1.45;">Read a piece of text in full and output a fixed prediction. A label, a score, a probability.</p>
+      <p class="small" style="margin-top: 8px;">BERT, RoBERTa, DeBERTa, ModernBERT. Smaller, faster, deterministic. Run on a laptop or a free Colab CPU.</p>
+      <span class="tag" style="margin-top: auto;">CLASSIFY · SCORE · MEASURE</span>
+    </div>
+    <div class="card warm">
+      <div class="label">Family 02</div>
+      <h3 style="font-family: 'Crimson Pro', serif; font-size: 32px; color: var(--accent); font-weight: 600;">Generative models</h3>
+      <p style="font-size: 18px; line-height: 1.45;">Continue text one token at a time. Given a prompt, produce more text. The prompt steers what comes out.</p>
+      <p class="small" style="margin-top: 8px;">GPT, Claude, Gemini, LLaMA, Qwen. Larger, slower, stochastic. Usually called via an API.</p>
+      <span class="tag" style="margin-top: auto;">EXTRACT · SUMMARIZE · GENERATE</span>
+    </div>
+  </div>
+  <p class="lede" style="text-align: center; margin-top: 16px; font-size: 22px;">Both families descend from the same Transformer architecture. They diverge in what they are trained to predict.</p>
+  <div class="slide-footer"><span>Day 1 · Movement 01</span><span>07 / 30</span></div>
+</section>
+
+<!-- 8. ENCODER DEEP DIVE -->
+<section class="slide">
+  <div class="eyebrow">Family 01 · The encoder</div>
+  <h2>Read the sentence.<br>Return a number.</h2>
+  <div class="rule"></div>
+  <div style="display: grid; grid-template-columns: 1.1fr 1fr; gap: 48px; flex: 1; min-height: 0;">
+    <div style="display: flex; align-items: center;">
+      <svg viewBox="0 0 540 260" style="width: 100%;">
+        <rect x="20" y="20" width="500" height="50" class="fill-bg" />
+        <text x="270" y="50" text-anchor="middle" style="font-size: 15px;">"The country has made progress on combating IP violations."</text>
+        <line x1="270" y1="80" x2="270" y2="110" class="stroke" />
+        <polygon points="270,110 263,103 277,103" class="fill-cool" />
+        <rect x="60" y="115" width="420" height="50" rx="4" class="fill-cool" opacity="0.92" />
+        <text x="270" y="146" text-anchor="middle" style="fill: white; font-size: 16px; font-weight: 600;">DeBERTa, RoBERTa, ModernBERT</text>
+        <line x1="270" y1="175" x2="270" y2="200" class="stroke" />
+        <polygon points="270,200 263,193 277,193" class="fill-cool" />
+        <rect x="170" y="205" width="200" height="34" class="fill-bg" />
+        <text x="270" y="227" text-anchor="middle" style="font-size: 15px; font-weight: 600; fill: var(--accent);">positive · 0.86</text>
+      </svg>
+    </div>
+    <div>
+      <h4>Use it for</h4>
+      <ul class="bare" style="margin-bottom: 18px;">
+        <li>Stance toward a target</li>
+        <li>Sentiment, tone, emotion</li>
+        <li>Topic and framing labels</li>
+        <li>Named entity recognition</li>
+        <li>Any fixed, comparable score per text</li>
+      </ul>
+      <h4>Why political scientists love it</h4>
+      <p style="font-size: 16px; line-height: 1.45;">Same input always produces the same output. Cheap on millions of paragraphs. Easy to validate against a hand-coded gold set.</p>
+    </div>
+  </div>
+  <div class="slide-footer"><span>Day 1 · Movement 01</span><span>08 / 30</span></div>
+</section>
+
+<!-- 9. DECODER DEEP DIVE -->
+<section class="slide">
+  <div class="eyebrow">Family 02 · The generative model</div>
+  <h2>Continue the text,<br>token by token.</h2>
+  <div class="rule"></div>
+  <div style="display: grid; grid-template-columns: 1.1fr 1fr; gap: 48px; flex: 1; min-height: 0;">
+    <div style="display: flex; align-items: center;">
+      <svg viewBox="0 0 540 280" style="width: 100%;">
+        <rect x="20" y="10" width="500" height="74" class="fill-bg" />
+        <text x="270" y="32" text-anchor="middle" class="label" style="text-transform: uppercase; font-size: 10px; letter-spacing: 0.14em;">PROMPT</text>
+        <text x="270" y="52" text-anchor="middle" style="font-size: 13px;">"Extract JSON with fields signatories, year, sector</text>
+        <text x="270" y="72" text-anchor="middle" style="font-size: 13px;">from. France and Kenya signed a health agreement..."</text>
+        <line x1="270" y1="94" x2="270" y2="118" class="stroke-warm" />
+        <polygon points="270,118 263,111 277,111" class="fill-warm" />
+        <rect x="60" y="123" width="420" height="50" rx="4" style="fill: var(--highlight)" opacity="0.92" />
+        <text x="270" y="153" text-anchor="middle" style="fill: white; font-size: 16px; font-weight: 600;">Claude, GPT, Gemini, LLaMA, Qwen</text>
+        <line x1="270" y1="183" x2="270" y2="208" class="stroke-warm" />
+        <polygon points="270,208 263,201 277,201" class="fill-warm" />
+        <rect x="80" y="213" width="380" height="44" class="fill-bg" />
+        <text x="270" y="240" text-anchor="middle" class="mono" style="font-size: 13px; fill: var(--ink);">{ "signatories": ["France", "Kenya"], "year": 2024 }</text>
+      </svg>
+    </div>
+    <div>
+      <h4>Use it for</h4>
+      <ul class="bare" style="margin-bottom: 18px;">
+        <li>Structured extraction from messy text</li>
+        <li>Free-text summarization</li>
+        <li>Normalization of inconsistent fields</li>
+        <li>Reasoning over long context</li>
+        <li>Anything an encoder cannot express as a label</li>
+      </ul>
+      <h4>What you give up</h4>
+      <p style="font-size: 16px; line-height: 1.45;">Stochastic outputs by default. Higher cost per call. Harder to validate at scale. Reproducibility takes work.</p>
+    </div>
+  </div>
+  <div class="slide-footer"><span>Day 1 · Movement 01</span><span>09 / 30</span></div>
+</section>
+
+<!-- 10. DECISION MATRIX -->
+<section class="slide">
+  <div class="eyebrow">The 30-second decision</div>
+  <h2>Match the model to the task,<br>not the other way around.</h2>
+  <div class="rule"></div>
+  <div class="matrix">
+    <div class="head"></div>
+    <div class="head">Closed label set</div>
+    <div class="head">Free-form output</div>
+    <div class="head">Mixed</div>
+
+    <div class="row-head">Small data<br><span class="small" style="font-weight: 400; color: var(--ink-faint);">~hundreds to thousands</span></div>
+    <div class="pick-encoder">
+      <div class="pick-tag">Encoder, zero-shot</div>
+      Laurer DeBERTa-v3 with your own labels. No training.
+    </div>
+    <div class="pick-decoder">
+      <div class="pick-tag">Generative, few-shot</div>
+      Claude or Gemini with 3 to 5 examples in the prompt.
+    </div>
+    <div class="pick-decoder">
+      <div class="pick-tag">Generative, prompted</div>
+      LLM with a clear schema and validators.
+    </div>
+
+    <div class="row-head">Large data<br><span class="small" style="font-weight: 400; color: var(--ink-faint);">~tens of thousands+</span></div>
+    <div class="pick-encoder">
+      <div class="pick-tag">Encoder, fine-tuned</div>
+      300 hand-labels, train an encoder. Park's pattern.
+    </div>
+    <div class="pick-decoder">
+      <div class="pick-tag">Encoder + generative</div>
+      Encoder filter, generative for hard cases.
+    </div>
+    <div class="pick-decoder">
+      <div class="pick-tag">Hybrid pipeline</div>
+      Generative for extraction, encoder to classify.
+    </div>
+  </div>
+  <p class="small" style="margin-top: 14px;">Useful default. If your task is "give me a fixed label", start with an encoder. Reach for generative when the answer cannot fit in one.</p>
+  <div class="slide-footer"><span>Day 1 · Movement 01</span><span>10 / 30</span></div>
+</section>
+
+<!-- 11. COST SPEED REPRO -->
+<section class="slide">
+  <div class="eyebrow">Three axes that decide for you</div>
+  <h2>Cost. Speed. Reproducibility.</h2>
+  <div class="rule"></div>
+  <table style="margin-top: 4px;">
+    <thead>
+      <tr><th style="width: 22%;">Axis</th><th style="width: 39%;">Encoder</th><th>Generative</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Cost / 1k texts</strong></td>
+        <td class="encoder">~$0 after model download. Local CPU is free.</td>
+        <td class="decoder">A few cents to a few dollars. Per token.</td>
+      </tr>
+      <tr>
+        <td><strong>Speed</strong></td>
+        <td class="encoder">~50 to 500 texts per second on a free GPU.</td>
+        <td class="decoder">~1 to 5 calls per second over the network.</td>
+      </tr>
+      <tr>
+        <td><strong>Determinism</strong></td>
+        <td class="encoder">Same input gives the same output every run.</td>
+        <td class="decoder">Stochastic by default. Pin temperature 0 and a fixed model version. Drift still happens.</td>
+      </tr>
+      <tr>
+        <td><strong>Validation</strong></td>
+        <td class="encoder">k-fold cross-validation. Confusion matrix. Kappa.</td>
+        <td class="decoder">Spot-check, schema validation, sample audits.</td>
+      </tr>
+      <tr>
+        <td><strong>Replication</strong></td>
+        <td class="encoder">Pin the model ID. Ship weights with your code.</td>
+        <td class="decoder">Pin the model version. Log every prompt and response.</td>
+      </tr>
+    </tbody>
+  </table>
+  <p class="tiny" style="margin-top: auto;">Numbers are rough. Exact cost depends on text length, model size, and hardware tier.</p>
+  <div class="slide-footer"><span>Day 1 · Movement 01</span><span>11 / 30</span></div>
+</section>
+
+<!-- 12. NLI TRICK -->
+<section class="slide">
+  <div class="eyebrow">The trick that makes encoders flexible</div>
+  <h2>Natural language inference.<br>The encoder's universal adapter.</h2>
+  <div class="rule"></div>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 48px; flex: 1; min-height: 0;">
+    <div>
+      <p>An NLI-trained encoder learns one job. Given a <span class="highlight">premise</span> and a <span class="highlight">hypothesis</span>, decide whether the premise entails, contradicts, or is neutral with respect to the hypothesis.</p>
+      <p>That single skill is shockingly general. Any classification task can be rewritten as a yes-or-no entailment question.</p>
+      <p class="small" style="margin-top: 14px;"><strong>Stance.</strong> "Does this passage support that the country has strong IP law?"</p>
+      <p class="small"><strong>Topic.</strong> "Is this paragraph about agricultural trade?"</p>
+      <p class="small"><strong>Framing.</strong> "Does this speech frame migration as a security issue?"</p>
+    </div>
+    <div style="display: flex; justify-content: center; align-items: center;">
+      <svg viewBox="0 0 460 380" style="width: 100%; max-width: 420px;">
+        <rect x="20" y="10" width="420" height="68" class="fill-bg" />
+        <text x="32" y="30" class="label" style="text-transform: uppercase; font-size: 9px; letter-spacing: 0.14em;">PREMISE</text>
+        <text x="32" y="48" style="font-size: 13px;">"Country X has been on the Priority Watch List</text>
+        <text x="32" y="66" style="font-size: 13px;">for three consecutive years."</text>
+        <rect x="20" y="90" width="420" height="44" class="fill-bg" />
+        <text x="32" y="108" class="label" style="text-transform: uppercase; font-size: 9px; letter-spacing: 0.14em;">HYPOTHESIS</text>
+        <text x="32" y="126" style="font-size: 13px;">"The country is on the Watch List."</text>
+        <line x1="230" y1="142" x2="230" y2="170" class="stroke" />
+        <polygon points="230,170 223,163 237,163" class="fill-cool" />
+        <rect x="120" y="175" width="220" height="40" rx="3" class="fill-cool" opacity="0.92" />
+        <text x="230" y="200" text-anchor="middle" style="fill: white; font-size: 13px; font-weight: 600;">DeBERTa NLI head</text>
+        <text x="32" y="248" class="label" style="text-transform: uppercase; font-size: 9px; letter-spacing: 0.14em;">OUTPUT</text>
+        <text x="32" y="270" style="font-size: 12px;">entailment</text>
+        <rect x="140" y="260" width="260" height="13" fill="#BFD9C4" />
+        <rect x="140" y="260" width="234" height="13" class="fill-warm" />
+        <text x="410" y="270" class="mono" style="font-size: 11px; fill: var(--ink-soft);">0.90</text>
+        <text x="32" y="298" style="font-size: 12px;">neutral</text>
+        <rect x="140" y="288" width="260" height="13" fill="#BFD9C4" />
+        <rect x="140" y="288" width="22" height="13" fill="#5C7B6A" />
+        <text x="410" y="298" class="mono" style="font-size: 11px; fill: var(--ink-soft);">0.08</text>
+        <text x="32" y="326" style="font-size: 12px;">contradiction</text>
+        <rect x="140" y="316" width="260" height="13" fill="#BFD9C4" />
+        <rect x="140" y="316" width="6" height="13" fill="#5C7B6A" />
+        <text x="410" y="326" class="mono" style="font-size: 11px; fill: var(--ink-soft);">0.02</text>
+      </svg>
+    </div>
+  </div>
+  <div class="slide-footer"><span>Day 1 · Movement 01</span><span>12 / 30</span></div>
+</section>
+
+<!-- 13. PARK CASE STUDY -->
+<section class="slide">
+  <div class="eyebrow">Case study · Park, Aid, Lending, and TRIPS</div>
+  <h2>Thirteen hypotheses,<br>one continuous score.</h2>
+  <div class="rule"></div>
+  <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 40px; flex: 1; min-height: 0;">
+    <div>
+      <p>A paragraph from a US Trade Representative report becomes the <em>premise</em>. Each of 13 standardized claims becomes a <em>hypothesis</em>.</p>
+      <p>Each hypothesis carries a fixed weight from -2 to +2. The model returns 13 entailment probabilities. A weighted sum, scaled to -5 to +5, becomes the country-year IP-evaluation proxy.</p>
+      <p class="small" style="margin-top: 12px;"><strong>The result.</strong> Pooled F1 of 0.87 across 13 hypotheses. Pearson correlation of 0.68 between encoder score and a hand-coded gold set on 300 paragraphs.</p>
+      <p class="tiny" style="margin-top: 6px;">Park · Aid, Lending, and TRIPS. Code and data at github.com/jacqpark/nteText.</p>
+    </div>
+    <div>
+      <h4 style="margin-bottom: 8px;">Sample hypotheses (6 of 13)</h4>
+      <table style="font-size: 13px;">
+        <thead>
+          <tr><th>Hypothesis</th><th style="text-align: right; width: 60px;">Weight</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Country is the Priority Foreign Country</td><td style="text-align: right;" class="mono">-2</td></tr>
+          <tr><td>Country is on the Priority Watch List</td><td style="text-align: right;" class="mono">-2</td></tr>
+          <tr><td>Author believes there is widespread IP violation</td><td style="text-align: right;" class="mono">-1.5</td></tr>
+          <tr><td>Author believes the country has made efforts</td><td style="text-align: right;" class="mono">+1</td></tr>
+          <tr><td>Author believes the country has strong IP law</td><td style="text-align: right;" class="mono">+2</td></tr>
+          <tr><td>Text mentions decrease in IP violations</td><td style="text-align: right;" class="mono">+1</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="slide-footer"><span>Day 1 · Movement 01</span><span>13 / 30</span></div>
+</section>
+
+<!-- 14. PARK QUOTE -->
+<section class="slide slide-quote">
+  <div class="eyebrow">Why an encoder, not a generative LLM</div>
+  <div class="qmark">"</div>
+  <blockquote>
+    Stance detection is fundamentally a natural-language inference problem. DeBERTa's encoder architecture with NLI-specific pretraining yields higher accuracy and label efficiency in few-shot settings than generative models repurposed for classification through prompting.
+  </blockquote>
+  <p class="qbody">Generative models also carry substantial computational overhead. DeBERTa's smaller footprint makes it feasible to fine-tune, validate through cross-validation, and deploy on standard academic hardware.</p>
+  <cite>Park · Aid, Lending, and TRIPS · manuscript p. 14</cite>
+  <div class="slide-footer"><span>Day 1 · Movement 01</span><span>14 / 30</span></div>
+</section>
+
+<!-- 15. MOVEMENT 1 RECAP -->
+<section class="slide">
+  <div class="eyebrow">Movement 01 · Recap</div>
+  <h2>Five things you now know.</h2>
+  <div class="rule"></div>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 48px; flex: 1; min-height: 0;">
+    <div>
+      <h4>01. The split</h4>
+      <p style="font-size: 17px; margin-bottom: 16px;">Two families. Encoder reads and labels. Generative continues text. Same Transformer, different training.</p>
+      <h4>02. The default</h4>
+      <p style="font-size: 17px; margin-bottom: 16px;">If your task is a fixed label, start with an encoder. Cheaper, faster, easier to validate.</p>
+      <h4>03. The escape hatch</h4>
+      <p style="font-size: 17px;">Reach for a generative LLM when the answer cannot fit in a finite label set.</p>
+    </div>
+    <div>
+      <h4>04. The NLI trick</h4>
+      <p style="font-size: 17px; margin-bottom: 16px;">An NLI-trained encoder is a universal classifier. Any task becomes a premise-hypothesis question with user-defined hypotheses.</p>
+      <h4>05. The reproducibility tax</h4>
+      <p style="font-size: 17px;">Encoders are deterministic with pinned weights. Generative models need extra discipline. Log prompts. Pin model versions. Audit samples.</p>
+    </div>
+  </div>
+  <div class="slide-footer"><span>Day 1 · Movement 01</span><span>15 / 30</span></div>
+</section>
+
+<!-- 16. SECTION DIVIDER 2 -->
+<section class="slide section-divider dark">
+  <div class="num">02</div>
+  <div class="eyebrow">Second movement · 30 minutes</div>
+  <h1>The Colab tour.</h1>
+  <p class="lede">A free Python environment in your browser, with a GPU attached. You will use it during this workshop. You may use it for the rest of your career.</p>
+  <div class="slide-footer"><span>Day 1</span><span>16 / 30</span></div>
+</section>
+
+<!-- 17. WHAT IS COLAB -->
+<section class="slide">
+  <div class="eyebrow">What "Colab" actually is</div>
+  <h2>A Jupyter notebook,<br>running on Google's servers,<br>with a GPU you did not pay for.</h2>
+  <div class="rule"></div>
+  <div class="three-col">
+    <div class="card">
+      <div class="label">01 · Notebook</div>
+      <h3>Cells of code and prose</h3>
+      <p>Python in one cell, prose in the next, charts in the third. Like an Rmd file but interactive.</p>
+    </div>
+    <div class="card">
+      <div class="label">02 · Cloud runtime</div>
+      <h3>Someone else's computer</h3>
+      <p>Press Run, the code executes on Google's hardware. You see the output in your browser.</p>
+    </div>
+    <div class="card">
+      <div class="label">03 · Hardware menu</div>
+      <h3>CPU, GPU, or TPU</h3>
+      <p>Free tier gives you a CPU plus an occasional T4 GPU. Paid Colab Pro reliably attaches an L4 or A100.</p>
+    </div>
+  </div>
+  <p class="lede" style="text-align: center; margin-top: 18px; font-size: 22px;">For an encoder workflow, that GPU is roughly 10x to 50x faster than CPU.</p>
+  <div class="slide-footer"><span>Day 1 · Movement 02</span><span>17 / 30</span></div>
+</section>
+
+<!-- 18. CPU VS GPU TIMING -->
+<section class="slide">
+  <div class="eyebrow">Why we bother with the GPU</div>
+  <h2>Same job, three runtimes.<br>Same model, same 5,000 texts.</h2>
+  <div class="rule"></div>
+  <div style="margin-top: 16px; flex: 1; min-height: 0; display: flex; flex-direction: column; justify-content: center;">
+    <div class="bars">
+      <div class="bar-row">
+        <div class="name">Free Colab CPU</div>
+        <div class="track"><div class="fill muted" style="width: 100%;"></div></div>
+        <div class="val">~12 min</div>
+      </div>
+      <div class="bar-row">
+        <div class="name">Free Colab T4 GPU</div>
+        <div class="track"><div class="fill" style="width: 18%;"></div></div>
+        <div class="val">~2 min</div>
+      </div>
+      <div class="bar-row">
+        <div class="name">Paid Colab L4 GPU</div>
+        <div class="track"><div class="fill warm" style="width: 7%;"></div></div>
+        <div class="val">~50 sec</div>
+      </div>
+      <div class="bar-row">
+        <div class="name">Your laptop CPU</div>
+        <div class="track"><div class="fill" style="width: 240%; background: linear-gradient(to right, #5C7B6A 0%, #5C7B6A 30%, rgba(92,123,106,0.5) 55%, rgba(92,123,106,0) 80%);"></div></div>
+        <div class="val">~30 min →</div>
+      </div>
+    </div>
+    <p class="small" style="margin-top: 22px;">5,000 paragraphs through MoritzLaurer/DeBERTa-v3-base zero-shot, 3 candidate labels, batch size 16. Numbers are illustrative.</p>
+  </div>
+  <p class="lede" style="font-size: 22px; margin-top: 8px;">Today's demos run on a paid GPU. You can replicate on free Colab tomorrow with a longer coffee break.</p>
+  <div class="slide-footer"><span>Day 1 · Movement 02</span><span>18 / 30</span></div>
+</section>
+
+<!-- 19. ANATOMY OF A NOTEBOOK -->
+<section class="slide">
+  <div class="eyebrow">Anatomy of a Colab notebook</div>
+  <h2>Five things to find on your screen.</h2>
+  <div class="rule"></div>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 48px; flex: 1; min-height: 0;">
+    <div>
+      <h4>01 · Code cells</h4>
+      <p style="font-size: 17px;">Click and type Python. Press <code>Shift+Enter</code> to run. Output appears below.</p>
+      <h4 style="margin-top: 16px;">02 · Text cells</h4>
+      <p style="font-size: 17px;">Markdown for notes, equations, headings. Use them generously.</p>
+      <h4 style="margin-top: 16px;">03 · Runtime menu</h4>
+      <p style="font-size: 17px;">Top bar. Choose CPU or GPU. Restart when something is stuck.</p>
+    </div>
+    <div>
+      <h4>04 · Files panel</h4>
+      <p style="font-size: 17px;">Left sidebar. Upload data, mount Google Drive, save outputs.</p>
+      <h4 style="margin-top: 16px;">05 · Secrets</h4>
+      <p style="font-size: 17px;">Key icon in the left sidebar. Where API keys live. <strong>Never paste a key into a code cell.</strong></p>
+      <pre style="margin-top: 10px; font-size: 13px;"><span class="kw">from</span> google.colab <span class="kw">import</span> userdata
+<span class="kw">import</span> os
+os.environ[<span class="str">"ANTHROPIC_API_KEY"</span>] = userdata.get(<span class="str">"ANTHROPIC_API_KEY"</span>)</pre>
+    </div>
+  </div>
+  <div class="slide-footer"><span>Day 1 · Movement 02</span><span>19 / 30</span></div>
+</section>
+
+<!-- 20. LIVE COLAB DEMO ANCHOR -->
+<section class="slide">
+  <div class="eyebrow">Live demo · 10 minutes</div>
+  <h2>Three lines of Python<br>running a state-of-the-art encoder.</h2>
+  <div class="rule"></div>
+  <pre style="margin-top: 16px; font-size: 18px; line-height: 1.6;"><span class="com"># 1. Install (already in Colab images, but explicit is good)</span>
+!pip install -q transformers
+
+<span class="com"># 2. Load a zero-shot classifier</span>
+<span class="kw">from</span> transformers <span class="kw">import</span> pipeline
+clf = <span class="fn">pipeline</span>(<span class="str">"zero-shot-classification"</span>,
+               model=<span class="str">"MoritzLaurer/DeBERTa-v3-base-mnli-fever-anli"</span>)
+
+<span class="com"># 3. Use it</span>
+<span class="fn">clf</span>(<span class="str">"The country has been on the Priority Watch List for three years."</span>,
+    candidate_labels=[<span class="str">"on Watch List"</span>, <span class="str">"removed from Watch List"</span>, <span class="str">"unrelated"</span>])</pre>
+  <p class="small" style="margin-top: 18px;">Switch to Colab now. We run this together. The model downloads once, then sits in memory for the rest of the session.</p>
+  <div class="slide-footer"><span>Day 1 · Movement 02</span><span>20 / 30</span></div>
+</section>
+
+<!-- 21. SECTION DIVIDER 3 -->
+<section class="slide section-divider dark">
+  <div class="num">03</div>
+  <div class="eyebrow">Third movement · 50 minutes</div>
+  <h1>A working stance demo<br>on real trade data.</h1>
+  <p class="lede">No fine-tuning yet. Off-the-shelf model, real text from US trade reports, real measurement question.</p>
+  <div class="slide-footer"><span>Day 1</span><span>21 / 30</span></div>
+</section>
+
+<!-- 22. THE DATASET -->
+<section class="slide">
+  <div class="eyebrow">The data</div>
+  <h2>National Trade Estimate reports,<br>1995 to 2022.</h2>
+  <div class="rule"></div>
+  <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 40px; flex: 1; min-height: 0;">
+    <div>
+      <p>Each year the US Trade Representative publishes a country-by-country review of foreign trade barriers. The IP-rights section is what we want.</p>
+      <p>1,434 country-year IP paragraphs over 28 years. English. Free, redistributable, clean enough for a demo.</p>
+      <p class="small" style="margin-top: 10px;"><strong>Source.</strong> Park's replication repository.</p>
+      <p class="mono" style="font-size: 14px; color: var(--highlight); margin-top: 4px;">github.com/jacqpark/nteText</p>
+    </div>
+    <div class="card cool" style="padding: 18px 22px;">
+      <div class="label">Sample paragraph · Korea, 2004</div>
+      <p style="font-style: italic; font-family: 'Crimson Pro', serif; font-size: 17px; line-height: 1.4; color: var(--ink); margin-bottom: 10px;">"Korea has continued to make progress in protecting intellectual property rights, but significant problems remain. The lack of effective deterrent penalties and the continued availability of pirated and counterfeit goods in major markets are ongoing concerns."</p>
+      <p class="small" style="margin-top: 8px; font-size: 14px;">An interpretive paragraph. Some praise, some criticism. The encoder will need to weigh both halves.</p>
+    </div>
+  </div>
+  <div class="slide-footer"><span>Day 1 · Movement 03</span><span>22 / 30</span></div>
+</section>
+
+<!-- 23. THE MODEL CHOICE -->
+<section class="slide">
+  <div class="eyebrow">The model</div>
+  <h2>Off-the-shelf today.<br>Fine-tuned tomorrow.</h2>
+  <div class="rule"></div>
+  <div class="two-col">
+    <div>
+      <h4>What we use today</h4>
+      <p class="mono" style="font-size: 16px; color: var(--highlight); margin-bottom: 12px;">MoritzLaurer/DeBERTa-v3-base-<br>mnli-fever-anli</p>
+      <ul class="bare">
+        <li>~184M parameters, ~735 MB</li>
+        <li>MIT license</li>
+        <li>Pretrained on three NLI corpora</li>
+        <li>Used through zero-shot pipeline with our own candidate labels</li>
+      </ul>
+      <p class="small" style="margin-top: 10px;">Loads on free Colab CPU in 30 to 45 seconds. On paid GPU, almost instant.</p>
+    </div>
+    <div>
+      <h4>What Park uses in the paper</h4>
+      <p class="mono" style="font-size: 16px; color: var(--highlight); margin-bottom: 12px;">microsoft/deberta-v3-large<br>+ fine-tuning</p>
+      <ul class="bare">
+        <li>~435M parameters</li>
+        <li>300 hand-labeled paragraphs</li>
+        <li>13 hypotheses with fixed weights</li>
+        <li>10-fold cross-validation, F1 of 0.87</li>
+      </ul>
+      <p class="small" style="margin-top: 10px;">Day 2 covers the validity work. Today the off-the-shelf version is on screen so the gap is concrete.</p>
+    </div>
+  </div>
+  <div class="slide-footer"><span>Day 1 · Movement 03</span><span>23 / 30</span></div>
+</section>
+
+<!-- 24. WHAT WE'LL SEE -->
+<section class="slide">
+  <div class="eyebrow">Live demo · 25 minutes</div>
+  <h2>Four things to watch for<br>as the cells run.</h2>
+  <div class="rule"></div>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; flex: 1; min-height: 0;">
+    <div class="card">
+      <div class="label">01 · Easy wins</div>
+      <h3>Factual markers</h3>
+      <p>Paragraphs with explicit factual markers (Watch List, Priority Foreign Country) get classified correctly nearly every time.</p>
+    </div>
+    <div class="card">
+      <div class="label">02 · Interpretive misses</div>
+      <h3>Where zero-shot stumbles</h3>
+      <p>"The country has made progress" trips zero-shot models. Day 2 shows why fine-tuning fixes this.</p>
+    </div>
+    <div class="card">
+      <div class="label">03 · Aggregation</div>
+      <h3>The mixed-paragraph problem</h3>
+      <p>Most paragraphs contain both praise and criticism. A single label hides the mixture. Park's weighted-sum design is one solution.</p>
+    </div>
+    <div class="card" style="border-top-color: var(--accent);">
+      <div class="label">04 · Validity</div>
+      <h3>The question that follows you home</h3>
+      <p>Off-the-shelf accuracy looks impressive in a demo. "Looks impressive" is far from "publishable." Validation closes the gap.</p>
+    </div>
+  </div>
+  <div class="slide-footer"><span>Day 1 · Movement 03</span><span>24 / 30</span></div>
+</section>
+
+<!-- 25. SECTION DIVIDER 4 -->
+<section class="slide section-divider dark">
+  <div class="num">04</div>
+  <div class="eyebrow">Hands-on · 15 minutes</div>
+  <h1>Your turn.</h1>
+  <p class="lede">Open free Colab. Run a tiny version yourself. The goal is to know that you can.</p>
+  <div class="slide-footer"><span>Day 1</span><span>25 / 30</span></div>
+</section>
+
+<!-- 26. HANDS-ON SETUP -->
+<section class="slide">
+  <div class="eyebrow">Three steps before you run anything</div>
+  <h2>Open the notebook,<br>pick a runtime,<br>say yes to the warning.</h2>
+  <div class="rule"></div>
+  <div class="three-col">
+    <div class="card cool">
+      <div class="label">Step 01</div>
+      <h3>Open the notebook</h3>
+      <p>Click the link in the chat. Sign in with your Google account if prompted. Save a copy in your own Drive (File · Save a copy).</p>
+    </div>
+    <div class="card cool">
+      <div class="label">Step 02</div>
+      <h3>Pick a runtime</h3>
+      <p>Runtime · Change runtime type · CPU is fine for this notebook. We are not using GPU on the hands-on.</p>
+    </div>
+    <div class="card cool">
+      <div class="label">Step 03</div>
+      <h3>Run all cells</h3>
+      <p>Runtime · Run all. The first cell installs <code>transformers</code>. Subsequent cells run in seconds.</p>
+    </div>
+  </div>
+  <p class="small" style="margin-top: 20px;">If the install cell warns about a kernel restart, accept and re-run. This is normal.</p>
+  <div class="slide-footer"><span>Day 1 · Hands-on</span><span>26 / 30</span></div>
+</section>
+
+<!-- 27. WHAT TO DO IN 15 MIN -->
+<section class="slide">
+  <div class="eyebrow">15 minutes</div>
+  <h2>Three small experiments.</h2>
+  <div class="rule"></div>
+  <div class="three-col">
+    <div class="card">
+      <div class="label">Experiment 01</div>
+      <h3>Run as-is</h3>
+      <p>Run the notebook unchanged. Read the printed output for 5 NTE excerpts. Notice which ones are easy and which are mixed.</p>
+    </div>
+    <div class="card">
+      <div class="label">Experiment 02</div>
+      <h3>Edit the labels</h3>
+      <p>Change the candidate labels in cell 4. Try labels of your own choosing. See how much the output depends on how you ask.</p>
+    </div>
+    <div class="card">
+      <div class="label">Experiment 03</div>
+      <h3>Try your own text</h3>
+      <p>Replace one example with text from your own research. The model has never seen your data. Often it still produces something useful.</p>
+    </div>
+  </div>
+  <p class="small" style="margin-top: 20px;">Drop confusions in the chat. We surface a few during the wrap-up.</p>
+  <div class="slide-footer"><span>Day 1 · Hands-on</span><span>27 / 30</span></div>
+</section>
+
+<!-- 28. TROUBLESHOOTING -->
+<section class="slide">
+  <div class="eyebrow">If something breaks</div>
+  <h2>Four issues you will probably see,<br>30-second fixes for each.</h2>
+  <div class="rule"></div>
+  <table>
+    <thead><tr><th style="width: 27%;">Symptom</th><th style="width: 33%;">Cause</th><th>Fix</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>RESTART REQUIRED</strong> warning after pip install.</td>
+        <td>Colab pre-loaded packages were upgraded.</td>
+        <td>Click Restart Runtime, then run cells from the top.</td>
+      </tr>
+      <tr>
+        <td>Model download stalls or fails.</td>
+        <td>Hugging Face hub rate-limit or transient network.</td>
+        <td>Wait 60 seconds, re-run the cell.</td>
+      </tr>
+      <tr>
+        <td>"CUDA out of memory" on GPU.</td>
+        <td>Earlier cell loaded a too-large model.</td>
+        <td>Runtime · Disconnect and delete runtime. Start fresh.</td>
+      </tr>
+      <tr>
+        <td>Cells run, output looks wrong.</td>
+        <td>Edited labels but did not re-run upstream cells.</td>
+        <td>Runtime · Run all. Re-runs in dependency order.</td>
+      </tr>
+    </tbody>
+  </table>
+  <p class="tiny" style="margin-top: auto;">If none of these match, paste the last 6 lines of your error into the chat.</p>
+  <div class="slide-footer"><span>Day 1 · Hands-on</span><span>28 / 30</span></div>
+</section>
+
+<!-- 29. RECAP -->
+<section class="slide">
+  <div class="eyebrow">Day 1 · Takeaways</div>
+  <h2>What you have actually done<br>in the last two and a half hours.</h2>
+  <div class="rule"></div>
+  <ul class="bare" style="margin-top: 18px;">
+    <li><span class="accent" style="font-weight: 600;">You can name the two model families</span> and articulate why a researcher chooses one over the other.</li>
+    <li><span class="accent" style="font-weight: 600;">You can read the NLI premise-hypothesis trick</span> as a universal classifier and design candidate labels for your own task.</li>
+    <li><span class="accent" style="font-weight: 600;">You have run a state-of-the-art encoder on Google Colab</span>, on free hardware, against real political text.</li>
+    <li><span class="accent" style="font-weight: 600;">You have seen what off-the-shelf can and cannot do.</span> Day 2 closes the gap with validation and fine-tuning.</li>
+  </ul>
+  <p class="lede" style="margin-top: 22px; font-size: 24px;">If a colleague asks you tomorrow whether they should use ChatGPT to label their tweets, you now have a real answer.</p>
+  <div class="slide-footer"><span>Day 1 · Wrap</span><span>29 / 30</span></div>
+</section>
+
+<!-- 30. DAY 2 PREVIEW -->
+<section class="slide section-divider dark">
+  <div class="eyebrow">Tomorrow · Day 02</div>
+  <h1>From a model<br>to a measurement.</h1>
+  <p class="lede">We take the same encoder, add 300 hand-labeled paragraphs, and walk through the validation pipeline that turns predictions into a defensible proxy.</p>
+  <div style="margin-top: 32px; display: grid; grid-template-columns: 1fr 1fr; gap: 48px; position: relative; z-index: 2;">
+    <div>
+      <h4>Homework</h4>
+      <p style="color: var(--bg); font-size: 17px; line-height: 1.5;">Re-run the hands-on notebook on your own. Try one labeling task from your own research, even if rough. Bring 3 examples to Day 2.</p>
+    </div>
+    <div>
+      <h4>Optional reading</h4>
+      <p style="color: var(--bg); font-size: 17px; line-height: 1.5;">Bestvater &amp; Monroe (2023, PA), "Sentiment Is Not Stance." The single best 30-page primer for the validity questions Day 2 asks.</p>
+    </div>
+  </div>
+  <div class="slide-footer"><span>End of Day 1</span><span>30 / 30</span></div>
+</section>
+
+</div>
+<div class="hud">
+  <button id="prev">PREV</button>
+  <span id="counter">1 / 30</span>
+  <button id="next">NEXT</button>
+</div>
+<div class="progress-bar" id="bar" style="width: 3.3%"></div>
+
+<script>
+const slides = Array.from(document.querySelectorAll('.slide'));
+const total = slides.length;
+let idx = 0;
+
+function fit() {
+  const s = Math.min(window.innerWidth / 1280, window.innerHeight / 720) * 0.95;
+  document.documentElement.style.setProperty('--s', s);
+}
+window.addEventListener('resize', fit);
+fit();
+
+function show(i) {
+  i = Math.max(0, Math.min(i, total - 1));
+  slides[idx].classList.remove('active');
+  slides[i].classList.add('active');
+  idx = i;
+  document.getElementById('counter').textContent = `${idx+1} / ${total}`;
+  document.getElementById('bar').style.width = `${((idx+1)/total)*100}%`;
+  history.replaceState(null, '', `#${idx+1}`);
+}
+
+document.addEventListener('keydown', (e) => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { show(idx+1); e.preventDefault(); }
+  else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { show(idx-1); e.preventDefault(); }
+  else if (e.key === 'Home') { show(0); e.preventDefault(); }
+  else if (e.key === 'End') { show(total-1); e.preventDefault(); }
+  else if (e.key === 'f' || e.key === 'F') {
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+    else document.exitFullscreen();
+  }
+});
+
+document.getElementById('prev').addEventListener('click', () => show(idx-1));
+document.getElementById('next').addEventListener('click', () => show(idx+1));
+
+const initial = parseInt((location.hash || '#1').slice(1)) - 1;
+if (!isNaN(initial) && initial >= 0 && initial < total) show(initial);
+</script>
+</body>
+</html>
