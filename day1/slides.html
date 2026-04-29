@@ -665,17 +665,12 @@ svg text.mono { font-family: 'JetBrains Mono', monospace; font-size: 10px; fill:
         <li><span class="highlight">Topic.</span> "Is this paragraph about agricultural trade?"</li>
         <li><span class="highlight">Framing.</span> "Does this speech frame migration as a security issue?"</li>
       </ul>
-      <pre style="margin-top: 18px; font-size: 13px;"><span class="kw">from</span> transformers <span class="kw">import</span> pipeline
-zsc = <span class="fn">pipeline</span>(
-  <span class="str">"zero-shot-classification"</span>,
-  model=<span class="str">"MoritzLaurer/DeBERTa-v3-"</span>
-        <span class="str">"base-mnli-fever-anli"</span>,
-)
-<span class="fn">zsc</span>(text, candidate_labels=[
+      <pre style="margin-top: 18px; font-size: 14px;"><span class="fn">zsc</span>(text, candidate_labels=[
   <span class="str">"supports climate action"</span>,
   <span class="str">"skeptical of climate action"</span>,
   <span class="str">"does not discuss climate"</span>,
-])</pre>
+])
+<span class="com"># returns one probability per label</span></pre>
     </div>
   </div>
   <div class="slide-footer"><span>Day 1, Movement 01</span><span>13 / 32</span></div>
@@ -688,38 +683,38 @@ zsc = <span class="fn">pipeline</span>(
   <div class="rule"></div>
   <div class="two-col">
     <div>
-      <p>To show what the NLI trick can do at scale, one quick example from my own R&amp;R paper at the <em>Review of International Organizations</em>.</p>
-      <p>Each paragraph from a US Trade Representative report becomes the premise. Thirteen standardized claims about IP enforcement become the hypotheses. The model returns thirteen entailment probabilities per paragraph. A weighted sum becomes a country-year proxy for US assessments of foreign IP regimes from 1995 to 2022.</p>
-      <p class="small" style="margin-top: 12px;">The point is not the substance. The point is that the same off-the-shelf NLI machinery you will run on UN speeches in fifteen minutes scales to a published measurement design with the right hypothesis engineering.</p>
+      <p>One quick example from my R&amp;R paper at the <em>Review of International Organizations</em>.</p>
+      <p>Each paragraph from a US Trade Representative report is the premise. Thirteen claims about IP enforcement are the hypotheses. A weighted sum of the entailment probabilities becomes a country-year proxy for US assessments of foreign IP regimes, 1995 to 2022.</p>
+      <p class="small" style="margin-top: 12px;">The same off-the-shelf NLI machinery you will run on UN speeches in fifteen minutes scales to a published measurement design with the right hypothesis engineering.</p>
+      <p class="tiny" style="margin-top: 12px;">Only Day 1 slide that mentions my own work. Everything else today is off-the-shelf on public data.</p>
     </div>
-    <div>
-      <svg viewBox="0 0 380 280" style="width: 100%; max-width: 360px;">
-        <rect x="20" y="40" width="180" height="80" class="fill-bg" />
-        <text x="110" y="68" text-anchor="middle" style="font-size: 12px;">"Country X remained on</text>
-        <text x="110" y="86" text-anchor="middle" style="font-size: 12px;">the Watch List in 2017."</text>
-        <text x="110" y="135" text-anchor="middle" class="label" style="text-transform: uppercase; letter-spacing: 0.14em; font-size: 9px;">PREMISE</text>
-        <line x1="200" y1="80" x2="240" y2="80" class="stroke" />
-        <polygon points="240,80 232,75 232,85" class="fill-cool" />
-        <rect x="240" y="20" width="120" height="220" class="fill-bg" />
-        <text x="300" y="40" text-anchor="middle" class="mono" style="font-size: 9px; fill: var(--ink-faint);">13 HYPOTHESES</text>
-        <text x="252" y="62" style="font-size: 11px;">Watch List</text>
-        <text x="345" y="62" text-anchor="end" style="font-size: 11px; fill: var(--accent);">−1.5</text>
-        <text x="252" y="82" style="font-size: 11px;">Notorious Market</text>
-        <text x="345" y="82" text-anchor="end" style="font-size: 11px; fill: var(--accent);">−1.5</text>
-        <text x="252" y="102" style="font-size: 11px;">made efforts</text>
-        <text x="345" y="102" text-anchor="end" style="font-size: 11px; fill: var(--highlight);">+1.0</text>
-        <text x="252" y="122" style="font-size: 11px;">widespread violation</text>
-        <text x="345" y="122" text-anchor="end" style="font-size: 11px; fill: var(--accent);">−1.5</text>
-        <text x="252" y="142" style="font-size: 11px;">decrease in violation</text>
-        <text x="345" y="142" text-anchor="end" style="font-size: 11px; fill: var(--highlight);">+1.0</text>
-        <text x="300" y="170" text-anchor="middle" class="mono" style="font-size: 9px; fill: var(--ink-faint);">+ 8 more</text>
-        <text x="300" y="200" text-anchor="middle" style="font-size: 13px; font-weight: 600; fill: var(--accent);">Σ weighted</text>
-        <text x="300" y="220" text-anchor="middle" style="font-size: 16px; font-weight: 700; fill: var(--accent);">−2.4</text>
-        <text x="300" y="237" text-anchor="middle" class="mono" style="font-size: 8px; fill: var(--ink-faint);">SCALED −5 TO +5</text>
+    <div style="display: flex; align-items: center; justify-content: center;">
+      <svg viewBox="0 0 400 280" style="width: 100%; max-width: 380px;">
+        <rect x="10" y="50" width="160" height="80" class="fill-bg" />
+        <text x="90" y="80" text-anchor="middle" style="font-size: 11px;">"Country X paragraph</text>
+        <text x="90" y="98" text-anchor="middle" style="font-size: 11px;">from NTE 2017"</text>
+        <text x="90" y="148" text-anchor="middle" class="label" style="text-transform: uppercase; letter-spacing: 0.14em; font-size: 9px;">PREMISE</text>
+        <line x1="170" y1="90" x2="200" y2="90" class="stroke" />
+        <polygon points="200,90 192,85 192,95" class="fill-cool" />
+        <rect x="200" y="20" width="190" height="220" class="fill-bg" />
+        <text x="295" y="40" text-anchor="middle" class="mono" style="font-size: 9px; fill: var(--ink-faint);">13 HYPOTHESES</text>
+        <text x="212" y="62" style="font-size: 11px;">Priority Watch List</text>
+        <text x="378" y="62" text-anchor="end" style="font-size: 11px; fill: var(--accent);">−2.0</text>
+        <text x="212" y="82" style="font-size: 11px;">Watch List</text>
+        <text x="378" y="82" text-anchor="end" style="font-size: 11px; fill: var(--accent);">−1.5</text>
+        <text x="212" y="102" style="font-size: 11px;">Notorious Market</text>
+        <text x="378" y="102" text-anchor="end" style="font-size: 11px; fill: var(--accent);">−1.5</text>
+        <text x="212" y="122" style="font-size: 11px;">made efforts</text>
+        <text x="378" y="122" text-anchor="end" style="font-size: 11px; fill: var(--highlight);">+1.0</text>
+        <text x="212" y="142" style="font-size: 11px;">strong IP law</text>
+        <text x="378" y="142" text-anchor="end" style="font-size: 11px; fill: var(--highlight);">+2.0</text>
+        <text x="295" y="170" text-anchor="middle" class="mono" style="font-size: 9px; fill: var(--ink-faint);">+ 8 more</text>
+        <text x="295" y="200" text-anchor="middle" style="font-size: 13px; font-weight: 600; fill: var(--accent);">Σ weighted</text>
+        <text x="295" y="220" text-anchor="middle" style="font-size: 16px; font-weight: 700; fill: var(--accent);">−2.4</text>
+        <text x="295" y="237" text-anchor="middle" class="mono" style="font-size: 8px; fill: var(--ink-faint);">SCALED −5 TO +5</text>
       </svg>
     </div>
   </div>
-  <p class="tiny" style="margin-top: 14px;">This is the only Day 1 slide that mentions my own work. Everything else today is off-the-shelf, on public data.</p>
   <div class="slide-footer"><span>Day 1, Movement 01</span><span>14 / 32</span></div>
 </section>
 
@@ -740,11 +735,11 @@ zsc = <span class="fn">pipeline</span>(
 </section>
 
 <!-- 16. BREAK -->
-<section class="slide section-divider dark">
-  <div class="num">10</div>
+<section class="slide" style="justify-content: center; align-items: flex-start;">
   <div class="eyebrow">Pause</div>
-  <h1>Ten minute<br>break.</h1>
-  <p class="lede">Stretch. Refill. We come back at the wall-clock time on screen.</p>
+  <h1 style="font-size: 120px;">Ten minute<br>break.</h1>
+  <div class="rule" style="margin-top: 28px;"></div>
+  <p class="lede" style="margin-top: 8px;">Stretch. Refill. We come back at the wall-clock time on screen.</p>
   <div class="slide-footer"><span>Day 1</span><span>16 / 32</span></div>
 </section>
 

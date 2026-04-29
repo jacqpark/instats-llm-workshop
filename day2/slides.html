@@ -230,9 +230,15 @@ thead th {
   display: flex; flex-direction: column; position: relative;
 }
 .pipeline-step::after {
-  content: '\2192';
-  position: absolute; right: -14px; top: 50%; transform: translateY(-50%);
-  color: var(--highlight); font-size: 18px; font-weight: 700; z-index: 2;
+  content: '\276F\276F';
+  position: absolute; right: -22px; top: 50%; transform: translateY(-50%);
+  font-size: 22px; font-weight: 700; z-index: 2;
+  letter-spacing: -2px;
+  background: linear-gradient(90deg, #8DA3D9 0%, #334B99 60%, #1F2E5F 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
 }
 .pipeline-step:last-child::after { display: none; }
 .pipeline-step .num {
@@ -391,10 +397,10 @@ thead th {
       <tr><th style="width: 18%;">Movement</th><th style="width: 42%;">Reviewer question</th><th>What you ship</th></tr>
     </thead>
     <tbody>
-      <tr><td><span class="highlight">01, walk-through</span></td><td>How did you compute the score for every observation in your sample?</td><td>The notebook with model ID pinned, the candidate-label list, the speech-level CSV.</td></tr>
-      <tr><td><span class="highlight">02, validity</span></td><td>How do you know the score actually measures the concept you claim?</td><td>Thirty-row gold set, confusion matrix, Cohen's kappa, Pearson r, Spearman rho.</td></tr>
-      <tr><td><span class="highlight">03, time series</span></td><td>Show me the score on a known case where I can check it against external reality.</td><td>Country-year time series with the Paris Agreement marked.</td></tr>
-      <tr><td><span class="highlight">04, checklist</span></td><td>What do I need in your appendix to call this defensible?</td><td>The two-column appendix checklist, must-have and often-asked-for.</td></tr>
+      <tr><td><span class="highlight">01 walk-through</span></td><td>How did you compute the score for every observation in your sample?</td><td>The notebook with model ID pinned, the candidate-label list, the speech-level CSV.</td></tr>
+      <tr><td><span class="highlight">02 validity</span></td><td>How do you know the score actually measures the concept you claim?</td><td>Thirty-row gold set, confusion matrix, Cohen's kappa, Pearson r, Spearman rho.</td></tr>
+      <tr><td><span class="highlight">03 time series</span></td><td>Show me the score on a known case where I can check it against external reality.</td><td>Country-year time series with the Paris Agreement marked.</td></tr>
+      <tr><td><span class="highlight">04 checklist</span></td><td>What do I need in your appendix to call this defensible?</td><td>The two-column appendix checklist, must-have and often-asked-for.</td></tr>
     </tbody>
   </table>
   <p class="lede" style="margin-top: 22px; font-size: 22px;">Each row is a slide on screen, an output cell in the notebook, and a paragraph in your future paper.</p>
@@ -626,11 +632,11 @@ cy = (scored
 </section>
 
 <!-- 14. BREAK -->
-<section class="slide section-divider dark">
-  <div class="num">10</div>
+<section class="slide" style="justify-content: center; align-items: flex-start;">
   <div class="eyebrow">Pause</div>
-  <h1>Ten minute<br>break.</h1>
-  <p class="lede">Stretch. Refill. The gold set we are about to build becomes the answer key for everything else.</p>
+  <h1 style="font-size: 120px;">Ten minute<br>break.</h1>
+  <div class="rule" style="margin-top: 28px;"></div>
+  <p class="lede" style="margin-top: 8px;">Stretch. Refill. The gold set we are about to build becomes the answer key for everything else.</p>
   <div class="slide-footer"><span>Day 2</span><span>14 / 32</span></div>
 </section>
 
