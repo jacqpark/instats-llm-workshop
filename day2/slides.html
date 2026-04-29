@@ -221,35 +221,58 @@ thead th {
 }
 .slide.section-divider .slide-footer { color: rgba(212, 232, 217, 0.5) !important; z-index: 4; }
 
-.pipeline-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 18px; flex: 1; align-items: stretch; }
-.pipeline-step {
-  background: var(--bg-tint);
-  padding: 18px 16px;
-  border-top: 3px solid var(--highlight);
-  border-radius: 2px;
-  display: flex; flex-direction: column; position: relative;
+.chevron-flow {
+  display: flex;
+  flex: 1;
+  align-items: stretch;
+  margin-top: 12px;
+  min-height: 0;
 }
-.pipeline-step::after {
-  content: '\276F\276F';
-  position: absolute; right: -22px; top: 50%; transform: translateY(-50%);
-  font-size: 22px; font-weight: 700; z-index: 2;
-  letter-spacing: -2px;
-  background: linear-gradient(90deg, #8DA3D9 0%, #334B99 60%, #1F2E5F 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
+.chevron {
+  flex: 1;
+  position: relative;
+  padding: 28px 26px 28px 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: white;
+  clip-path: polygon(0% 0%, calc(100% - 26px) 0%, 100% 50%, calc(100% - 26px) 100%, 0% 100%, 26px 50%);
+  margin-left: -26px;
 }
-.pipeline-step:last-child::after { display: none; }
-.pipeline-step .num {
+.chevron:first-child {
+  clip-path: polygon(0% 0%, calc(100% - 26px) 0%, 100% 50%, calc(100% - 26px) 100%, 0% 100%);
+  margin-left: 0;
+  padding-left: 28px;
+}
+.chevron .num {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 10px; letter-spacing: 0.16em; color: var(--ink-faint); margin-bottom: 6px;
+  font-size: 11px; letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.85);
+  margin-bottom: 10px;
+  font-weight: 500;
 }
-.pipeline-step h3 {
+.chevron h3 {
   font-family: 'Crimson Pro', serif;
-  font-size: 18px; color: var(--accent); margin-bottom: 6px; font-weight: 600;
+  font-size: 22px; color: white;
+  margin-bottom: 8px; font-weight: 600;
+  letter-spacing: -0.005em;
 }
-.pipeline-step p { font-size: 13px; line-height: 1.4; color: var(--ink-soft); }
+.chevron p {
+  font-size: 13px; line-height: 1.45;
+  color: rgba(255, 255, 255, 0.92);
+}
+.chevron code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px; color: white;
+  background: rgba(255, 255, 255, 0.18);
+  padding: 1px 5px; border-radius: 2px;
+}
+.chevron.shade-1 { background: #6E8AD0; }
+.chevron.shade-2 { background: #4F6BB8; }
+.chevron.shade-3 { background: #334B99; }
+.chevron.shade-4 { background: #25387A; }
+.chevron.shade-5 { background: #1A2654; }
 
 .slide-footer {
   position: absolute; bottom: 22px; left: 80px; right: 80px;
@@ -450,29 +473,29 @@ text        <span class="com"># full speech, English</span></pre>
   <div class="eyebrow">Pipeline, five steps</div>
   <h2>Each step is a cell in the notebook.</h2>
   <div class="rule"></div>
-  <div class="pipeline-grid">
-    <div class="pipeline-step">
-      <div class="num">01 LOAD</div>
+  <div class="chevron-flow">
+    <div class="chevron shade-1">
+      <div class="num">01 Load</div>
       <h3>Read CSV</h3>
       <p>Download from Dataverse, cache locally. Sample five thousand speeches stratified by year.</p>
     </div>
-    <div class="pipeline-step">
-      <div class="num">02 TRUNCATE</div>
+    <div class="chevron shade-2">
+      <div class="num">02 Truncate</div>
       <h3>To 512 tokens</h3>
       <p>DeBERTa context window. Speeches average two thousand words. Document the choice.</p>
     </div>
-    <div class="pipeline-step">
-      <div class="num">03 SCORE</div>
+    <div class="chevron shade-3">
+      <div class="num">03 Score</div>
       <h3>Zero-shot, batches</h3>
       <p>Three candidate labels. <code>batch_size=16</code> on T4. About three minutes total.</p>
     </div>
-    <div class="pipeline-step">
-      <div class="num">04 SAVE</div>
+    <div class="chevron shade-4">
+      <div class="num">04 Save</div>
       <h3>Speech-level CSV</h3>
       <p>One row per speech. Country, year, top label, top score, supportive probability.</p>
     </div>
-    <div class="pipeline-step">
-      <div class="num">05 AGGREGATE</div>
+    <div class="chevron shade-5">
+      <div class="num">05 Aggregate</div>
       <h3>Country-year CSV</h3>
       <p>Group by country and year. Share supportive. Mean supportive probability. Always keep n.</p>
     </div>
