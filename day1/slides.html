@@ -23,109 +23,68 @@
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html, body {
-  height: 100%;
-  width: 100%;
-  overflow: hidden;
+  height: 100%; width: 100%; overflow: hidden;
   background: var(--dark);
   font-family: 'Inter', -apple-system, sans-serif;
   color: var(--ink);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
-.deck {
-  position: relative;
-  width: 100vw;
-  height: 100vh;
-}
+.deck { position: relative; width: 100vw; height: 100vh; }
 .slide {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 1280px;
-  height: 720px;
+  position: absolute; top: 50%; left: 50%;
+  width: 1280px; height: 720px;
   background: var(--bg);
   box-shadow: 0 30px 90px rgba(0,0,0,0.55);
   padding: 64px 80px;
-  display: flex;
-  flex-direction: column;
+  display: flex; flex-direction: column;
   transform: translate(-50%, -50%) scale(var(--s, 1));
   transform-origin: center center;
-  opacity: 0;
-  visibility: hidden;
+  opacity: 0; visibility: hidden;
   transition: opacity 0.35s ease;
   overflow: hidden;
 }
-.slide.active {
-  opacity: 1;
-  visibility: visible;
-}
-.slide.dark {
-  background: var(--dark);
-  color: var(--bg);
-}
+.slide.active { opacity: 1; visibility: visible; }
+.slide.dark { background: var(--dark); color: var(--bg); }
 .slide.dark h1, .slide.dark h2 { color: var(--bg); }
 .slide.dark .lede, .slide.dark p, .slide.dark .small, .slide.dark .tiny { color: var(--bg); }
 .slide.dark .eyebrow { color: var(--pop); }
 .slide.dark h4 { color: var(--pop); }
 
-/* Typography */
 .eyebrow {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 12px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--highlight);
-  margin-bottom: 18px;
-  font-weight: 500;
+  font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--highlight); margin-bottom: 18px; font-weight: 500;
 }
 .eyebrow.subtle { color: var(--ink-faint); }
 h1 {
   font-family: 'Crimson Pro', serif;
-  font-weight: 700;
-  font-size: 88px;
-  line-height: 1.02;
-  color: var(--accent);
-  letter-spacing: -0.025em;
+  font-weight: 700; font-size: 88px; line-height: 1.02;
+  color: var(--accent); letter-spacing: -0.025em;
 }
 h2 {
   font-family: 'Crimson Pro', serif;
-  font-weight: 600;
-  font-size: 52px;
-  line-height: 1.06;
-  color: var(--accent);
-  letter-spacing: -0.018em;
+  font-weight: 600; font-size: 52px; line-height: 1.06;
+  color: var(--accent); letter-spacing: -0.018em;
   margin-bottom: 24px;
 }
 h3 {
   font-family: 'Inter', sans-serif;
-  font-weight: 600;
-  font-size: 24px;
-  color: var(--ink);
-  margin-bottom: 10px;
+  font-weight: 600; font-size: 24px;
+  color: var(--ink); margin-bottom: 10px;
   letter-spacing: -0.005em;
 }
 h4 {
   font-family: 'Inter', sans-serif;
-  font-weight: 600;
-  font-size: 14px;
-  color: var(--highlight);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  margin-bottom: 10px;
+  font-weight: 600; font-size: 14px;
+  color: var(--highlight); letter-spacing: 0.1em;
+  text-transform: uppercase; margin-bottom: 10px;
 }
-p {
-  font-size: 21px;
-  line-height: 1.5;
-  color: var(--ink);
-  margin-bottom: 12px;
-}
+p { font-size: 21px; line-height: 1.5; color: var(--ink); margin-bottom: 12px; }
 p.lede {
   font-family: 'Crimson Pro', serif;
-  font-size: 30px;
-  font-weight: 400;
-  line-height: 1.35;
-  color: var(--ink-soft);
-  font-style: italic;
+  font-size: 30px; font-weight: 400; line-height: 1.35;
+  color: var(--ink-soft); font-style: italic;
 }
 .small { font-size: 16px; color: var(--ink-soft); line-height: 1.5; margin-bottom: 8px; }
 .tiny { font-size: 13px; color: var(--ink-faint); line-height: 1.4; }
@@ -134,43 +93,25 @@ p.lede {
 .muted { color: var(--ink-faint); }
 .serif { font-family: 'Crimson Pro', serif; }
 
-.rule {
-  width: 56px;
-  height: 3px;
-  background: var(--highlight);
-  margin-bottom: 24px;
-}
+.rule { width: 56px; height: 3px; background: var(--highlight); margin-bottom: 24px; }
 .rule.thin { height: 1px; background: var(--rule); width: 100%; }
 
 ul.bare { list-style: none; }
 ul.bare li {
-  font-size: 19px;
-  line-height: 1.5;
-  margin-bottom: 12px;
-  padding-left: 28px;
-  position: relative;
-  color: var(--ink);
+  font-size: 19px; line-height: 1.5; margin-bottom: 12px;
+  padding-left: 28px; position: relative; color: var(--ink);
 }
 ul.bare li::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 13px;
-  width: 16px;
-  height: 1px;
-  background: var(--highlight);
+  content: ''; position: absolute; left: 0; top: 13px;
+  width: 16px; height: 1px; background: var(--highlight);
 }
 
 code, pre, .mono { font-family: 'JetBrains Mono', monospace; font-variant-numeric: tabular-nums; }
 pre {
-  background: var(--bg-deep);
-  padding: 18px 22px;
+  background: var(--bg-deep); padding: 18px 22px;
   border-left: 3px solid var(--highlight);
-  font-size: 15px;
-  line-height: 1.5;
-  color: var(--ink);
-  overflow: hidden;
-  border-radius: 2px;
+  font-size: 15px; line-height: 1.5; color: var(--ink);
+  overflow: hidden; border-radius: 2px;
 }
 pre .kw { color: var(--highlight); font-weight: 500; }
 pre .str { color: var(--accent); }
@@ -181,242 +122,140 @@ pre .fn { color: var(--accent); font-weight: 500; }
 .col { display: flex; flex-direction: column; }
 .flex-1 { flex: 1; min-height: 0; }
 
-.two-col {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 48px;
-  flex: 1;
-  min-height: 0;
-}
-.three-col {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 24px;
-  flex: 1;
-  min-height: 0;
-}
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; flex: 1; min-height: 0; }
+.three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; flex: 1; min-height: 0; }
 .card {
-  background: var(--bg-tint);
-  padding: 22px 24px;
+  background: var(--bg-tint); padding: 22px 24px;
   border-top: 3px solid var(--highlight);
-  display: flex;
-  flex-direction: column;
-  border-radius: 2px;
+  display: flex; flex-direction: column; border-radius: 2px;
 }
 .card.cool { border-top-color: var(--highlight); background: #DCE8F0; }
 .card.warm { border-top-color: var(--accent); background: var(--bg-tint); }
 .card .label {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--ink-faint);
-  margin-bottom: 8px;
+  font-size: 11px; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--ink-faint); margin-bottom: 8px;
 }
 .card h3 { font-size: 20px; margin-bottom: 10px; color: var(--accent); }
 .card p { font-size: 16px; line-height: 1.45; color: var(--ink); margin-bottom: 8px; }
 .card .tag {
-  display: inline-block;
-  padding: 3px 10px;
-  background: var(--pop);
-  color: var(--accent);
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
+  display: inline-block; padding: 3px 10px;
+  background: var(--pop); color: var(--accent);
+  font-size: 11px; font-weight: 600; letter-spacing: 0.08em;
   font-family: 'JetBrains Mono', monospace;
-  margin-top: auto;
-  align-self: flex-start;
-  border-radius: 2px;
+  margin-top: auto; align-self: flex-start; border-radius: 2px;
 }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 16px;
-  font-variant-numeric: tabular-nums;
-}
+table { width: 100%; border-collapse: collapse; font-size: 16px; font-variant-numeric: tabular-nums; }
 th, td {
-  padding: 10px 14px;
-  text-align: left;
+  padding: 10px 14px; text-align: left;
   border-bottom: 1px solid var(--rule);
-  vertical-align: top;
-  line-height: 1.4;
+  vertical-align: top; line-height: 1.4;
 }
 thead th {
-  font-weight: 600;
-  color: var(--accent);
-  font-size: 12px;
-  letter-spacing: 0.08em;
+  font-weight: 600; color: var(--accent);
+  font-size: 12px; letter-spacing: 0.08em;
   text-transform: uppercase;
-  border-bottom: 2px solid var(--accent);
-  padding-bottom: 8px;
+  border-bottom: 2px solid var(--accent); padding-bottom: 8px;
 }
 td.encoder { background: rgba(51,75,153,0.06); }
 td.decoder { background: rgba(45,73,60,0.06); }
 
-/* Title slide */
 .slide-title { padding: 0; }
 .slide-title-inner {
-  flex: 1;
-  padding: 64px 80px 56px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  position: relative;
+  flex: 1; padding: 64px 80px 56px;
+  display: flex; flex-direction: column;
+  justify-content: space-between; position: relative;
 }
 .slide-title h1 { font-size: 104px; max-width: 940px; line-height: 0.98; }
 .slide-title .lede { font-size: 26px; max-width: 740px; margin-top: 24px; }
 .slide-title .meta {
-  display: flex;
-  gap: 48px;
-  padding-top: 18px;
+  display: flex; gap: 48px; padding-top: 18px;
   border-top: 1px solid var(--rule);
-  font-size: 14px;
-  color: var(--ink-soft);
-  letter-spacing: 0.02em;
+  font-size: 14px; color: var(--ink-soft); letter-spacing: 0.02em;
 }
 .slide-title .meta .label {
   display: block;
   font-family: 'JetBrains Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--ink-faint);
-  margin-bottom: 6px;
+  font-size: 10px; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--ink-faint); margin-bottom: 6px;
 }
 .slide-title .corner {
-  position: absolute;
-  top: 64px;
-  right: 80px;
+  position: absolute; top: 64px; right: 80px;
   font-family: 'JetBrains Mono', monospace;
-  font-size: 12px;
-  letter-spacing: 0.2em;
-  color: var(--highlight);
-  text-transform: uppercase;
+  font-size: 12px; letter-spacing: 0.2em;
+  color: var(--highlight); text-transform: uppercase;
 }
 
-/* Section divider */
 .slide.section-divider {
   background-color: #2D493C !important;
   padding: 80px !important;
-  display: flex !important;
-  flex-direction: column !important;
-  justify-content: center !important;
-  overflow: hidden;
+  display: flex !important; flex-direction: column !important;
+  justify-content: center !important; overflow: hidden;
 }
 .slide.section-divider::before {
-  content: '';
-  position: absolute;
-  top: 80px;
-  left: 80px;
-  width: 56px;
-  height: 3px;
-  background: #B1F1B1;
-  z-index: 4;
+  content: ''; position: absolute;
+  top: 80px; left: 80px;
+  width: 56px; height: 3px;
+  background: #B1F1B1; z-index: 4;
 }
 .slide.section-divider .num {
   font-family: 'Crimson Pro', Georgia, serif;
-  font-weight: 200;
-  font-size: 200px;
-  line-height: 0.85;
+  font-weight: 200; font-size: 200px; line-height: 0.85;
   color: rgba(177, 241, 177, 0.45);
-  position: absolute;
-  bottom: 56px;
-  right: 80px;
-  letter-spacing: -0.04em;
-  pointer-events: none;
-  z-index: 1;
-  margin: 0;
+  position: absolute; bottom: 56px; right: 80px;
+  letter-spacing: -0.04em; pointer-events: none; z-index: 1; margin: 0;
 }
 .slide.section-divider h1 {
   color: #D4E8D9 !important;
-  font-size: 84px !important;
-  line-height: 1.02 !important;
-  position: relative;
-  z-index: 3;
-  max-width: 900px;
-  margin: 0;
+  font-size: 84px !important; line-height: 1.02 !important;
+  position: relative; z-index: 3; max-width: 900px; margin: 0;
   font-family: 'Crimson Pro', Georgia, serif !important;
   font-weight: 700 !important;
 }
 .slide.section-divider p.lede {
   color: #B1F1B1 !important;
-  margin-top: 24px !important;
-  margin-bottom: 0 !important;
-  position: relative;
-  z-index: 3;
-  max-width: 760px;
-  font-size: 24px !important;
-  font-style: italic !important;
+  margin-top: 24px !important; margin-bottom: 0 !important;
+  position: relative; z-index: 3; max-width: 760px;
+  font-size: 24px !important; font-style: italic !important;
   font-family: 'Crimson Pro', Georgia, serif !important;
-  font-weight: 400 !important;
-  line-height: 1.4 !important;
+  font-weight: 400 !important; line-height: 1.4 !important;
 }
 .slide.section-divider .eyebrow {
-  position: relative;
-  z-index: 3;
+  position: relative; z-index: 3;
   margin-bottom: 24px !important;
   color: #B1F1B1 !important;
   font-family: 'JetBrains Mono', 'Courier New', monospace !important;
-  font-size: 12px !important;
-  letter-spacing: 0.2em !important;
-  text-transform: uppercase !important;
-  font-weight: 500 !important;
-}
-.slide.section-divider h4 {
-  color: #B1F1B1 !important;
-  position: relative;
-  z-index: 3;
-  font-family: 'Inter', sans-serif !important;
-  font-size: 14px !important;
-  letter-spacing: 0.1em !important;
-  text-transform: uppercase !important;
-  margin-bottom: 10px !important;
-}
-.slide.section-divider p {
-  color: #D4E8D9 !important;
-  font-family: 'Inter', sans-serif;
+  font-size: 12px !important; letter-spacing: 0.2em !important;
+  text-transform: uppercase !important; font-weight: 500 !important;
 }
 .slide.section-divider .slide-footer {
-  color: rgba(212, 232, 217, 0.5) !important;
-  z-index: 4;
+  color: rgba(212, 232, 217, 0.5) !important; z-index: 4;
 }
 
-/* Quote slide */
 .slide-quote { justify-content: center; padding: 80px 110px; }
 .slide-quote .qmark {
   font-family: 'Crimson Pro', serif;
-  font-size: 180px;
-  line-height: 0.6;
-  color: var(--rule);
-  margin-bottom: -32px;
+  font-size: 180px; line-height: 0.6;
+  color: var(--rule); margin-bottom: -32px;
 }
 .slide-quote blockquote {
   font-family: 'Crimson Pro', serif;
-  font-size: 38px;
-  line-height: 1.3;
-  color: var(--ink);
-  font-weight: 400;
-  margin-bottom: 24px;
-  max-width: 980px;
+  font-size: 38px; line-height: 1.3;
+  color: var(--ink); font-weight: 400;
+  margin-bottom: 24px; max-width: 980px;
 }
 .slide-quote .qbody {
-  font-size: 19px;
-  color: var(--ink-soft);
-  max-width: 920px;
-  margin-bottom: 16px;
-  line-height: 1.5;
+  font-size: 19px; color: var(--ink-soft);
+  max-width: 920px; margin-bottom: 16px; line-height: 1.5;
 }
 .slide-quote cite {
-  font-style: normal;
-  font-size: 14px;
-  color: var(--ink-faint);
-  letter-spacing: 0.04em;
+  font-style: normal; font-size: 14px;
+  color: var(--ink-faint); letter-spacing: 0.04em;
   font-family: 'JetBrains Mono', monospace;
   text-transform: uppercase;
 }
 
-/* SVG illustrations */
 svg .stroke { stroke: var(--accent); stroke-width: 1.5; fill: none; }
 svg .stroke-thin { stroke: var(--ink-faint); stroke-width: 1; fill: none; }
 svg .stroke-warm { stroke: var(--highlight); stroke-width: 1.5; fill: none; }
@@ -428,7 +267,6 @@ svg text { font-family: 'Inter', sans-serif; font-size: 13px; fill: var(--ink); 
 svg text.label { font-size: 11px; fill: var(--ink-soft); }
 svg text.mono { font-family: 'JetBrains Mono', monospace; font-size: 10px; fill: var(--ink-faint); }
 
-/* Bar chart */
 .bars { display: flex; flex-direction: column; gap: 10px; }
 .bar-row { display: grid; grid-template-columns: 220px 1fr 80px; align-items: center; gap: 14px; }
 .bar-row .name { font-size: 14px; color: var(--ink); font-weight: 500; }
@@ -438,125 +276,76 @@ svg text.mono { font-family: 'JetBrains Mono', monospace; font-size: 10px; fill:
 .bar-row .fill.muted { background: var(--ink-faint); }
 .bar-row .val { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--ink-soft); text-align: right; font-variant-numeric: tabular-nums; }
 
-/* Decision matrix */
 .matrix {
   display: grid;
   grid-template-columns: 200px repeat(3, 1fr);
   border: 1px solid var(--rule);
-  flex: 1;
-  min-height: 0;
-  background: var(--bg);
+  flex: 1; min-height: 0; background: var(--bg);
 }
 .matrix > div {
   padding: 12px 14px;
-  border-right: 1px solid var(--rule);
-  border-bottom: 1px solid var(--rule);
-  font-size: 14px;
-  line-height: 1.4;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+  border-right: 1px solid var(--rule); border-bottom: 1px solid var(--rule);
+  font-size: 14px; line-height: 1.4;
+  display: flex; flex-direction: column; justify-content: center;
 }
 .matrix .head {
-  background: var(--accent);
-  color: var(--bg);
-  font-weight: 600;
-  font-size: 12px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  background: var(--accent); color: var(--bg);
+  font-weight: 600; font-size: 12px;
+  letter-spacing: 0.06em; text-transform: uppercase;
 }
 .matrix .row-head {
   background: var(--bg-tint);
-  font-weight: 600;
-  font-size: 14px;
-  color: var(--accent);
+  font-weight: 600; font-size: 14px; color: var(--accent);
 }
-.matrix .pick-encoder {
-  background: rgba(51,75,153,0.05);
-  border-left: 3px solid var(--highlight);
-}
-.matrix .pick-decoder {
-  background: rgba(45,73,60,0.05);
-  border-left: 3px solid var(--accent);
-}
+.matrix .pick-encoder { background: rgba(51,75,153,0.05); border-left: 3px solid var(--highlight); }
+.matrix .pick-decoder { background: rgba(45,73,60,0.05); border-left: 3px solid var(--accent); }
 .matrix .pick-tag {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  margin-bottom: 4px;
-  font-weight: 600;
+  font-size: 10px; letter-spacing: 0.1em;
+  text-transform: uppercase; margin-bottom: 4px; font-weight: 600;
 }
 .matrix .pick-encoder .pick-tag { color: var(--highlight); }
 .matrix .pick-decoder .pick-tag { color: var(--accent); }
 
-/* Footer */
 .slide-footer {
-  position: absolute;
-  bottom: 22px;
-  left: 80px;
-  right: 80px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  position: absolute; bottom: 22px; left: 80px; right: 80px;
+  display: flex; justify-content: space-between; align-items: center;
   font-family: 'JetBrains Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--ink-faint);
+  font-size: 10px; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--ink-faint);
 }
 .slide.dark .slide-footer { color: rgba(212,232,217,0.45); }
-.slide-title .slide-footer { left: 80px; right: 80px; }
 
-/* HUD */
 .hud {
-  position: fixed;
-  bottom: 14px;
-  right: 14px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
+  position: fixed; bottom: 14px; right: 14px;
+  display: flex; align-items: center; gap: 10px;
   font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
-  color: rgba(212,232,217,0.55);
-  letter-spacing: 0.08em;
-  z-index: 100;
+  font-size: 11px; color: rgba(212,232,217,0.55);
+  letter-spacing: 0.08em; z-index: 100;
 }
 .hud button {
   background: rgba(212,232,217,0.08);
   border: 1px solid rgba(212,232,217,0.15);
   color: rgba(212,232,217,0.7);
-  padding: 4px 10px;
-  font-family: inherit;
-  font-size: 10px;
-  cursor: pointer;
-  letter-spacing: 0.08em;
+  padding: 4px 10px; font-family: inherit;
+  font-size: 10px; cursor: pointer; letter-spacing: 0.08em;
 }
 .hud button:hover { background: rgba(212,232,217,0.15); }
 .progress-bar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  height: 2px;
-  background: var(--pop);
-  transition: width 0.35s ease;
-  z-index: 100;
+  position: fixed; bottom: 0; left: 0;
+  height: 2px; background: var(--pop);
+  transition: width 0.35s ease; z-index: 100;
 }
 .help-text {
-  position: fixed;
-  top: 14px;
-  left: 14px;
+  position: fixed; top: 14px; left: 14px;
   font-family: 'JetBrains Mono', monospace;
-  font-size: 10px;
-  color: rgba(212,232,217,0.35);
-  letter-spacing: 0.1em;
-  z-index: 100;
-  pointer-events: none;
+  font-size: 10px; color: rgba(212,232,217,0.35);
+  letter-spacing: 0.1em; z-index: 100; pointer-events: none;
 }
 </style>
 </head>
 <body>
-<div class="help-text">← → arrows · F fullscreen</div>
+<div class="help-text">arrows to move, F for fullscreen</div>
 <div class="deck" id="deck">
 
 <!-- 1. TITLE -->
@@ -569,7 +358,7 @@ svg text.mono { font-family: 'JetBrains Mono', monospace; font-size: 10px; fill:
       <p class="lede">An intuition-first tour through encoder and generative models, and the small set of decisions that separates them.</p>
     </div>
     <div class="meta">
-      <div><span class="label">Instructor</span>Jihye Park · University of Geneva</div>
+      <div><span class="label">Instructor</span>Jihye Park, University of Geneva</div>
       <div><span class="label">Audience</span>Political scientists, no Python required</div>
       <div><span class="label">Duration</span>2 hours 30 minutes</div>
     </div>
@@ -579,74 +368,109 @@ svg text.mono { font-family: 'JetBrains Mono', monospace; font-size: 10px; fill:
 <!-- 2. ROADMAP -->
 <section class="slide">
   <div class="eyebrow">Today</div>
-  <h2>Three big movements,<br>plus your first Colab.</h2>
+  <h2>Three movements,<br>plus your first Colab.</h2>
   <div class="rule"></div>
   <div class="three-col">
     <div class="card">
-      <div class="label">Movement 01 · 35 min</div>
+      <div class="label">Movement 01, 35 min</div>
       <h3>The model zoo</h3>
       <p>Encoders read sentences and return labels. Generative models continue text. Why the distinction shapes your research design.</p>
     </div>
     <div class="card">
-      <div class="label">Movement 02 · 30 min</div>
+      <div class="label">Movement 02, 30 min</div>
       <h3>The Colab tour</h3>
-      <p>What Google Colab is, why it has a GPU, and how it lets you run a state-of-the-art model from your browser.</p>
+      <p>What Google Colab is, why it has a GPU, and how it lets you run a state-of-the-art encoder from your browser.</p>
     </div>
     <div class="card">
-      <div class="label">Movement 03 · 50 min</div>
-      <h3>A working stance demo</h3>
-      <p>We run a real zero-shot encoder on real US trade-policy text and see what it gets right, what it misses, and why.</p>
+      <div class="label">Movement 03, 35 min</div>
+      <h3>Stance on real UN speeches</h3>
+      <p>We run a real zero-shot encoder on roughly two hundred sentences from the UN General Debate Corpus and see what it gets right and where it stumbles.</p>
     </div>
   </div>
   <p class="small" style="margin-top: 20px;">Closing 15 minutes are hands-on. You open free Colab on your own Google account and run a tiny version yourself.</p>
-  <div class="slide-footer"><span>Day 1 · Roadmap</span><span>02 / 30</span></div>
+  <div class="slide-footer"><span>Day 1, Roadmap</span><span>02 / 32</span></div>
 </section>
 
 <!-- 3. WHY THIS MATTERS -->
 <section class="slide">
   <div class="eyebrow">Why this matters</div>
-  <h2>Three recent papers,<br>three different LLM jobs.</h2>
+  <h2>Three published examples,<br>three different LLM jobs.</h2>
   <div class="rule"></div>
   <div class="three-col">
     <div class="card cool">
-      <div class="label">Job 01 · Stance</div>
-      <h3>Park (2026)</h3>
-      <p><em>Aid, Lending, and TRIPS.</em> R&amp;R at Review of International Organizations.</p>
-      <p>Builds a -5 to +5 country-year proxy for US assessments of foreign IP regimes from 28 years of trade reports.</p>
-      <p><span class="highlight">Encoder.</span> DeBERTa-v3-large, 13 weighted hypotheses.</p>
+      <div class="label">Job 01, Stance</div>
+      <h3>Bestvater &amp; Monroe (2023)</h3>
+      <p><em>Sentiment Is Not Stance.</em> Political Analysis 31(2).</p>
+      <p>Off-the-shelf sentiment scores conflate affect with stance toward a target. A target-aware fine-tuned encoder outperforms generic sentiment.</p>
+      <p><span class="highlight">Encoder.</span> Supervised, fine-tuned on hand-codes.</p>
       <span class="tag">ENCODER</span>
     </div>
     <div class="card cool">
-      <div class="label">Job 02 · Stance vs sentiment</div>
-      <h3>Bestvater &amp; Monroe (2023)</h3>
-      <p><em>Sentiment Is Not Stance.</em> Political Analysis 31(2).</p>
-      <p>Off-the-shelf sentiment scores conflate affect with stance toward a target.</p>
-      <p><span class="highlight">Encoder.</span> Target-aware supervised classification.</p>
+      <div class="label">Job 02, Topic</div>
+      <h3>Wankmüller (2024)</h3>
+      <p><em>Neural transfer learning for political text.</em> Political Analysis.</p>
+      <p>Fine-tuned BERT-class encoders scale issue-topic classification across long parliamentary corpora that LDA-era methods could not reach.</p>
+      <p><span class="highlight">Encoder.</span> Fine-tuned on hundreds to thousands of hand-codes.</p>
       <span class="tag">ENCODER</span>
     </div>
     <div class="card warm">
-      <div class="label">Job 03 · Extraction</div>
+      <div class="label">Job 03, Extraction</div>
       <h3>Ornstein et al. (2025)</h3>
       <p><em>How to Train Your Stochastic Parrot.</em> PSRM 13(2).</p>
-      <p>Few-shot prompts to LLMs match conventional supervised pipelines on text-as-data tasks.</p>
+      <p>Few-shot prompts to a generative LLM often match conventional supervised pipelines on text-as-data tasks, with caveats around cost and reproducibility.</p>
       <p><span class="highlight">Generative.</span></p>
       <span class="tag">GENERATIVE</span>
     </div>
   </div>
-  <p class="tiny" style="margin-top: 16px;">Same field, same year span, two model families. Today we learn how to choose between them.</p>
-  <div class="slide-footer"><span>Day 1 · Why this matters</span><span>03 / 30</span></div>
+  <p class="tiny" style="margin-top: 16px;">Same field, same recent year span, two model families. Today we learn how to choose between them.</p>
+  <div class="slide-footer"><span>Day 1, Why this matters</span><span>03 / 32</span></div>
 </section>
 
-<!-- 4. SECTION DIVIDER 1 -->
+<!-- 4. HOW TO READ TODAY -->
+<section class="slide">
+  <div class="eyebrow">Three ground rules</div>
+  <h2>How to read today.</h2>
+  <div class="rule"></div>
+  <div class="three-col">
+    <div class="card">
+      <div class="label">Rule 01</div>
+      <h3>Intuition first</h3>
+      <p>No matrix algebra. No transformer block diagrams. You will leave today able to make principled choices about model families without internalizing equations.</p>
+    </div>
+    <div class="card">
+      <div class="label">Rule 02</div>
+      <h3>Demos are mostly mine</h3>
+      <p>Instructor demos run on paid Colab Pro for speed. The hands-on at the end is the one segment you run yourself, on free Colab.</p>
+    </div>
+    <div class="card">
+      <div class="label">Rule 03</div>
+      <h3>We choose carefully</h3>
+      <p>The most important skill today is knowing when an encoder is the right tool and when a generative model is. For measurement work, the answer is usually the encoder. We will see why.</p>
+    </div>
+  </div>
+  <div class="slide-footer"><span>Day 1, Ground rules</span><span>04 / 32</span></div>
+</section>
+
+<!-- 5. SETUP STATUS / QUOTE -->
+<section class="slide slide-quote">
+  <div class="eyebrow">Before we begin</div>
+  <div class="qmark">"</div>
+  <blockquote>The bottleneck for political science measurement is no longer compute or model availability. It is the validity of the labels we ask the model to produce.</blockquote>
+  <p class="qbody">Three quick checks while we settle in. One. Are you signed into a Google account in this browser? Two. Click the hands-on link in chat and confirm it opens in Colab. You do not need to run anything yet. Three. Type "ready" in chat once both checks pass.</p>
+  <cite>Workshop framing, Day 1</cite>
+  <div class="slide-footer"><span>Day 1, Setup</span><span>05 / 32</span></div>
+</section>
+
+<!-- 6. SECTION DIVIDER 1 -->
 <section class="slide section-divider dark">
   <div class="num">01</div>
-  <div class="eyebrow">First movement · 35 minutes</div>
+  <div class="eyebrow">First movement, 35 minutes</div>
   <h1>The plain-language<br>model zoo.</h1>
   <p class="lede">Two families of models. Five questions to decide which one your research question wants.</p>
-  <div class="slide-footer"><span>Day 1</span><span>04 / 30</span></div>
+  <div class="slide-footer"><span>Day 1</span><span>06 / 32</span></div>
 </section>
 
-<!-- 5. THE BIG IDEA -->
+<!-- 7. THE BIG IDEA -->
 <section class="slide">
   <div class="eyebrow">The big idea, in one slide</div>
   <h2>An LLM turns text into numbers,<br>then numbers into predictions.</h2>
@@ -654,8 +478,8 @@ svg text.mono { font-family: 'JetBrains Mono', monospace; font-size: 10px; fill:
   <div style="flex: 1; display: flex; align-items: center; justify-content: center; min-height: 0;">
     <svg viewBox="0 0 980 240" style="width: 100%; max-width: 940px;">
       <rect x="20" y="80" width="200" height="80" class="fill-bg" />
-      <text x="120" y="115" text-anchor="middle" style="font-size: 15px;">"The country has</text>
-      <text x="120" y="138" text-anchor="middle" style="font-size: 15px;">strong IP law."</text>
+      <text x="120" y="115" text-anchor="middle" style="font-size: 15px;">"Today the Assembly</text>
+      <text x="120" y="138" text-anchor="middle" style="font-size: 15px;">welcomes Paris."</text>
       <text x="120" y="184" text-anchor="middle" class="label" style="text-transform: uppercase; letter-spacing: 0.14em; font-size: 10px;">RAW TEXT</text>
       <line x1="240" y1="120" x2="320" y2="120" class="stroke" />
       <polygon points="320,120 312,115 312,125" class="fill-cool" />
@@ -666,23 +490,23 @@ svg text.mono { font-family: 'JetBrains Mono', monospace; font-size: 10px; fill:
       <line x1="640" y1="120" x2="720" y2="120" class="stroke" />
       <polygon points="720,120 712,115 712,125" class="fill-cool" />
       <rect x="740" y="80" width="220" height="80" class="fill-bg" />
-      <text x="850" y="122" text-anchor="middle" style="font-size: 17px; font-weight: 600; fill: var(--accent);">positive · 0.91</text>
+      <text x="850" y="122" text-anchor="middle" style="font-size: 17px; font-weight: 600; fill: var(--accent);">supportive · 0.91</text>
       <text x="850" y="184" text-anchor="middle" class="label" style="text-transform: uppercase; letter-spacing: 0.14em; font-size: 10px;">PREDICTION</text>
     </svg>
   </div>
-  <p class="lede" style="text-align: center; margin-top: 8px; font-size: 24px;">The interesting question is what the function predicts and how it produces the answer.</p>
-  <div class="slide-footer"><span>Day 1 · Movement 01</span><span>05 / 30</span></div>
+  <p class="lede" style="text-align: center; margin-top: 8px; font-size: 24px;">The interesting question is what kind of prediction comes out.</p>
+  <div class="slide-footer"><span>Day 1, Movement 01</span><span>07 / 32</span></div>
 </section>
 
-<!-- 6. WORDS AS VECTORS -->
+<!-- 8. WORDS AS VECTORS -->
 <section class="slide">
-  <div class="eyebrow">Step 01 · Text becomes geometry</div>
+  <div class="eyebrow">Step 01, Text becomes geometry</div>
   <h2>Words live in a high-dimensional space.<br>Similar meanings sit close together.</h2>
   <div class="rule"></div>
   <div style="flex: 1; display: grid; grid-template-columns: 1.1fr 1fr; gap: 48px; align-items: center; min-height: 0;">
     <div>
       <p>Modern models do not store words as letters. Each token is stored as a list of about a thousand numbers. That list is a position in a "meaning space" learned from billions of training sentences.</p>
-      <p>The geometry is what makes everything else possible. Once "Watch List" and "violation" sit near each other, every downstream task that uses those numbers gets a head start.</p>
+      <p>The geometry is what makes everything else possible. Once "Paris Agreement" and "carbon emissions" sit near each other, every downstream task that uses those numbers gets a head start.</p>
       <p class="small" style="margin-top: 14px;">Think of it as a structured replacement for bag-of-words and TF-IDF, where the structure is meaning rather than co-occurrence.</p>
     </div>
     <div style="display: flex; justify-content: center;">
@@ -692,130 +516,116 @@ svg text.mono { font-family: 'JetBrains Mono', monospace; font-size: 10px; fill:
         <text x="200" y="305" text-anchor="middle" class="label">dimension 1</text>
         <text x="22" y="160" text-anchor="middle" class="label" transform="rotate(-90 22 160)">dimension 2</text>
         <circle cx="120" cy="80" r="6" class="fill-warm" />
-        <text x="132" y="85" style="font-size: 12px;">violation</text>
+        <text x="132" y="85" style="font-size: 12px;">Paris Agreement</text>
         <circle cx="105" cy="115" r="6" class="fill-warm" />
-        <text x="118" y="120" style="font-size: 12px;">infringement</text>
+        <text x="118" y="120" style="font-size: 12px;">carbon emissions</text>
         <circle cx="155" cy="105" r="6" class="fill-warm" />
-        <text x="168" y="110" style="font-size: 12px;">Watch List</text>
+        <text x="168" y="110" style="font-size: 12px;">rising seas</text>
         <circle cx="135" cy="140" r="6" class="fill-warm" />
-        <text x="148" y="145" style="font-size: 12px;">piracy</text>
-        <text x="120" y="62" text-anchor="middle" class="mono" style="font-size: 10px; fill: var(--highlight);">CRITICISM</text>
+        <text x="148" y="145" style="font-size: 12px;">decarbonize</text>
+        <text x="120" y="62" text-anchor="middle" class="mono" style="font-size: 10px; fill: var(--highlight);">CLIMATE</text>
         <circle cx="270" cy="200" r="6" class="fill-cool" />
-        <text x="282" y="205" style="font-size: 12px;">strong law</text>
+        <text x="282" y="205" style="font-size: 12px;">Sahel</text>
         <circle cx="290" cy="230" r="6" class="fill-cool" />
-        <text x="302" y="235" style="font-size: 12px;">progress</text>
+        <text x="302" y="235" style="font-size: 12px;">peacekeeping</text>
         <circle cx="240" cy="220" r="6" class="fill-cool" />
-        <text x="180" y="225" text-anchor="end" style="font-size: 12px;">enforcement</text>
-        <text x="270" y="180" text-anchor="middle" class="mono" style="font-size: 10px; fill: var(--accent);">PRAISE</text>
+        <text x="180" y="225" text-anchor="end" style="font-size: 12px;">Security Council</text>
+        <text x="270" y="180" text-anchor="middle" class="mono" style="font-size: 10px; fill: var(--accent);">SECURITY</text>
       </svg>
     </div>
   </div>
-  <div class="slide-footer"><span>Day 1 · Movement 01</span><span>06 / 30</span></div>
+  <div class="slide-footer"><span>Day 1, Movement 01</span><span>08 / 32</span></div>
 </section>
 
-<!-- 7. TWO FAMILIES INTRO -->
+<!-- 9. TWO FAMILIES -->
 <section class="slide">
-  <div class="eyebrow">Step 02 · The split</div>
-  <h2>Same starting geometry,<br>two very different jobs.</h2>
+  <div class="eyebrow">Step 02, The split</div>
+  <h2>Same starting geometry.<br>Two very different jobs.</h2>
   <div class="rule"></div>
   <div class="two-col">
-    <div class="card cool">
+    <div class="card cool" style="padding: 28px 30px;">
       <div class="label">Family 01</div>
-      <h3 style="font-family: 'Crimson Pro', serif; font-size: 32px; color: var(--accent); font-weight: 600;">Encoder models</h3>
-      <p style="font-size: 18px; line-height: 1.45;">Read a piece of text in full and output a fixed prediction. A label, a score, a probability.</p>
-      <p class="small" style="margin-top: 8px;">BERT, RoBERTa, DeBERTa, ModernBERT. Smaller, faster, deterministic. Run on a laptop or a free Colab CPU.</p>
-      <span class="tag" style="margin-top: auto;">CLASSIFY · SCORE · MEASURE</span>
+      <h3 style="font-size: 28px; font-family: 'Crimson Pro', serif;">Encoders</h3>
+      <p>Read a piece of text in full and output a fixed prediction. A label, a score, a probability.</p>
+      <p class="mono" style="font-size: 14px; color: var(--highlight); margin-top: 12px; letter-spacing: 0.05em;">BERT  ·  RoBERTa  ·  DeBERTa  ·  ModernBERT</p>
+      <p style="margin-top: 12px;">Smaller, faster, deterministic. Run on a laptop or free Colab CPU.</p>
+      <span class="tag">DAY 1 + DAY 2</span>
     </div>
-    <div class="card warm">
+    <div class="card warm" style="padding: 28px 30px;">
       <div class="label">Family 02</div>
-      <h3 style="font-family: 'Crimson Pro', serif; font-size: 32px; color: var(--accent); font-weight: 600;">Generative models</h3>
-      <p style="font-size: 18px; line-height: 1.45;">Continue text one token at a time. Given a prompt, produce more text. The prompt steers what comes out.</p>
-      <p class="small" style="margin-top: 8px;">GPT, Claude, Gemini, LLaMA, Qwen. Larger, slower, stochastic. Usually called via an API.</p>
-      <span class="tag" style="margin-top: auto;">EXTRACT · SUMMARIZE · GENERATE</span>
+      <h3 style="font-size: 28px; font-family: 'Crimson Pro', serif;">Generative models</h3>
+      <p>Continue text one token at a time. Given a prompt, produce more text. The prompt steers the output.</p>
+      <p class="mono" style="font-size: 14px; color: var(--accent); margin-top: 12px; letter-spacing: 0.05em;">GPT  ·  Claude  ·  Gemini  ·  LLaMA  ·  Qwen</p>
+      <p style="margin-top: 12px;">Larger, slower, stochastic. Usually called via API.</p>
+      <span class="tag">DAY 3</span>
     </div>
   </div>
-  <p class="lede" style="text-align: center; margin-top: 16px; font-size: 22px;">Both families descend from the same Transformer architecture. They diverge in what they are trained to predict.</p>
-  <div class="slide-footer"><span>Day 1 · Movement 01</span><span>07 / 30</span></div>
+  <p class="tiny" style="margin-top: 18px;">Both descend from the same Transformer architecture (2017). They diverge in what they were trained to predict. That difference shapes everything downstream.</p>
+  <div class="slide-footer"><span>Day 1, Movement 01</span><span>09 / 32</span></div>
 </section>
 
-<!-- 8. ENCODER DEEP DIVE -->
+<!-- 10. ENCODER DEEP DIVE -->
 <section class="slide">
-  <div class="eyebrow">Family 01 · The encoder</div>
-  <h2>Read the sentence.<br>Return a number.</h2>
+  <div class="eyebrow">Encoder deep dive</div>
+  <h2>Read the whole sentence.<br>Return a number.</h2>
   <div class="rule"></div>
-  <div style="display: grid; grid-template-columns: 1.1fr 1fr; gap: 48px; flex: 1; min-height: 0;">
-    <div style="display: flex; align-items: center;">
-      <svg viewBox="0 0 540 260" style="width: 100%;">
-        <rect x="20" y="20" width="500" height="50" class="fill-bg" />
-        <text x="270" y="50" text-anchor="middle" style="font-size: 15px;">"The country has made progress on combating IP violations."</text>
-        <line x1="270" y1="80" x2="270" y2="110" class="stroke" />
-        <polygon points="270,110 263,103 277,103" class="fill-cool" />
-        <rect x="60" y="115" width="420" height="50" rx="4" class="fill-cool" opacity="0.92" />
-        <text x="270" y="146" text-anchor="middle" style="fill: white; font-size: 16px; font-weight: 600;">DeBERTa, RoBERTa, ModernBERT</text>
-        <line x1="270" y1="175" x2="270" y2="200" class="stroke" />
-        <polygon points="270,200 263,193 277,193" class="fill-cool" />
-        <rect x="170" y="205" width="200" height="34" class="fill-bg" />
-        <text x="270" y="227" text-anchor="middle" style="font-size: 15px; font-weight: 600; fill: var(--accent);">positive · 0.86</text>
-      </svg>
-    </div>
+  <div class="two-col">
     <div>
-      <h4>Use it for</h4>
-      <ul class="bare" style="margin-bottom: 18px;">
+      <h4>What kinds of numbers</h4>
+      <ul class="bare">
         <li>Stance toward a target</li>
         <li>Sentiment, tone, emotion</li>
         <li>Topic and framing labels</li>
-        <li>Named entity recognition</li>
-        <li>Any fixed, comparable score per text</li>
+        <li>Named entity tags</li>
+        <li>Anything where you need a fixed, comparable score per text</li>
       </ul>
-      <h4>Why political scientists love it</h4>
-      <p style="font-size: 16px; line-height: 1.45;">Same input always produces the same output. Cheap on millions of paragraphs. Easy to validate against a hand-coded gold set.</p>
-    </div>
-  </div>
-  <div class="slide-footer"><span>Day 1 · Movement 01</span><span>08 / 30</span></div>
-</section>
-
-<!-- 9. DECODER DEEP DIVE -->
-<section class="slide">
-  <div class="eyebrow">Family 02 · The generative model</div>
-  <h2>Continue the text,<br>token by token.</h2>
-  <div class="rule"></div>
-  <div style="display: grid; grid-template-columns: 1.1fr 1fr; gap: 48px; flex: 1; min-height: 0;">
-    <div style="display: flex; align-items: center;">
-      <svg viewBox="0 0 540 280" style="width: 100%;">
-        <rect x="20" y="10" width="500" height="74" class="fill-bg" />
-        <text x="270" y="32" text-anchor="middle" class="label" style="text-transform: uppercase; font-size: 10px; letter-spacing: 0.14em;">PROMPT</text>
-        <text x="270" y="52" text-anchor="middle" style="font-size: 13px;">"Extract JSON with fields signatories, year, sector</text>
-        <text x="270" y="72" text-anchor="middle" style="font-size: 13px;">from. France and Kenya signed a health agreement..."</text>
-        <line x1="270" y1="94" x2="270" y2="118" class="stroke-warm" />
-        <polygon points="270,118 263,111 277,111" class="fill-warm" />
-        <rect x="60" y="123" width="420" height="50" rx="4" style="fill: var(--highlight)" opacity="0.92" />
-        <text x="270" y="153" text-anchor="middle" style="fill: white; font-size: 16px; font-weight: 600;">Claude, GPT, Gemini, LLaMA, Qwen</text>
-        <line x1="270" y1="183" x2="270" y2="208" class="stroke-warm" />
-        <polygon points="270,208 263,201 277,201" class="fill-warm" />
-        <rect x="80" y="213" width="380" height="44" class="fill-bg" />
-        <text x="270" y="240" text-anchor="middle" class="mono" style="font-size: 13px; fill: var(--ink);">{ "signatories": ["France", "Kenya"], "year": 2024 }</text>
-      </svg>
     </div>
     <div>
+      <h4>Why political scientists love them</h4>
+      <ul class="bare">
+        <li><span class="highlight">Deterministic.</span> Same input, same output. Run the same model in 2026 and 2030 and you get the same answer.</li>
+        <li><span class="highlight">Cheap.</span> After the model downloads once, inference is essentially free.</li>
+        <li><span class="highlight">Validatable.</span> The whole machinery of cross-validation and confusion matrices is right there.</li>
+      </ul>
+      <p class="lede" style="margin-top: 22px; font-size: 22px;">For measurement projects, the default is encoder.</p>
+    </div>
+  </div>
+  <div class="slide-footer"><span>Day 1, Movement 01</span><span>10 / 32</span></div>
+</section>
+
+<!-- 11. GENERATIVE DEEP DIVE -->
+<section class="slide">
+  <div class="eyebrow">Generative deep dive</div>
+  <h2>Continue the text,<br>token by token.</h2>
+  <div class="rule"></div>
+  <div class="two-col">
+    <div>
       <h4>Use it for</h4>
-      <ul class="bare" style="margin-bottom: 18px;">
+      <ul class="bare">
         <li>Structured extraction from messy text</li>
         <li>Free-text summarization</li>
         <li>Normalization of inconsistent fields</li>
         <li>Reasoning over long context</li>
-        <li>Anything an encoder cannot express as a label</li>
+        <li>Anything where the answer cannot be a label from a finite list</li>
       </ul>
+    </div>
+    <div>
       <h4>What you give up</h4>
-      <p style="font-size: 16px; line-height: 1.45;">Stochastic outputs by default. Higher cost per call. Harder to validate at scale. Reproducibility takes work.</p>
+      <ul class="bare">
+        <li><span class="highlight">Stochastic by default.</span> Same prompt, different answers. Pin temperature 0.</li>
+        <li><span class="highlight">Higher cost per call.</span> Tokens add up.</li>
+        <li><span class="highlight">Reproducibility tax.</span> Pin model versions. Log every prompt and response.</li>
+      </ul>
+      <p class="lede" style="margin-top: 22px; font-size: 22px;">Reach for it when free-form output is the only fit. Day 3 is the deep dive.</p>
     </div>
   </div>
-  <div class="slide-footer"><span>Day 1 · Movement 01</span><span>09 / 30</span></div>
+  <div class="slide-footer"><span>Day 1, Movement 01</span><span>11 / 32</span></div>
 </section>
 
-<!-- 10. DECISION MATRIX -->
+<!-- 12. DECISION MATRIX -->
 <section class="slide">
-  <div class="eyebrow">The 30-second decision</div>
-  <h2>Match the model to the task,<br>not the other way around.</h2>
+  <div class="eyebrow">Decision, 30-second version</div>
+  <h2>The slide you screenshot.</h2>
   <div class="rule"></div>
   <div class="matrix">
     <div class="head"></div>
@@ -823,535 +633,493 @@ svg text.mono { font-family: 'JetBrains Mono', monospace; font-size: 10px; fill:
     <div class="head">Free-form output</div>
     <div class="head">Mixed</div>
 
-    <div class="row-head">Small data<br><span class="small" style="font-weight: 400; color: var(--ink-faint);">~hundreds to thousands</span></div>
-    <div class="pick-encoder">
-      <div class="pick-tag">Encoder, zero-shot</div>
-      Laurer DeBERTa-v3 with your own labels. No training.
-    </div>
-    <div class="pick-decoder">
-      <div class="pick-tag">Generative, few-shot</div>
-      Claude or Gemini with 3 to 5 examples in the prompt.
-    </div>
-    <div class="pick-decoder">
-      <div class="pick-tag">Generative, prompted</div>
-      LLM with a clear schema and validators.
-    </div>
+    <div class="row-head">Small data<br><span class="tiny">~hundreds to thousands</span></div>
+    <div class="pick-encoder"><div class="pick-tag">Encoder, zero-shot</div>Off-the-shelf DeBERTa with your own labels. No training.</div>
+    <div class="pick-decoder"><div class="pick-tag">Generative, few-shot</div>Claude or Gemini with 3 to 5 examples in the prompt.</div>
+    <div class="pick-decoder"><div class="pick-tag">Generative, prompted</div>LLM with clear schema and validators.</div>
 
-    <div class="row-head">Large data<br><span class="small" style="font-weight: 400; color: var(--ink-faint);">~tens of thousands+</span></div>
-    <div class="pick-encoder">
-      <div class="pick-tag">Encoder, fine-tuned</div>
-      300 hand-labels, train an encoder.
+    <div class="row-head">Large data<br><span class="tiny">~tens of thousands and more</span></div>
+    <div class="pick-encoder"><div class="pick-tag">Encoder, fine-tuned</div>300 hand-labels and you can train an encoder.</div>
+    <div class="pick-decoder"><div class="pick-tag">Encoder + generative</div>Encoder filter, generative for hard cases.</div>
+    <div class="pick-decoder"><div class="pick-tag">Hybrid pipeline</div>Generative for extraction, encoder for classification.</div>
+  </div>
+  <p class="tiny" style="margin-top: 16px;">If the task can be written as "give me a fixed label," start with an encoder. Reach for generative when the answer cannot fit in one.</p>
+  <div class="slide-footer"><span>Day 1, Movement 01</span><span>12 / 32</span></div>
+</section>
+
+<!-- 13. NLI TRICK -->
+<section class="slide">
+  <div class="eyebrow">Why encoders feel magical</div>
+  <h2>The NLI trick.<br>One skill, every classification task.</h2>
+  <div class="rule"></div>
+  <div class="two-col">
+    <div>
+      <p>An NLI-trained encoder learns one job. Given a <span class="highlight">premise</span> and a <span class="highlight">hypothesis</span>, decide whether the premise entails the hypothesis, contradicts it, or is neutral.</p>
+      <p>NLI stands for natural language inference. The DeBERTa we use today was pretrained on three NLI corpora that together contain millions of premise-hypothesis pairs.</p>
+      <p>That single skill is shockingly general. Any classification task can be rewritten as a yes-or-no entailment question with a clever choice of hypothesis.</p>
     </div>
-    <div class="pick-decoder">
-      <div class="pick-tag">Encoder + generative</div>
-      Encoder filter, generative for hard cases.
-    </div>
-    <div class="pick-decoder">
-      <div class="pick-tag">Hybrid pipeline</div>
-      Generative for extraction, encoder to classify.
+    <div>
+      <h4>Examples</h4>
+      <ul class="bare">
+        <li><span class="highlight">Stance.</span> "Does this passage support stronger climate action?"</li>
+        <li><span class="highlight">Topic.</span> "Is this paragraph about agricultural trade?"</li>
+        <li><span class="highlight">Framing.</span> "Does this speech frame migration as a security issue?"</li>
+      </ul>
+      <pre style="margin-top: 18px; font-size: 13px;"><span class="kw">from</span> transformers <span class="kw">import</span> pipeline
+zsc = <span class="fn">pipeline</span>(
+  <span class="str">"zero-shot-classification"</span>,
+  model=<span class="str">"MoritzLaurer/DeBERTa-v3-"</span>
+        <span class="str">"base-mnli-fever-anli"</span>,
+)
+<span class="fn">zsc</span>(text, candidate_labels=[
+  <span class="str">"supports climate action"</span>,
+  <span class="str">"skeptical of climate action"</span>,
+  <span class="str">"does not discuss climate"</span>,
+])</pre>
     </div>
   </div>
-  <p class="small" style="margin-top: 14px;">Useful default. If your task is "give me a fixed label", start with an encoder. Reach for generative when the answer cannot fit in one.</p>
-  <div class="slide-footer"><span>Day 1 · Movement 01</span><span>10 / 30</span></div>
+  <div class="slide-footer"><span>Day 1, Movement 01</span><span>13 / 32</span></div>
 </section>
 
-<!-- 11. COST SPEED REPRO -->
+<!-- 14. BRIEF CASE STUDY (Park, single slide only) -->
 <section class="slide">
-  <div class="eyebrow">Three axes that decide for you</div>
-  <h2>Cost. Speed. Reproducibility.</h2>
+  <div class="eyebrow">A brief worked example</div>
+  <h2>The same machinery,<br>scaled to a published proxy.</h2>
   <div class="rule"></div>
-  <table style="margin-top: 4px;">
-    <thead>
-      <tr><th style="width: 22%;">Axis</th><th style="width: 39%;">Encoder</th><th>Generative</th></tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><strong>Cost / 1k texts</strong></td>
-        <td class="encoder">~$0 after model download. Local CPU is free.</td>
-        <td class="decoder">A few cents to a few dollars. Per token.</td>
-      </tr>
-      <tr>
-        <td><strong>Speed</strong></td>
-        <td class="encoder">~50 to 500 texts per second on a free GPU.</td>
-        <td class="decoder">~1 to 5 calls per second over the network.</td>
-      </tr>
-      <tr>
-        <td><strong>Determinism</strong></td>
-        <td class="encoder">Same input gives the same output every run.</td>
-        <td class="decoder">Stochastic by default. Pin temperature 0 and a fixed model version. Drift still happens.</td>
-      </tr>
-      <tr>
-        <td><strong>Validation</strong></td>
-        <td class="encoder">k-fold cross-validation. Confusion matrix. Kappa.</td>
-        <td class="decoder">Spot-check, schema validation, sample audits.</td>
-      </tr>
-      <tr>
-        <td><strong>Replication</strong></td>
-        <td class="encoder">Pin the model ID. Ship weights with your code.</td>
-        <td class="decoder">Pin the model version. Log every prompt and response.</td>
-      </tr>
-    </tbody>
-  </table>
-  <p class="tiny" style="margin-top: auto;">Numbers are rough. Exact cost depends on text length, model size, and hardware tier.</p>
-  <div class="slide-footer"><span>Day 1 · Movement 01</span><span>11 / 30</span></div>
-</section>
-
-<!-- 12. NLI TRICK -->
-<section class="slide">
-  <div class="eyebrow">The trick that makes encoders flexible</div>
-  <h2>Natural language inference.<br>The encoder's universal adapter.</h2>
-  <div class="rule"></div>
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 48px; flex: 1; min-height: 0;">
+  <div class="two-col">
     <div>
-      <p>An NLI-trained encoder learns one job. Given a <span class="highlight">premise</span> and a <span class="highlight">hypothesis</span>, decide whether the premise entails, contradicts, or is neutral with respect to the hypothesis.</p>
-      <p>That single skill is shockingly general. Any classification task can be rewritten as a yes-or-no entailment question.</p>
-      <p class="small" style="margin-top: 14px;"><strong>Stance.</strong> "Does this passage support that the country has strong IP law?"</p>
-      <p class="small"><strong>Topic.</strong> "Is this paragraph about agricultural trade?"</p>
-      <p class="small"><strong>Framing.</strong> "Does this speech frame migration as a security issue?"</p>
+      <p>To show what the NLI trick can do at scale, one quick example from my own R&amp;R paper at the <em>Review of International Organizations</em>.</p>
+      <p>Each paragraph from a US Trade Representative report becomes the premise. Thirteen standardized claims about IP enforcement become the hypotheses. The model returns thirteen entailment probabilities per paragraph. A weighted sum becomes a country-year proxy for US assessments of foreign IP regimes from 1995 to 2022.</p>
+      <p class="small" style="margin-top: 12px;">The point is not the substance. The point is that the same off-the-shelf NLI machinery you will run on UN speeches in fifteen minutes scales to a published measurement design with the right hypothesis engineering.</p>
     </div>
-    <div style="display: flex; justify-content: center; align-items: center;">
-      <svg viewBox="0 0 460 380" style="width: 100%; max-width: 420px;">
-        <rect x="20" y="10" width="420" height="68" class="fill-bg" />
-        <text x="32" y="30" class="label" style="text-transform: uppercase; font-size: 9px; letter-spacing: 0.14em;">PREMISE</text>
-        <text x="32" y="48" style="font-size: 13px;">"Country X has been on the Priority Watch List</text>
-        <text x="32" y="66" style="font-size: 13px;">for three consecutive years."</text>
-        <rect x="20" y="90" width="420" height="44" class="fill-bg" />
-        <text x="32" y="108" class="label" style="text-transform: uppercase; font-size: 9px; letter-spacing: 0.14em;">HYPOTHESIS</text>
-        <text x="32" y="126" style="font-size: 13px;">"The country is on the Watch List."</text>
-        <line x1="230" y1="142" x2="230" y2="170" class="stroke" />
-        <polygon points="230,170 223,163 237,163" class="fill-cool" />
-        <rect x="120" y="175" width="220" height="40" rx="3" class="fill-cool" opacity="0.92" />
-        <text x="230" y="200" text-anchor="middle" style="fill: white; font-size: 13px; font-weight: 600;">DeBERTa NLI head</text>
-        <text x="32" y="248" class="label" style="text-transform: uppercase; font-size: 9px; letter-spacing: 0.14em;">OUTPUT</text>
-        <text x="32" y="270" style="font-size: 12px;">entailment</text>
-        <rect x="140" y="260" width="260" height="13" fill="#BFD9C4" />
-        <rect x="140" y="260" width="234" height="13" class="fill-warm" />
-        <text x="410" y="270" class="mono" style="font-size: 11px; fill: var(--ink-soft);">0.90</text>
-        <text x="32" y="298" style="font-size: 12px;">neutral</text>
-        <rect x="140" y="288" width="260" height="13" fill="#BFD9C4" />
-        <rect x="140" y="288" width="22" height="13" fill="#5C7B6A" />
-        <text x="410" y="298" class="mono" style="font-size: 11px; fill: var(--ink-soft);">0.08</text>
-        <text x="32" y="326" style="font-size: 12px;">contradiction</text>
-        <rect x="140" y="316" width="260" height="13" fill="#BFD9C4" />
-        <rect x="140" y="316" width="6" height="13" fill="#5C7B6A" />
-        <text x="410" y="326" class="mono" style="font-size: 11px; fill: var(--ink-soft);">0.02</text>
+    <div>
+      <svg viewBox="0 0 380 280" style="width: 100%; max-width: 360px;">
+        <rect x="20" y="40" width="180" height="80" class="fill-bg" />
+        <text x="110" y="68" text-anchor="middle" style="font-size: 12px;">"Country X remained on</text>
+        <text x="110" y="86" text-anchor="middle" style="font-size: 12px;">the Watch List in 2017."</text>
+        <text x="110" y="135" text-anchor="middle" class="label" style="text-transform: uppercase; letter-spacing: 0.14em; font-size: 9px;">PREMISE</text>
+        <line x1="200" y1="80" x2="240" y2="80" class="stroke" />
+        <polygon points="240,80 232,75 232,85" class="fill-cool" />
+        <rect x="240" y="20" width="120" height="220" class="fill-bg" />
+        <text x="300" y="40" text-anchor="middle" class="mono" style="font-size: 9px; fill: var(--ink-faint);">13 HYPOTHESES</text>
+        <text x="252" y="62" style="font-size: 11px;">Watch List</text>
+        <text x="345" y="62" text-anchor="end" style="font-size: 11px; fill: var(--accent);">−1.5</text>
+        <text x="252" y="82" style="font-size: 11px;">Notorious Market</text>
+        <text x="345" y="82" text-anchor="end" style="font-size: 11px; fill: var(--accent);">−1.5</text>
+        <text x="252" y="102" style="font-size: 11px;">made efforts</text>
+        <text x="345" y="102" text-anchor="end" style="font-size: 11px; fill: var(--highlight);">+1.0</text>
+        <text x="252" y="122" style="font-size: 11px;">widespread violation</text>
+        <text x="345" y="122" text-anchor="end" style="font-size: 11px; fill: var(--accent);">−1.5</text>
+        <text x="252" y="142" style="font-size: 11px;">decrease in violation</text>
+        <text x="345" y="142" text-anchor="end" style="font-size: 11px; fill: var(--highlight);">+1.0</text>
+        <text x="300" y="170" text-anchor="middle" class="mono" style="font-size: 9px; fill: var(--ink-faint);">+ 8 more</text>
+        <text x="300" y="200" text-anchor="middle" style="font-size: 13px; font-weight: 600; fill: var(--accent);">Σ weighted</text>
+        <text x="300" y="220" text-anchor="middle" style="font-size: 16px; font-weight: 700; fill: var(--accent);">−2.4</text>
+        <text x="300" y="237" text-anchor="middle" class="mono" style="font-size: 8px; fill: var(--ink-faint);">SCALED −5 TO +5</text>
       </svg>
     </div>
   </div>
-  <div class="slide-footer"><span>Day 1 · Movement 01</span><span>12 / 30</span></div>
+  <p class="tiny" style="margin-top: 14px;">This is the only Day 1 slide that mentions my own work. Everything else today is off-the-shelf, on public data.</p>
+  <div class="slide-footer"><span>Day 1, Movement 01</span><span>14 / 32</span></div>
 </section>
 
-<!-- 13. PARK CASE STUDY -->
+<!-- 15. RECAP + BREAK -->
 <section class="slide">
-  <div class="eyebrow">Case study · Park, Aid, Lending, and TRIPS</div>
-  <h2>Thirteen hypotheses,<br>one continuous score.</h2>
-  <div class="rule"></div>
-  <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 40px; flex: 1; min-height: 0;">
-    <div>
-      <p>A paragraph from a US Trade Representative report becomes the <em>premise</em>. Each of 13 standardized claims becomes a <em>hypothesis</em>.</p>
-      <p>Each hypothesis carries a fixed weight from -2 to +2. The model returns 13 entailment probabilities. A weighted sum, scaled to -5 to +5, becomes the country-year IP-evaluation proxy.</p>
-      <p class="small" style="margin-top: 12px;"><strong>The result.</strong> Pooled F1 of 0.87 across 13 hypotheses. Pearson correlation of 0.68 between encoder score and a hand-coded gold set on 300 paragraphs.</p>
-      <p class="tiny" style="margin-top: 6px;">Park · Aid, Lending, and TRIPS. Code and data at github.com/jacqpark/nteText.</p>
-    </div>
-    <div>
-      <h4 style="margin-bottom: 8px;">Sample hypotheses (6 of 13)</h4>
-      <table style="font-size: 13px;">
-        <thead>
-          <tr><th>Hypothesis</th><th style="text-align: right; width: 60px;">Weight</th></tr>
-        </thead>
-        <tbody>
-          <tr><td>Country is the Priority Foreign Country</td><td style="text-align: right;" class="mono">-2</td></tr>
-          <tr><td>Country is on the Priority Watch List</td><td style="text-align: right;" class="mono">-2</td></tr>
-          <tr><td>Author believes there is widespread IP violation</td><td style="text-align: right;" class="mono">-1.5</td></tr>
-          <tr><td>Author believes the country has made efforts</td><td style="text-align: right;" class="mono">+1</td></tr>
-          <tr><td>Author believes the country has strong IP law</td><td style="text-align: right;" class="mono">+2</td></tr>
-          <tr><td>Text mentions decrease in IP violations</td><td style="text-align: right;" class="mono">+1</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-  <div class="slide-footer"><span>Day 1 · Movement 01</span><span>13 / 30</span></div>
-</section>
-
-<!-- 14. PARK QUOTE -->
-<section class="slide slide-quote">
-  <div class="eyebrow">Why an encoder, not a generative LLM</div>
-  <div class="qmark">"</div>
-  <blockquote>
-    Stance detection is fundamentally a natural-language inference problem. DeBERTa's encoder architecture with NLI-specific pretraining yields higher accuracy and label efficiency in few-shot settings than generative models repurposed for classification through prompting.
-  </blockquote>
-  <p class="qbody">Generative models also carry substantial computational overhead. DeBERTa's smaller footprint makes it feasible to fine-tune, validate through cross-validation, and deploy on standard academic hardware.</p>
-  <cite>Park · Aid, Lending, and TRIPS · manuscript p. 14</cite>
-  <div class="slide-footer"><span>Day 1 · Movement 01</span><span>14 / 30</span></div>
-</section>
-
-<!-- 15. MOVEMENT 1 RECAP -->
-<section class="slide">
-  <div class="eyebrow">Movement 01 · Recap</div>
+  <div class="eyebrow">Movement 01, recap</div>
   <h2>Five things you now know.</h2>
   <div class="rule"></div>
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 48px; flex: 1; min-height: 0;">
-    <div>
-      <h4>01. The split</h4>
-      <p style="font-size: 17px; margin-bottom: 16px;">Two families. Encoder reads and labels. Generative continues text. Same Transformer, different training.</p>
-      <h4>02. The default</h4>
-      <p style="font-size: 17px; margin-bottom: 16px;">If your task is a fixed label, start with an encoder. Cheaper, faster, easier to validate.</p>
-      <h4>03. The escape hatch</h4>
-      <p style="font-size: 17px;">Reach for a generative LLM when the answer cannot fit in a finite label set.</p>
-    </div>
-    <div>
-      <h4>04. The NLI trick</h4>
-      <p style="font-size: 17px; margin-bottom: 16px;">An NLI-trained encoder is a universal classifier. Any task becomes a premise-hypothesis question with user-defined hypotheses.</p>
-      <h4>05. The reproducibility tax</h4>
-      <p style="font-size: 17px;">Encoders are deterministic with pinned weights. Generative models need extra discipline. Log prompts. Pin model versions. Audit samples.</p>
-    </div>
-  </div>
-  <div class="slide-footer"><span>Day 1 · Movement 01</span><span>15 / 30</span></div>
+  <ul class="bare" style="margin-top: 18px;">
+    <li><span class="accent" style="font-weight: 600;">The split between encoder and generative.</span></li>
+    <li><span class="accent" style="font-weight: 600;">The default for measurement projects, which is encoder.</span></li>
+    <li><span class="accent" style="font-weight: 600;">The escape hatch, which is generative.</span></li>
+    <li><span class="accent" style="font-weight: 600;">The NLI trick.</span></li>
+    <li><span class="accent" style="font-weight: 600;">The reproducibility tax that comes with generative.</span></li>
+  </ul>
+  <p class="lede" style="margin-top: 22px; font-size: 26px;">Take a ten-minute break. We come back at the time on screen and look at what Google Colab actually is.</p>
+  <div class="slide-footer"><span>Day 1, Movement 01 recap</span><span>15 / 32</span></div>
 </section>
 
-<!-- 16. SECTION DIVIDER 2 -->
+<!-- 16. BREAK -->
+<section class="slide section-divider dark">
+  <div class="num">10</div>
+  <div class="eyebrow">Pause</div>
+  <h1>Ten minute<br>break.</h1>
+  <p class="lede">Stretch. Refill. We come back at the wall-clock time on screen.</p>
+  <div class="slide-footer"><span>Day 1</span><span>16 / 32</span></div>
+</section>
+
+<!-- 17. SECTION DIVIDER 2 -->
 <section class="slide section-divider dark">
   <div class="num">02</div>
-  <div class="eyebrow">Second movement · 30 minutes</div>
+  <div class="eyebrow">Second movement, 30 minutes</div>
   <h1>The Colab tour.</h1>
   <p class="lede">A free Python environment in your browser, with a GPU attached. You will use it during this workshop. You may use it for the rest of your career.</p>
-  <div class="slide-footer"><span>Day 1</span><span>16 / 30</span></div>
+  <div class="slide-footer"><span>Day 1</span><span>17 / 32</span></div>
 </section>
 
-<!-- 17. WHAT IS COLAB -->
+<!-- 18. WHAT IS COLAB -->
 <section class="slide">
-  <div class="eyebrow">What "Colab" actually is</div>
-  <h2>A Jupyter notebook,<br>running on Google's servers,<br>with a GPU you did not pay for.</h2>
+  <div class="eyebrow">Three things to know</div>
+  <h2>Colab is a notebook,<br>plus a remote runtime,<br>plus a hardware menu.</h2>
   <div class="rule"></div>
   <div class="three-col">
     <div class="card">
-      <div class="label">01 · Notebook</div>
-      <h3>Cells of code and prose</h3>
-      <p>Python in one cell, prose in the next, charts in the third. Like an Rmd file but interactive.</p>
+      <div class="label">Layer 01</div>
+      <h3>The notebook</h3>
+      <p>Cells of code and prose, like an Rmd file but interactive. Click a cell, press Shift Enter, output appears beneath it.</p>
     </div>
     <div class="card">
-      <div class="label">02 · Cloud runtime</div>
-      <h3>Someone else's computer</h3>
-      <p>Press Run, the code executes on Google's hardware. You see the output in your browser.</p>
+      <div class="label">Layer 02</div>
+      <h3>The remote runtime</h3>
+      <p>The runtime is on Google's servers. Press run, the code executes there, you see the output in your browser.</p>
     </div>
     <div class="card">
-      <div class="label">03 · Hardware menu</div>
-      <h3>CPU, GPU, or TPU</h3>
-      <p>Free tier gives you a CPU plus an occasional T4 GPU. Paid Colab Pro reliably attaches an L4 or A100.</p>
+      <div class="label">Layer 03</div>
+      <h3>The hardware menu</h3>
+      <p>Pick CPU, GPU, or TPU. Free tier gives a CPU plus an occasional T4 GPU. Paid Colab Pro reliably attaches a beefier card.</p>
     </div>
   </div>
-  <p class="lede" style="text-align: center; margin-top: 18px; font-size: 22px;">For an encoder workflow, that GPU is roughly 10x to 50x faster than CPU.</p>
-  <div class="slide-footer"><span>Day 1 · Movement 02</span><span>17 / 30</span></div>
-</section>
-
-<!-- 18. CPU VS GPU TIMING -->
-<section class="slide">
-  <div class="eyebrow">Why we bother with the GPU</div>
-  <h2>Same job, three runtimes.<br>Same model, same 5,000 texts.</h2>
-  <div class="rule"></div>
-  <div style="margin-top: 16px; flex: 1; min-height: 0; display: flex; flex-direction: column; justify-content: center;">
-    <div class="bars">
-      <div class="bar-row">
-        <div class="name">Free Colab CPU</div>
-        <div class="track"><div class="fill muted" style="width: 100%;"></div></div>
-        <div class="val">~12 min</div>
-      </div>
-      <div class="bar-row">
-        <div class="name">Free Colab T4 GPU</div>
-        <div class="track"><div class="fill" style="width: 18%;"></div></div>
-        <div class="val">~2 min</div>
-      </div>
-      <div class="bar-row">
-        <div class="name">Paid Colab L4 GPU</div>
-        <div class="track"><div class="fill warm" style="width: 7%;"></div></div>
-        <div class="val">~50 sec</div>
-      </div>
-      <div class="bar-row">
-        <div class="name">Your laptop CPU</div>
-        <div class="track"><div class="fill" style="width: 240%; background: linear-gradient(to right, #5C7B6A 0%, #5C7B6A 30%, rgba(92,123,106,0.5) 55%, rgba(92,123,106,0) 80%);"></div></div>
-        <div class="val">~30 min →</div>
-      </div>
-    </div>
-    <p class="small" style="margin-top: 22px;">5,000 paragraphs through MoritzLaurer/DeBERTa-v3-base zero-shot, 3 candidate labels, batch size 16. Numbers are illustrative.</p>
-  </div>
-  <p class="lede" style="font-size: 22px; margin-top: 8px;">Today's demos run on a paid GPU. You can replicate on free Colab tomorrow with a longer coffee break.</p>
-  <div class="slide-footer"><span>Day 1 · Movement 02</span><span>18 / 30</span></div>
+  <p class="lede" style="margin-top: 22px; font-size: 24px; text-align: center;">For an encoder workflow, that GPU is roughly 10 to 50 times faster than CPU.</p>
+  <div class="slide-footer"><span>Day 1, Movement 02</span><span>18 / 32</span></div>
 </section>
 
 <!-- 19. ANATOMY OF A NOTEBOOK -->
 <section class="slide">
-  <div class="eyebrow">Anatomy of a Colab notebook</div>
+  <div class="eyebrow">Anatomy of a notebook</div>
   <h2>Five things to find on your screen.</h2>
-  <div class="rule"></div>
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 48px; flex: 1; min-height: 0;">
-    <div>
-      <h4>01 · Code cells</h4>
-      <p style="font-size: 17px;">Click and type Python. Press <code>Shift+Enter</code> to run. Output appears below.</p>
-      <h4 style="margin-top: 16px;">02 · Text cells</h4>
-      <p style="font-size: 17px;">Markdown for notes, equations, headings. Use them generously.</p>
-      <h4 style="margin-top: 16px;">03 · Runtime menu</h4>
-      <p style="font-size: 17px;">Top bar. Choose CPU or GPU. Restart when something is stuck.</p>
-    </div>
-    <div>
-      <h4>04 · Files panel</h4>
-      <p style="font-size: 17px;">Left sidebar. Upload data, mount Google Drive, save outputs.</p>
-      <h4 style="margin-top: 16px;">05 · Secrets</h4>
-      <p style="font-size: 17px;">Key icon in the left sidebar. Where API keys live. <strong>Never paste a key into a code cell.</strong></p>
-      <pre style="margin-top: 10px; font-size: 13px;"><span class="kw">from</span> google.colab <span class="kw">import</span> userdata
-<span class="kw">import</span> os
-os.environ[<span class="str">"ANTHROPIC_API_KEY"</span>] = userdata.get(<span class="str">"ANTHROPIC_API_KEY"</span>)</pre>
-    </div>
-  </div>
-  <div class="slide-footer"><span>Day 1 · Movement 02</span><span>19 / 30</span></div>
-</section>
-
-<!-- 20. LIVE COLAB DEMO ANCHOR -->
-<section class="slide">
-  <div class="eyebrow">Live demo · 10 minutes</div>
-  <h2>Three lines of Python<br>running a state-of-the-art encoder.</h2>
-  <div class="rule"></div>
-  <pre style="margin-top: 16px; font-size: 18px; line-height: 1.6;"><span class="com"># 1. Install (already in Colab images, but explicit is good)</span>
-!pip install -q transformers
-
-<span class="com"># 2. Load a zero-shot classifier</span>
-<span class="kw">from</span> transformers <span class="kw">import</span> pipeline
-clf = <span class="fn">pipeline</span>(<span class="str">"zero-shot-classification"</span>,
-               model=<span class="str">"MoritzLaurer/DeBERTa-v3-base-mnli-fever-anli"</span>)
-
-<span class="com"># 3. Use it</span>
-<span class="fn">clf</span>(<span class="str">"The country has been on the Priority Watch List for three years."</span>,
-    candidate_labels=[<span class="str">"on Watch List"</span>, <span class="str">"removed from Watch List"</span>, <span class="str">"unrelated"</span>])</pre>
-  <p class="small" style="margin-top: 18px;">Switch to Colab now. We run this together. The model downloads once, then sits in memory for the rest of the session.</p>
-  <div class="slide-footer"><span>Day 1 · Movement 02</span><span>20 / 30</span></div>
-</section>
-
-<!-- 21. SECTION DIVIDER 3 -->
-<section class="slide section-divider dark">
-  <div class="num">03</div>
-  <div class="eyebrow">Third movement · 50 minutes</div>
-  <h1>A working stance demo<br>on real trade data.</h1>
-  <p class="lede">No fine-tuning yet. Off-the-shelf model, real text from US trade reports, real measurement question.</p>
-  <div class="slide-footer"><span>Day 1</span><span>21 / 30</span></div>
-</section>
-
-<!-- 22. THE DATASET -->
-<section class="slide">
-  <div class="eyebrow">The data</div>
-  <h2>National Trade Estimate reports,<br>1995 to 2022.</h2>
-  <div class="rule"></div>
-  <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 40px; flex: 1; min-height: 0;">
-    <div>
-      <p>Each year the US Trade Representative publishes a country-by-country review of foreign trade barriers. The IP-rights section is what we want.</p>
-      <p>1,434 country-year IP paragraphs over 28 years. English. Free, redistributable, clean enough for a demo.</p>
-      <p class="small" style="margin-top: 10px;"><strong>Source.</strong> Park's replication repository.</p>
-      <p class="mono" style="font-size: 14px; color: var(--highlight); margin-top: 4px;">github.com/jacqpark/nteText</p>
-    </div>
-    <div class="card cool" style="padding: 18px 22px;">
-      <div class="label">Sample paragraph · Korea, 2004</div>
-      <p style="font-style: italic; font-family: 'Crimson Pro', serif; font-size: 17px; line-height: 1.4; color: var(--ink); margin-bottom: 10px;">"Korea has continued to make progress in protecting intellectual property rights, but significant problems remain. The lack of effective deterrent penalties and the continued availability of pirated and counterfeit goods in major markets are ongoing concerns."</p>
-      <p class="small" style="margin-top: 8px; font-size: 14px;">An interpretive paragraph. Some praise, some criticism. The encoder will need to weigh both halves.</p>
-    </div>
-  </div>
-  <div class="slide-footer"><span>Day 1 · Movement 03</span><span>22 / 30</span></div>
-</section>
-
-<!-- 23. THE MODEL CHOICE -->
-<section class="slide">
-  <div class="eyebrow">The model</div>
-  <h2>Off-the-shelf today.<br>Fine-tuned tomorrow.</h2>
   <div class="rule"></div>
   <div class="two-col">
     <div>
-      <h4>What we use today</h4>
-      <p class="mono" style="font-size: 16px; color: var(--highlight); margin-bottom: 12px;">MoritzLaurer/DeBERTa-v3-base-<br>mnli-fever-anli</p>
       <ul class="bare">
-        <li>~184M parameters, ~735 MB</li>
-        <li>MIT license</li>
-        <li>Pretrained on three NLI corpora</li>
-        <li>Used through zero-shot pipeline with our own candidate labels</li>
+        <li><span class="highlight">Code cells.</span> Type Python, press Shift Enter.</li>
+        <li><span class="highlight">Text cells.</span> Markdown for notes and headings.</li>
+        <li><span class="highlight">Runtime menu.</span> Pick CPU or GPU. Restart runtime when things misbehave.</li>
+        <li><span class="highlight">Files panel on the left.</span> Upload data. Mount Google Drive.</li>
+        <li><span class="highlight">Secrets, the key icon.</span> Where API keys live. Never paste a key into a code cell.</li>
       </ul>
-      <p class="small" style="margin-top: 10px;">Loads on free Colab CPU in 30 to 45 seconds. On paid GPU, almost instant.</p>
     </div>
     <div>
-      <h4>What Park uses in the paper</h4>
-      <p class="mono" style="font-size: 16px; color: var(--highlight); margin-bottom: 12px;">MoritzLaurer/DeBERTa-v3-base-<br>mnli-fever-anli + fine-tuning</p>
+      <h4>The right way to read a secret</h4>
+      <pre style="margin-top: 8px;"><span class="kw">from</span> google.colab <span class="kw">import</span> userdata
+<span class="kw">import</span> os
+
+os.environ[<span class="str">"ANTHROPIC_API_KEY"</span>] = (
+  userdata.<span class="fn">get</span>(<span class="str">"ANTHROPIC_API_KEY"</span>)
+)</pre>
+      <p class="tiny" style="margin-top: 10px;">Add the key via the left-sidebar key icon. Name it <code>ANTHROPIC_API_KEY</code>. We use this pattern on Day 3 with the Anthropic API.</p>
+    </div>
+  </div>
+  <div class="slide-footer"><span>Day 1, Movement 02</span><span>19 / 32</span></div>
+</section>
+
+<!-- 20. LIVE THREE-LINE DEMO -->
+<section class="slide">
+  <div class="eyebrow">Live demo, switch to Colab</div>
+  <h2>Three lines of Python<br>load a state-of-the-art encoder.</h2>
+  <div class="rule"></div>
+  <div class="two-col">
+    <div>
+      <pre style="font-size: 16px;"><span class="com"># cell 1</span>
+!pip install -q transformers
+
+<span class="com"># cell 2</span>
+<span class="kw">from</span> transformers <span class="kw">import</span> pipeline
+clf = <span class="fn">pipeline</span>(
+  <span class="str">"sentiment-analysis"</span>,
+  model=<span class="str">"cardiffnlp/twitter-roberta"</span>
+        <span class="str">"-base-sentiment-latest"</span>,
+)
+
+<span class="com"># cell 3</span>
+<span class="fn">clf</span>(<span class="str">"Today's bipartisan vote was a real step forward."</span>)
+<span class="com"># [{'label': 'positive', 'score': 0.94}]</span></pre>
+    </div>
+    <div>
+      <h4>What the audience sees live</h4>
       <ul class="bare">
-        <li>~435M parameters</li>
-        <li>300 hand-labeled paragraphs</li>
-        <li>13 hypotheses with fixed weights</li>
-        <li>10-fold cross-validation, F1 of 0.87</li>
+        <li>One install, about 30 seconds.</li>
+        <li>One pipeline construction, about 20 seconds for first model download.</li>
+        <li>Five inference calls on five sentences, about a second each.</li>
       </ul>
-      <p class="small" style="margin-top: 10px;">Day 2 covers the validity work. Today the off-the-shelf version is on screen so the gap is concrete.</p>
+      <p class="lede" style="margin-top: 22px; font-size: 22px;">A 125-million-parameter Transformer running on Google's hardware in twenty seconds. Five years ago this required a graduate course. Today it is a pipeline call.</p>
     </div>
   </div>
-  <div class="slide-footer"><span>Day 1 · Movement 03</span><span>23 / 30</span></div>
+  <div class="slide-footer"><span>Day 1, Movement 02</span><span>20 / 32</span></div>
 </section>
 
-<!-- 24. WHAT WE'LL SEE -->
+<!-- 21. CPU VS GPU LIVE TIMING -->
 <section class="slide">
-  <div class="eyebrow">Live demo · 25 minutes</div>
-  <h2>Four things to watch for<br>as the cells run.</h2>
+  <div class="eyebrow">Live timing on 1000 sentences</div>
+  <h2>The number on the right<br>is what we paid for.</h2>
   <div class="rule"></div>
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; flex: 1; min-height: 0;">
-    <div class="card">
-      <div class="label">01 · Easy wins</div>
-      <h3>Factual markers</h3>
-      <p>Paragraphs with explicit factual markers (Watch List, Priority Foreign Country) get classified correctly nearly every time.</p>
+  <div class="bars" style="margin-top: 12px;">
+    <div class="bar-row">
+      <div class="name">Free Colab CPU</div>
+      <div class="track"><div class="fill muted" style="width: 100%;"></div></div>
+      <div class="val">~50 sec</div>
     </div>
-    <div class="card">
-      <div class="label">02 · Interpretive misses</div>
-      <h3>Where zero-shot stumbles</h3>
-      <p>"The country has made progress" trips zero-shot models. Day 2 shows why fine-tuning fixes this.</p>
+    <div class="bar-row">
+      <div class="name">Free Colab T4 GPU</div>
+      <div class="track"><div class="fill" style="width: 10%;"></div></div>
+      <div class="val">~5 sec</div>
     </div>
-    <div class="card">
-      <div class="label">03 · Aggregation</div>
-      <h3>The mixed-paragraph problem</h3>
-      <p>Most paragraphs contain both praise and criticism. A single label hides the mixture. Park's weighted-sum design is one solution.</p>
+    <div class="bar-row">
+      <div class="name">Paid Colab L4 GPU</div>
+      <div class="track"><div class="fill warm" style="width: 5%;"></div></div>
+      <div class="val">~2 sec</div>
     </div>
-    <div class="card" style="border-top-color: var(--accent);">
-      <div class="label">04 · Validity</div>
-      <h3>The question that follows you home</h3>
-      <p>Off-the-shelf accuracy looks impressive in a demo. "Looks impressive" is far from "publishable." Validation closes the gap.</p>
+    <div class="bar-row">
+      <div class="name">Laptop CPU, no AVX</div>
+      <div class="track"><div class="fill muted" style="width: 100%; background: repeating-linear-gradient(45deg, var(--ink-faint), var(--ink-faint) 4px, var(--bg-deep) 4px, var(--bg-deep) 8px);"></div></div>
+      <div class="val">slower still</div>
     </div>
   </div>
-  <div class="slide-footer"><span>Day 1 · Movement 03</span><span>24 / 30</span></div>
+  <p class="small" style="margin-top: 18px;">These numbers come from the live notebook in the last two minutes. We do not quote pre-baked numbers. Once you understand the speedup, you stop avoiding tasks that take hours. You run them while you make coffee.</p>
+  <p class="tiny" style="margin-top: 8px;">Numbers above are illustrative ratios. Live values fill the slide once the demo cell finishes.</p>
+  <div class="slide-footer"><span>Day 1, Movement 02</span><span>21 / 32</span></div>
 </section>
 
-<!-- 25. SECTION DIVIDER 4 -->
+<!-- 22. Q&A PAUSE -->
+<section class="slide">
+  <div class="eyebrow">Five-minute Q&amp;A pause</div>
+  <h2>Questions about Colab itself.</h2>
+  <div class="rule"></div>
+  <div class="two-col">
+    <div>
+      <h4>Common questions, pre-answered</h4>
+      <ul class="bare">
+        <li><span class="highlight">Do I need a paid account?</span> No. Free tier handles every notebook in this workshop. Day 2 batch demo is slower without GPU.</li>
+        <li><span class="highlight">Can I run on my laptop?</span> Yes if you are comfortable installing Python and CUDA. For today, just use Colab.</li>
+        <li><span class="highlight">What about Drive storage?</span> Free Drive is 15 GB. Plenty for our notebooks. Datasets bigger than 5 GB warrant the Pro plan.</li>
+      </ul>
+    </div>
+    <div>
+      <h4>Things we will defer</h4>
+      <ul class="bare">
+        <li>Fine-tuning. Day 2 mentions briefly. Beyond scope of this workshop.</li>
+        <li>Local installs. Out of scope. Use Colab.</li>
+        <li>Project-specific replication paths. Office hours.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="slide-footer"><span>Day 1, Movement 02</span><span>22 / 32</span></div>
+</section>
+
+<!-- 23. SECTION DIVIDER 3 -->
 <section class="slide section-divider dark">
-  <div class="num">04</div>
-  <div class="eyebrow">Hands-on · 15 minutes</div>
-  <h1>Your turn.</h1>
-  <p class="lede">Open free Colab. Run a tiny version yourself. The goal is to know that you can.</p>
-  <div class="slide-footer"><span>Day 1</span><span>25 / 30</span></div>
+  <div class="num">03</div>
+  <div class="eyebrow">Third movement, 35 minutes</div>
+  <h1>Stance on real<br>UN speeches.</h1>
+  <p class="lede">No fine-tuning yet. Off-the-shelf model, real text, real measurement question.</p>
+  <div class="slide-footer"><span>Day 1</span><span>23 / 32</span></div>
 </section>
 
-<!-- 26. HANDS-ON SETUP -->
+<!-- 24. THE DATASET -->
 <section class="slide">
-  <div class="eyebrow">Three steps before you run anything</div>
-  <h2>Open the notebook,<br>pick a runtime,<br>say yes to the warning.</h2>
+  <div class="eyebrow">The dataset</div>
+  <h2>The UN General Debate Corpus.<br>Eight thousand speeches, 1970 to present.</h2>
   <div class="rule"></div>
-  <div class="three-col">
-    <div class="card cool">
-      <div class="label">Step 01</div>
-      <h3>Open the notebook</h3>
-      <p>Click the link in the chat. Sign in with your Google account if prompted. Save a copy in your own Drive (File · Save a copy).</p>
+  <div class="two-col">
+    <div>
+      <h4>Specs</h4>
+      <ul class="bare">
+        <li><span class="highlight">Source.</span> Harvard Dataverse, doi:10.7910/DVN/0TJX8Y.</li>
+        <li><span class="highlight">License.</span> CC0. Fully open.</li>
+        <li><span class="highlight">Coverage.</span> Heads of delegation, opening of the UN General Assembly.</li>
+        <li><span class="highlight">For today.</span> The 2017-only snapshot mirrored in <code>quanteda.corpora</code>. About 196 speeches, 1 MB.</li>
+        <li><span class="highlight">Sample.</span> Sentence-tokenize, take roughly 200 sentences across countries.</li>
+      </ul>
     </div>
-    <div class="card cool">
-      <div class="label">Step 02</div>
-      <h3>Pick a runtime</h3>
-      <p>Runtime · Change runtime type · CPU is fine for this notebook. We are not using GPU on the hands-on.</p>
-    </div>
-    <div class="card cool">
-      <div class="label">Step 03</div>
-      <h3>Run all cells</h3>
-      <p>Runtime · Run all. The first cell installs <code>transformers</code>. Subsequent cells run in seconds.</p>
+    <div>
+      <h4>Three sample sentences</h4>
+      <p class="small" style="margin-bottom: 10px; font-style: italic;">"My country reaffirms its commitment to the Paris Agreement and calls on all states to raise their nationally determined contributions."</p>
+      <p class="small" style="margin-bottom: 10px; font-style: italic;">"Investment in fossil-fuel infrastructure remains a national priority for energy security and industrial development."</p>
+      <p class="small" style="margin-bottom: 10px; font-style: italic;">"The reform of the Security Council remains an urgent task that this Assembly must not defer for another decade."</p>
+      <p class="tiny" style="margin-top: 14px;">The encoder will read each, score it, and give us back a stance label. Public corpus. Permissive license. Substantive question political scientists actually ask.</p>
     </div>
   </div>
-  <p class="small" style="margin-top: 20px;">If the install cell warns about a kernel restart, accept and re-run. This is normal.</p>
-  <div class="slide-footer"><span>Day 1 · Hands-on</span><span>26 / 30</span></div>
+  <div class="slide-footer"><span>Day 1, Movement 03</span><span>24 / 32</span></div>
 </section>
 
-<!-- 27. WHAT TO DO IN 15 MIN -->
+<!-- 25. THE MODEL AND THE LABELS -->
 <section class="slide">
-  <div class="eyebrow">15 minutes</div>
-  <h2>Three small experiments.</h2>
+  <div class="eyebrow">The model and the labels</div>
+  <h2>One model.<br>Three plain-English labels.</h2>
+  <div class="rule"></div>
+  <div class="two-col">
+    <div>
+      <h4>The model</h4>
+      <p><code>MoritzLaurer/DeBERTa-v3-base-mnli-fever-anli</code></p>
+      <ul class="bare">
+        <li><span class="highlight">License.</span> MIT. Open weights.</li>
+        <li><span class="highlight">Size.</span> ~184 million parameters, ~735 MB.</li>
+        <li><span class="highlight">Training.</span> Three NLI corpora, millions of premise-hypothesis pairs.</li>
+        <li><span class="highlight">Pipeline.</span> <code>zero-shot-classification</code>.</li>
+      </ul>
+    </div>
+    <div>
+      <h4>Candidate labels</h4>
+      <pre style="font-size: 14px;">candidate_labels = [
+  <span class="str">"the speaker supports stronger</span>
+<span class="str">   international climate action"</span>,
+  <span class="str">"the speaker is skeptical of</span>
+<span class="str">   international climate action"</span>,
+  <span class="str">"the speaker does not</span>
+<span class="str">   discuss climate"</span>,
+]</pre>
+      <p class="tiny" style="margin-top: 12px;">We are not training. We are giving the model three plain-English statements and asking which one each sentence entails. The argmax of the three returned probabilities is the prediction.</p>
+    </div>
+  </div>
+  <div class="slide-footer"><span>Day 1, Movement 03</span><span>25 / 32</span></div>
+</section>
+
+<!-- 26. RUN LIVE, LOOK AT OUTPUTS -->
+<section class="slide">
+  <div class="eyebrow">Live, in the notebook</div>
+  <h2>Three things to watch for.</h2>
   <div class="rule"></div>
   <div class="three-col">
     <div class="card">
-      <div class="label">Experiment 01</div>
-      <h3>Run as-is</h3>
-      <p>Run the notebook unchanged. Read the printed output for 5 NTE excerpts. Notice which ones are easy and which are mixed.</p>
+      <div class="label">Watch 01</div>
+      <h3>Easy hits</h3>
+      <p>Sentences that mention Paris Agreement, carbon emissions, or fossil fuels resolve cleanly to the supportive label, often above 0.85.</p>
+      <p>Sentences about peacekeeping or Security Council reform land in the off-topic bucket.</p>
     </div>
     <div class="card">
-      <div class="label">Experiment 02</div>
-      <h3>Edit the labels</h3>
-      <p>Change the candidate labels in cell 4. Try labels of your own choosing. See how much the output depends on how you ask.</p>
+      <div class="label">Watch 02</div>
+      <h3>Hidden climate language</h3>
+      <p>Sentences about "energy security" or "industrial transition" can carry a real climate stance the model misreads as off-topic.</p>
+      <p>Sentences about "rising seas" land correctly but at low confidence. The frame is implicit, not lexical.</p>
     </div>
     <div class="card">
-      <div class="label">Experiment 03</div>
-      <h3>Try your own text</h3>
-      <p>Replace one example with text from your own research. The model has never seen your data. Often it still produces something useful.</p>
+      <div class="label">Watch 03</div>
+      <h3>Calibration</h3>
+      <p>The model returns probabilities. Even confident-looking labels can be 0.55 versus 0.45 splits.</p>
+      <p>We will plot the probability histogram and discuss what cutoff a real paper would use.</p>
     </div>
   </div>
-  <p class="small" style="margin-top: 20px;">Drop confusions in the chat. We surface a few during the wrap-up.</p>
-  <div class="slide-footer"><span>Day 1 · Hands-on</span><span>27 / 30</span></div>
+  <p class="tiny" style="margin-top: 16px;">Live demo, about 18 minutes in the notebook. Drop confusions in chat as the cells run.</p>
+  <div class="slide-footer"><span>Day 1, Movement 03</span><span>26 / 32</span></div>
 </section>
 
-<!-- 28. TROUBLESHOOTING -->
+<!-- 27. FIVE MISCLASSIFICATIONS -->
 <section class="slide">
-  <div class="eyebrow">If something breaks</div>
-  <h2>Four issues you will probably see,<br>30-second fixes for each.</h2>
+  <div class="eyebrow">Five misclassifications and why</div>
+  <h2>Where off-the-shelf<br>zero-shot stumbles.</h2>
   <div class="rule"></div>
-  <table>
-    <thead><tr><th style="width: 27%;">Symptom</th><th style="width: 33%;">Cause</th><th>Fix</th></tr></thead>
+  <table style="margin-top: 4px;">
+    <thead>
+      <tr><th style="width: 22%;">Pattern</th><th>What you see</th><th style="width: 26%;">Diagnosis</th></tr>
+    </thead>
     <tbody>
-      <tr>
-        <td><strong>RESTART REQUIRED</strong> warning after pip install.</td>
-        <td>Colab pre-loaded packages were upgraded.</td>
-        <td>Click Restart Runtime, then run cells from the top.</td>
-      </tr>
-      <tr>
-        <td>Model download stalls or fails.</td>
-        <td>Hugging Face hub rate-limit or transient network.</td>
-        <td>Wait 60 seconds, re-run the cell.</td>
-      </tr>
-      <tr>
-        <td>"CUDA out of memory" on GPU.</td>
-        <td>Earlier cell loaded a too-large model.</td>
-        <td>Runtime · Disconnect and delete runtime. Start fresh.</td>
-      </tr>
-      <tr>
-        <td>Cells run, output looks wrong.</td>
-        <td>Edited labels but did not re-run upstream cells.</td>
-        <td>Runtime · Run all. Re-runs in dependency order.</td>
-      </tr>
+      <tr><td><span class="highlight">Hidden lexicon</span></td><td>"Energy independence" without a climate keyword lands off-topic.</td><td>The model has no climate-relevant lexicon attached.</td></tr>
+      <tr><td><span class="highlight">Mixed paragraph</span></td><td>Praise for Paris implementation that opens with criticism of slow progress lands skeptical.</td><td>Model picks the first cue and misses the second.</td></tr>
+      <tr><td><span class="highlight">Low-confidence argmax</span></td><td>Aspirational language at 0.51 in the supportive bucket.</td><td>Argmax is what we read. Look at probabilities, not labels.</td></tr>
+      <tr><td><span class="highlight">Implicit framing</span></td><td>"Rising seas" lands supportive but at low confidence.</td><td>Climate is implicit, not lexical.</td></tr>
+      <tr><td><span class="highlight">Rhetoric</span></td><td>Sarcasm or hedging in formal UN register lands the wrong way.</td><td>Encoders are weak on tone-of-voice.</td></tr>
     </tbody>
   </table>
-  <p class="tiny" style="margin-top: auto;">If none of these match, paste the last 6 lines of your error into the chat.</p>
-  <div class="slide-footer"><span>Day 1 · Hands-on</span><span>28 / 30</span></div>
+  <p class="lede" style="margin-top: 18px; font-size: 22px;">Day 2 is the answer to all five. Hand-coded gold set. Validation. A confusion matrix you can put in an appendix.</p>
+  <div class="slide-footer"><span>Day 1, Movement 03</span><span>27 / 32</span></div>
 </section>
 
-<!-- 29. RECAP -->
+<!-- 28. SECTION DIVIDER 4 -->
+<section class="slide section-divider dark">
+  <div class="num">04</div>
+  <div class="eyebrow">Fourth movement, 15 minutes</div>
+  <h1>Your turn.</h1>
+  <p class="lede">Open free Colab. Run a tiny version yourself. The goal is to know that you can.</p>
+  <div class="slide-footer"><span>Day 1</span><span>28 / 32</span></div>
+</section>
+
+<!-- 29. SETUP + EXPERIMENTS -->
 <section class="slide">
-  <div class="eyebrow">Day 1 · Takeaways</div>
+  <div class="eyebrow">Setup, then three small experiments</div>
+  <h2>Open the notebook.<br>Run all. Then play.</h2>
+  <div class="rule"></div>
+  <div class="two-col">
+    <div>
+      <h4>Setup</h4>
+      <ul class="bare">
+        <li>Open the hands-on link from chat. Sign into Google if asked.</li>
+        <li><span class="highlight">File, Save a copy in Drive.</span> Keep your edits.</li>
+        <li><span class="highlight">Runtime, Run all.</span> First cell installs transformers, ~30 sec. Second cell downloads model, ~45 sec. Then seconds per cell.</li>
+        <li>Total runtime under three minutes on free CPU.</li>
+      </ul>
+    </div>
+    <div>
+      <h4>Three experiments</h4>
+      <ul class="bare">
+        <li><span class="highlight">Experiment 01.</span> Read printed outputs for ten UN speech sentences. Notice which are easy and which are mixed.</li>
+        <li><span class="highlight">Experiment 02.</span> Edit the candidate labels. Try shorter labels. Add a fourth label. See how output depends on wording.</li>
+        <li><span class="highlight">Experiment 03.</span> Replace one example with a sentence from your own research. The model has never seen your data. Often it still produces a useful first cut.</li>
+      </ul>
+      <p class="tiny" style="margin-top: 14px;">Drop confusions in chat. We surface a few during wrap-up.</p>
+    </div>
+  </div>
+  <div class="slide-footer"><span>Day 1, Movement 04</span><span>29 / 32</span></div>
+</section>
+
+<!-- 30. TROUBLESHOOTING -->
+<section class="slide">
+  <div class="eyebrow">If something breaks</div>
+  <h2>Four common issues.</h2>
+  <div class="rule"></div>
+  <table style="margin-top: 8px;">
+    <thead>
+      <tr><th style="width: 32%;">Symptom</th><th>What probably happened</th><th style="width: 30%;">Fix</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>"RESTART REQUIRED" warning after pip install.</td><td>The runtime needs a restart to pick up the new package.</td><td>Runtime, Restart, then run all from the top.</td></tr>
+      <tr><td>Model download stalls.</td><td>Hugging Face mirror is slow.</td><td>Wait sixty seconds and re-run the cell.</td></tr>
+      <tr><td>"CUDA out of memory" on GPU.</td><td>An earlier cell loaded a too-large model.</td><td>Runtime, Disconnect and delete runtime. Start fresh.</td></tr>
+      <tr><td>Cells run, output looks wrong.</td><td>You edited labels but did not re-run upstream cells.</td><td>Runtime, Run all. Re-runs in dependency order.</td></tr>
+    </tbody>
+  </table>
+  <p class="tiny" style="margin-top: auto;">If none of these match, paste the last 6 lines of your error into chat.</p>
+  <div class="slide-footer"><span>Day 1, Movement 04</span><span>30 / 32</span></div>
+</section>
+
+<!-- 31. RECAP -->
+<section class="slide">
+  <div class="eyebrow">Day 1, Takeaways</div>
   <h2>What you have actually done<br>in the last two and a half hours.</h2>
   <div class="rule"></div>
   <ul class="bare" style="margin-top: 18px;">
     <li><span class="accent" style="font-weight: 600;">You can name the two model families</span> and articulate why a researcher chooses one over the other.</li>
     <li><span class="accent" style="font-weight: 600;">You can read the NLI premise-hypothesis trick</span> as a universal classifier and design candidate labels for your own task.</li>
     <li><span class="accent" style="font-weight: 600;">You have run a state-of-the-art encoder on Google Colab</span>, on free hardware, against real political text.</li>
-    <li><span class="accent" style="font-weight: 600;">You have seen what off-the-shelf can and cannot do.</span> Day 2 closes the gap with validation and fine-tuning.</li>
+    <li><span class="accent" style="font-weight: 600;">You have seen what off-the-shelf can and cannot do.</span> Day 2 closes the gap with validation against a hand-coded gold set.</li>
   </ul>
   <p class="lede" style="margin-top: 22px; font-size: 24px;">If a colleague asks you tomorrow whether they should use ChatGPT to label their tweets, you now have a real answer.</p>
-  <div class="slide-footer"><span>Day 1 · Wrap</span><span>29 / 30</span></div>
+  <div class="slide-footer"><span>Day 1, Wrap</span><span>31 / 32</span></div>
 </section>
 
-<!-- 30. DAY 2 PREVIEW -->
+<!-- 32. DAY 2 PREVIEW -->
 <section class="slide section-divider dark">
-  <div class="eyebrow">Tomorrow · Day 02</div>
+  <div class="eyebrow">Tomorrow, Day 02</div>
   <h1>From a model<br>to a measurement.</h1>
-  <p class="lede">We take the same encoder, add 300 hand-labeled paragraphs, and walk through the validation pipeline that turns predictions into a defensible proxy.</p>
+  <p class="lede">We take the same encoder, run it across the full UN General Debate Corpus, build a hand-coded gold set, and turn predictions into a defensible proxy.</p>
   <div style="margin-top: 32px; display: grid; grid-template-columns: 1fr 1fr; gap: 48px; position: relative; z-index: 2;">
     <div>
       <h4>Homework</h4>
-      <p style="color: var(--bg); font-size: 17px; line-height: 1.5;">Re-run the hands-on notebook on your own. Try one labeling task from your own research, even if rough. Bring 3 examples to Day 2.</p>
+      <p style="color: var(--bg); font-size: 17px; line-height: 1.5;">Re-run the hands-on notebook on your own. Try one labeling task from your own research, even if rough. Bring three examples to Day 2.</p>
     </div>
     <div>
       <h4>Optional reading</h4>
       <p style="color: var(--bg); font-size: 17px; line-height: 1.5;">Bestvater &amp; Monroe (2023, PA), "Sentiment Is Not Stance." The single best 30-page primer for the validity questions Day 2 asks.</p>
     </div>
   </div>
-  <div class="slide-footer"><span>End of Day 1</span><span>30 / 30</span></div>
+  <div class="slide-footer"><span>End of Day 1</span><span>32 / 32</span></div>
 </section>
 
 </div>
 <div class="hud">
   <button id="prev">PREV</button>
-  <span id="counter">1 / 30</span>
+  <span id="counter">1 / 32</span>
   <button id="next">NEXT</button>
 </div>
-<div class="progress-bar" id="bar" style="width: 3.3%"></div>
+<div class="progress-bar" id="bar" style="width: 3.1%"></div>
 
 <script>
 const slides = Array.from(document.querySelectorAll('.slide'));

@@ -400,9 +400,9 @@ section h2 {
     <tbody>
       <tr><td class="label">Cost / 1k texts</td><td class="encoder">~$0 after model download</td><td class="decoder">A few cents to a few dollars (per token)</td></tr>
       <tr><td class="label">Speed</td><td class="encoder">~50 to 500 texts / sec on free GPU</td><td class="decoder">~1 to 5 calls / sec over network</td></tr>
-      <tr><td class="label">Determinism</td><td class="encoder">Same input, same output, every time</td><td class="decoder">Stochastic; pin temperature 0 + version</td></tr>
+      <tr><td class="label">Determinism</td><td class="encoder">Same input, same output, every time</td><td class="decoder">Stochastic. Pin temperature 0 and version.</td></tr>
       <tr><td class="label">Validation</td><td class="encoder">k-fold CV, confusion matrix, kappa</td><td class="decoder">Spot-check, schema validation, audits</td></tr>
-      <tr><td class="label">Replication</td><td class="encoder">Pin model ID, ship weights with code</td><td class="decoder">Pin version; log every prompt + response</td></tr>
+      <tr><td class="label">Replication</td><td class="encoder">Pin model ID, ship weights with code</td><td class="decoder">Pin version, log every prompt and response</td></tr>
     </tbody>
   </table>
 </section>
@@ -410,7 +410,7 @@ section h2 {
 <section>
   <h2>The NLI trick · why an encoder can do almost anything</h2>
   <div class="nli-box">
-    An NLI-trained encoder learns one job. Given a <strong>premise</strong> and a <strong>hypothesis</strong>, decide entailment / neutral / contradiction. Any classification can be rewritten as a yes-or-no entailment question. <code>zero-shot-classification</code> does this for you with a list of candidate labels. Park (2026) aggregates 13 such hypotheses with weights into a continuous -5 to +5 stance score.
+    An NLI-trained encoder learns one job. Given a <strong>premise</strong> and a <strong>hypothesis</strong>, decide entailment, neutral, or contradiction. Any classification can be rewritten as a yes-or-no entailment question. <code>zero-shot-classification</code> does this for you with a list of candidate labels. Stance, topic, framing, named-entity. Same machinery, different hypotheses.
   </div>
 </section>
 
@@ -428,9 +428,9 @@ clf = <span class="fn">pipeline</span>(
         <span class="str">"base-mnli-fever-anli"</span>,
 )
 <span class="fn">clf</span>(text, candidate_labels=[
-  <span class="str">"weak IP protection"</span>,
-  <span class="str">"strong IP protection"</span>,
-  <span class="str">"unrelated"</span>,
+  <span class="str">"supports climate action"</span>,
+  <span class="str">"skeptical of climate action"</span>,
+  <span class="str">"does not discuss climate"</span>,
 ])</div>
     </div>
     <div>
