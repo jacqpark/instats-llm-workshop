@@ -516,7 +516,7 @@ rho, _ = <span class="fn">spearmanr</span>(p_supportive, gold_score)
   <div class="num">03</div>
   <div class="eyebrow">Third movement, 35 minutes</div>
   <h1>Climate emphasis<br>over time.</h1>
-  <p class="lede">Country-year scores. Time series 1970 to present. Compare against the Paris Agreement.</p>
+  <p class="lede">Country-year scores. Time series 1946 to 2025. Compare against the Paris Agreement.</p>
   <div class="slide-footer"><span>Day 2</span><span>22 / 32</span></div>
 </section>
 <!-- 23. PUBLISHED-STYLE MEASURE -->
@@ -527,7 +527,7 @@ rho, _ = <span class="fn">spearmanr</span>(p_supportive, gold_score)
   <div class="two-col">
     <div>
       <p>The plot we are about to build is the kind of measure that has been constructed from UNGDC many times. Baturo, Dasandi, and Mikhaylov 2017 introduced UNGDC and demonstrated several text-as-data measures on it. More recent papers have extracted topic emphasis, sentiment toward institutions, and stance toward specific issues from the same corpus.</p>
-      <p>What we are doing today is one small piece of that family. Climate-emphasis share by country and year, computed from a zero-shot encoder, plotted from 1970 to the most recent year, with the Paris Agreement marked.</p>
+      <p>What we are doing today is one small piece of that family. Climate-emphasis share by country and year, computed from a zero-shot encoder, plotted from 1946 to 2025, with the Paris Agreement marked.</p>
     </div>
     <div>
       <h4>What we are not doing</h4>
@@ -574,7 +574,7 @@ rho, _ = <span class="fn">spearmanr</span>(p_supportive, gold_score)
   <div class="two-col">
     <div>
       <h4>View 01, global mean</h4>
-      <p>Mean of supportive-class probability across all speeches, by year, 1970 to present.</p>
+      <p>Mean of supportive-class probability across all speeches, by year, 1946 to 2025.</p>
       <p>Low through the 1970s and 1980s. Ticks up through the 1990s. Accelerates in the early 2000s. Visible bend around 2015.</p>
       <p class="small" style="margin-top: 12px;">Vertical line marks the Paris Agreement signing in December 2015.</p>
     </div>
@@ -672,7 +672,7 @@ rho, _ = <span class="fn">spearmanr</span>(p_supportive, gold_score)
       <tr><th style="width: 42%;">Pre-answered</th><th>Short answer</th></tr>
     </thead>
     <tbody>
-      <tr><td>Can I run today's pipeline on free Colab CPU?</td><td>Yes, but the five-thousand-row pass takes about 30 minutes instead of three. Use a smaller sample for the first run.</td></tr>
+      <tr><td>Can I run today's pipeline on free Colab CPU?</td><td>Yes, but the 4,761-row pass takes about 30 minutes instead of three. Use a smaller sample for the first run.</td></tr>
       <tr><td>What if my corpus is in another language?</td><td>Translate first, or pick a multilingual encoder like XLM-RoBERTa-NLI. Both have tradeoffs.</td></tr>
       <tr><td>How big can the encoder be on free GPU?</td><td>DeBERTa-v3-base, the model we used, fits free T4 with room. v3-large also fits, but slower. Above 1B parameters needs paid Pro.</td></tr>
       <tr><td>Where do I publish my replication notebook?</td><td>Code on OSF or GitHub. Data on Harvard Dataverse or your institutional repo. Ship the gold-set CSV with the code.</td></tr>

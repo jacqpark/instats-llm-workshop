@@ -348,7 +348,7 @@ thead th {
     <div class="card">
       <div class="label">Movement 03, 35 min</div>
       <h3>Time series</h3>
-      <p>Plot climate emphasis from 1970 onward. Compare to the Paris Agreement.</p>
+      <p>Plot climate emphasis from 1946 onward. Compare to the Paris Agreement.</p>
     </div>
     <div class="card">
       <div class="label">Movement 04, 15 min</div>
@@ -442,7 +442,7 @@ thead th {
 <!-- 7. THE CORPUS -->
 <section class="slide">
   <div class="eyebrow">The corpus</div>
-  <h2>UN General Debate Corpus,<br>1970 to present.</h2>
+  <h2>UN General Debate Corpus,<br>1946 to 2025.</h2>
   <div class="rule"></div>
   <div class="two-col">
     <div>
@@ -450,9 +450,9 @@ thead th {
       <ul class="bare">
         <li><span class="highlight">Source.</span> Harvard Dataverse, doi:10.7910/DVN/0TJX8Y.</li>
         <li><span class="highlight">License.</span> CC0. Fully open.</li>
-        <li><span class="highlight">Size.</span> ~80 MB, about 8000 speeches.</li>
+        <li><span class="highlight">Size.</span> ~30 MB gzipped, 4,761 stratified speeches.</li>
         <li><span class="highlight">Coverage.</span> Heads of delegation, opening of the UN General Assembly.</li>
-        <li><span class="highlight">For today.</span> A stratified five-thousand-row sample.</li>
+        <li><span class="highlight">For today.</span> Pre-built sample bundled in the workshop release.</li>
       </ul>
     </div>
     <div>
@@ -460,7 +460,7 @@ thead th {
       <pre><span class="com"># speech-level dataframe</span>
 country     <span class="com"># ISO3 alpha</span>
 session     <span class="com"># UN GA session number</span>
-year        <span class="com"># 1970 to present</span>
+year        <span class="com"># 1946 to 2025</span>
 text        <span class="com"># full speech, English</span></pre>
       <p class="tiny" style="margin-top: 12px;">We will not sentence-tokenize today. Working at the speech level keeps the live encoder pass under five minutes on T4.</p>
     </div>
@@ -477,7 +477,7 @@ text        <span class="com"># full speech, English</span></pre>
     <div class="chevron shade-1">
       <div class="num">01 Load</div>
       <h3>Read CSV</h3>
-      <p>Download from Dataverse, cache locally. Sample five thousand speeches stratified by year.</p>
+      <p>Fetch the workshop sample from the GitHub release, cache locally. Already stratified by year.</p>
     </div>
     <div class="chevron shade-2">
       <div class="num">02 Truncate</div>
@@ -510,15 +510,14 @@ text        <span class="com"># full speech, English</span></pre>
   <div class="rule"></div>
   <div class="two-col">
     <div>
-      <pre><span class="com"># cache the 80 MB CSV</span>
-<span class="kw">if</span> <span class="kw">not</span> os.path.<span class="fn">exists</span>(<span class="str">"ungdc.csv"</span>):
-  urllib.request.<span class="fn">urlretrieve</span>(URL, <span class="str">"ungdc.csv"</span>)
+      <pre><span class="com"># cache the 30 MB gzipped CSV</span>
+<span class="kw">if</span> <span class="kw">not</span> os.path.<span class="fn">exists</span>(<span class="str">"ungdc_sample.csv.gz"</span>):
+  urllib.request.<span class="fn">urlretrieve</span>(URL, <span class="str">"ungdc_sample.csv.gz"</span>)
 
-ungdc = pd.<span class="fn">read_csv</span>(<span class="str">"ungdc.csv"</span>)
+ungdc = pd.<span class="fn">read_csv</span>(<span class="str">"ungdc_sample.csv.gz"</span>,
+                    compression=<span class="str">"gzip"</span>)
 
-<span class="com"># stratified sample by year</span>
-sample = (ungdc.<span class="fn">groupby</span>(<span class="str">"year"</span>)
-  .<span class="fn">sample</span>(n=<span class="kw">66</span>, random_state=<span class="kw">42</span>))</pre>
+<span class="com"># 4,761 rows already stratified by year</span></pre>
     </div>
     <div>
       <h4>What to point out live</h4>
@@ -561,7 +560,7 @@ results = <span class="fn">zsc</span>(texts,
       <h4>The off-topic label is doing real work</h4>
       <p>Without a third "does not discuss climate" label, every speech that does not mention climate would be forced into either supportive or skeptical. The proxy would be contaminated with off-topic noise.</p>
       <p>The third label is the sink. It absorbs the speeches that should not contribute to the climate-stance signal.</p>
-      <p class="lede" style="margin-top: 18px; font-size: 22px;">Five thousand speeches. About three minutes on T4 GPU.</p>
+      <p class="lede" style="margin-top: 18px; font-size: 22px;">About 4,761 speeches. Three minutes on T4 GPU.</p>
     </div>
   </div>
   <div class="slide-footer"><span>Day 2, Movement 01</span><span>10 / 32</span></div>
@@ -833,7 +832,7 @@ rho, _ = <span class="fn">spearmanr</span>(p_supportive, gold_score)
   <div class="num">03</div>
   <div class="eyebrow">Third movement, 35 minutes</div>
   <h1>Climate emphasis<br>over time.</h1>
-  <p class="lede">Country-year scores. Time series 1970 to present. Compare against the Paris Agreement.</p>
+  <p class="lede">Country-year scores. Time series 1946 to 2025. Compare against the Paris Agreement.</p>
   <div class="slide-footer"><span>Day 2</span><span>22 / 32</span></div>
 </section>
 
@@ -845,7 +844,7 @@ rho, _ = <span class="fn">spearmanr</span>(p_supportive, gold_score)
   <div class="two-col">
     <div>
       <p>The plot we are about to build is the kind of measure that has been constructed from UNGDC many times. Baturo, Dasandi, and Mikhaylov 2017 introduced UNGDC and demonstrated several text-as-data measures on it. More recent papers have extracted topic emphasis, sentiment toward institutions, and stance toward specific issues from the same corpus.</p>
-      <p>What we are doing today is one small piece of that family. Climate-emphasis share by country and year, computed from a zero-shot encoder, plotted from 1970 to the most recent year, with the Paris Agreement marked.</p>
+      <p>What we are doing today is one small piece of that family. Climate-emphasis share by country and year, computed from a zero-shot encoder, plotted from 1946 to 2025, with the Paris Agreement marked.</p>
     </div>
     <div>
       <h4>What we are not doing</h4>
@@ -894,7 +893,7 @@ rho, _ = <span class="fn">spearmanr</span>(p_supportive, gold_score)
   <div class="two-col">
     <div>
       <h4>View 01, global mean</h4>
-      <p>Mean of supportive-class probability across all speeches, by year, 1970 to present.</p>
+      <p>Mean of supportive-class probability across all speeches, by year, 1946 to 2025.</p>
       <p>Low through the 1970s and 1980s. Ticks up through the 1990s. Accelerates in the early 2000s. Visible bend around 2015.</p>
       <p class="small" style="margin-top: 12px;">Vertical line marks the Paris Agreement signing in December 2015.</p>
     </div>
@@ -996,7 +995,7 @@ rho, _ = <span class="fn">spearmanr</span>(p_supportive, gold_score)
       <tr><th style="width: 42%;">Pre-answered</th><th>Short answer</th></tr>
     </thead>
     <tbody>
-      <tr><td>Can I run today's pipeline on free Colab CPU?</td><td>Yes, but the five-thousand-row pass takes about 30 minutes instead of three. Use a smaller sample for the first run.</td></tr>
+      <tr><td>Can I run today's pipeline on free Colab CPU?</td><td>Yes, but the 4,761-row pass takes about 30 minutes instead of three. Use a smaller sample for the first run.</td></tr>
       <tr><td>What if my corpus is in another language?</td><td>Translate first, or pick a multilingual encoder like XLM-RoBERTa-NLI. Both have tradeoffs.</td></tr>
       <tr><td>How big can the encoder be on free GPU?</td><td>DeBERTa-v3-base, the model we used, fits free T4 with room. v3-large also fits, but slower. Above 1B parameters needs paid Pro.</td></tr>
       <tr><td>Where do I publish my replication notebook?</td><td>Code on OSF or GitHub. Data on Harvard Dataverse or your institutional repo. Ship the gold-set CSV with the code.</td></tr>

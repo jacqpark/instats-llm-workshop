@@ -16,7 +16,7 @@ Files in [`day1/`](./day1/).
 Files in [`day2/`](./day2/).
 
 - `slides.html`. Self-contained HTML slide deck. Open in any browser.
-- `demo.ipynb`. Instructor notebook. Runs on paid Colab Pro with GPU. Five sections. Stratified 5,000-row sample from the full UN General Debate Corpus. Zero-shot DeBERTa scoring in batches with three candidate labels about climate stance. Speech-level and country-year CSVs. A 30-row hand-coded gold set with confusion matrix, Cohen's kappa, accuracy, Pearson r, Spearman rho, and a subgroup table by era. A time-series plot of climate emphasis 1970 to present with the Paris Agreement marked, plus a regional overlay. Off-the-shelf only, no fine-tuning.
+- `demo.ipynb`. Instructor notebook. Runs on paid Colab Pro with GPU. Five sections. Stratified 4,761-row sample from the UN General Debate Corpus. Zero-shot DeBERTa scoring in batches with three candidate labels about climate stance. Speech-level and country-year CSVs. A 30-row hand-coded gold set with confusion matrix, Cohen's kappa, accuracy, Pearson r, Spearman rho, and a subgroup table by era. A time-series plot of climate emphasis 1946 to 2025 with the Paris Agreement marked, plus a regional overlay. Off-the-shelf only, no fine-tuning.
 - `validation_template.ipynb`. Reusable participant template. Replace the CSV path, candidate labels, and 30-row gold set to validate any zero-shot pipeline against your own hand codes. Outputs kappa, accuracy, Pearson r, Spearman rho, confusion matrix, and a subgroup table.
 - `cheat_sheet.html`. One-page printable. Five-step pipeline, Adcock and Collier 2001 framework, codebook rules, Landis and Koch kappa thresholds, aggregation choices, validation appendix checklist.
 
@@ -31,7 +31,7 @@ Files in [`day3/`](./day3/).
 
 ## Datasets used
 
-- **UN General Debate Corpus** (Day 1, Day 2). Harvard Dataverse, doi:10.7910/DVN/0TJX8Y. CC0. About 8,000 speeches by heads of delegation, 1970 to present. Day 1 uses the 2017 snapshot for stance demos. Day 2 uses the full corpus stratified by year for the walk-through and time-series plot.
+- **UN General Debate Corpus** (Day 1, Day 2). Harvard Dataverse, doi:10.7910/DVN/0TJX8Y. CC0. About 11,000 speeches by heads of delegation, 1946 to 2025. The workshop ships a 4,761-row stratified sample as a release asset (`data-v1`, `ungdc_sample.csv.gz`). Day 1 uses the 2017 slice for stance demos. Day 2 uses the full sample for the walk-through and time-series plot.
 - **CSIS analysis articles** (Day 3). Public web pages under csis.org/analysis. Server-rendered HTML, robots.txt permits `/analysis/` for generic crawlers. Five articles fetched with rate limiting.
 
 ## Models used
