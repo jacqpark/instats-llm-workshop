@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Day 2 · Part 1 · Walk-through</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #D4E8D9;
+  --bg-tint: #E5EFE8;
+  --bg-deep: #BFD9C4;
+  --ink: #132025;
+  --ink-soft: #2D493C;
+  --ink-faint: #5C7B6A;
+  --rule: #A8C9AE;
+  --accent: #2D493C;
+  --highlight: #334B99;
+  --pop: #B1F1B1;
+  --dark: #132025;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  height: 100%; width: 100%; overflow: hidden;
+  background: var(--dark);
+  font-family: 'Inter', -apple-system, sans-serif;
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+}
+.deck { position: relative; width: 100vw; height: 100vh; }
+.slide {
+  position: absolute; top: 50%; left: 50%;
+  width: 1280px; height: 720px;
+  background: var(--bg);
+  box-shadow: 0 30px 90px rgba(0,0,0,0.55);
+  padding: 64px 80px;
+  display: flex; flex-direction: column;
+  transform: translate(-50%, -50%) scale(var(--s, 1));
+  transform-origin: center center;
+  opacity: 0; visibility: hidden;
+  transition: opacity 0.35s ease;
+  overflow: hidden;
+}
+.slide.active { opacity: 1; visibility: visible; }
+.slide.dark { background: var(--dark); color: var(--bg); }
+.slide.dark h1, .slide.dark h2 { color: var(--bg); }
+.slide.dark .lede, .slide.dark p, .slide.dark .small, .slide.dark .tiny { color: var(--bg); }
+.slide.dark .eyebrow { color: var(--pop); }
+.slide.dark h4 { color: var(--pop); }
+
+.eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--highlight); margin-bottom: 18px; font-weight: 500;
+}
+h1 {
+  font-family: 'Crimson Pro', serif;
+  font-weight: 700; font-size: 88px; line-height: 1.02;
+  color: var(--accent); letter-spacing: -0.025em;
+}
+h2 {
+  font-family: 'Crimson Pro', serif;
+  font-weight: 600; font-size: 52px; line-height: 1.06;
+  color: var(--accent); letter-spacing: -0.018em; margin-bottom: 24px;
+}
+h3 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600; font-size: 24px;
+  color: var(--ink); margin-bottom: 10px; letter-spacing: -0.005em;
+}
+h4 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600; font-size: 14px;
+  color: var(--highlight); letter-spacing: 0.1em;
+  text-transform: uppercase; margin-bottom: 10px;
+}
+p { font-size: 21px; line-height: 1.5; color: var(--ink); margin-bottom: 12px; }
+p.lede {
+  font-family: 'Crimson Pro', serif;
+  font-size: 30px; font-weight: 400; line-height: 1.35;
+  color: var(--ink-soft); font-style: italic;
+}
+.small { font-size: 16px; color: var(--ink-soft); line-height: 1.5; margin-bottom: 8px; }
+.tiny { font-size: 13px; color: var(--ink-faint); line-height: 1.4; }
+.accent { color: var(--accent); }
+.highlight { color: var(--highlight); font-weight: 600; }
+.muted { color: var(--ink-faint); }
+.serif { font-family: 'Crimson Pro', serif; }
+
+.rule { width: 56px; height: 3px; background: var(--highlight); margin-bottom: 24px; }
+
+ul.bare { list-style: none; }
+ul.bare li {
+  font-size: 19px; line-height: 1.5; margin-bottom: 12px;
+  padding-left: 28px; position: relative; color: var(--ink);
+}
+ul.bare li::before {
+  content: ''; position: absolute; left: 0; top: 13px;
+  width: 16px; height: 1px; background: var(--highlight);
+}
+
+code, pre, .mono { font-family: 'JetBrains Mono', monospace; font-variant-numeric: tabular-nums; }
+pre {
+  background: var(--bg-deep); padding: 18px 22px;
+  border-left: 3px solid var(--highlight);
+  font-size: 15px; line-height: 1.5; color: var(--ink);
+  overflow: hidden; border-radius: 2px;
+}
+pre .kw { color: var(--highlight); font-weight: 500; }
+pre .str { color: var(--accent); }
+pre .com { color: var(--ink-faint); font-style: italic; }
+pre .fn { color: var(--accent); font-weight: 500; }
+
+.flex { display: flex; }
+.col { display: flex; flex-direction: column; }
+.flex-1 { flex: 1; min-height: 0; }
+
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; flex: 1; min-height: 0; }
+.three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; flex: 1; min-height: 0; }
+.four-col { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 16px; flex: 1; min-height: 0; }
+.card {
+  background: var(--bg-tint); padding: 22px 24px;
+  border-top: 3px solid var(--highlight);
+  display: flex; flex-direction: column; border-radius: 2px;
+}
+.card.cool { border-top-color: var(--highlight); background: #DCE8F0; }
+.card.warm { border-top-color: var(--accent); background: var(--bg-tint); }
+.card .label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--ink-faint); margin-bottom: 8px;
+}
+.card h3 { font-size: 20px; margin-bottom: 10px; color: var(--accent); }
+.card p { font-size: 16px; line-height: 1.45; color: var(--ink); margin-bottom: 8px; }
+.card .tag {
+  display: inline-block; padding: 3px 10px;
+  background: var(--pop); color: var(--accent);
+  font-size: 11px; font-weight: 600; letter-spacing: 0.08em;
+  font-family: 'JetBrains Mono', monospace;
+  margin-top: auto; align-self: flex-start; border-radius: 2px;
+}
+
+table { width: 100%; border-collapse: collapse; font-size: 16px; font-variant-numeric: tabular-nums; }
+th, td {
+  padding: 10px 14px; text-align: left;
+  border-bottom: 1px solid var(--rule); vertical-align: top; line-height: 1.4;
+}
+thead th {
+  font-weight: 600; color: var(--accent);
+  font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase;
+  border-bottom: 2px solid var(--accent); padding-bottom: 8px;
+}
+
+.slide-title { padding: 0; }
+.slide-title-inner {
+  flex: 1; padding: 64px 80px 56px;
+  display: flex; flex-direction: column;
+  justify-content: space-between; position: relative;
+}
+.slide-title h1 { font-size: 104px; max-width: 940px; line-height: 0.98; }
+.slide-title .lede { font-size: 26px; max-width: 740px; margin-top: 24px; }
+.slide-title .meta {
+  display: flex; gap: 48px; padding-top: 18px;
+  border-top: 1px solid var(--rule);
+  font-size: 14px; color: var(--ink-soft); letter-spacing: 0.02em;
+}
+.slide-title .meta .label {
+  display: block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--ink-faint); margin-bottom: 6px;
+}
+.slide-title .corner {
+  position: absolute; top: 64px; right: 80px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px; letter-spacing: 0.2em;
+  color: var(--highlight); text-transform: uppercase;
+}
+
+.slide.section-divider {
+  background-color: #2D493C !important;
+  padding: 80px !important;
+  display: flex !important; flex-direction: column !important;
+  justify-content: center !important; overflow: hidden;
+}
+.slide.section-divider::before {
+  content: ''; position: absolute;
+  top: 80px; left: 80px;
+  width: 56px; height: 3px; background: #B1F1B1; z-index: 4;
+}
+.slide.section-divider .num {
+  font-family: 'Crimson Pro', Georgia, serif;
+  font-weight: 200; font-size: 200px; line-height: 0.85;
+  color: rgba(177, 241, 177, 0.45);
+  position: absolute; bottom: 56px; right: 80px;
+  letter-spacing: -0.04em; pointer-events: none; z-index: 1; margin: 0;
+}
+.slide.section-divider h1 {
+  color: #D4E8D9 !important;
+  font-size: 84px !important; line-height: 1.02 !important;
+  position: relative; z-index: 3; max-width: 900px; margin: 0;
+  font-family: 'Crimson Pro', Georgia, serif !important; font-weight: 700 !important;
+}
+.slide.section-divider p.lede {
+  color: #B1F1B1 !important;
+  margin-top: 24px !important; margin-bottom: 0 !important;
+  position: relative; z-index: 3; max-width: 760px;
+  font-size: 24px !important; font-style: italic !important;
+  font-family: 'Crimson Pro', Georgia, serif !important;
+  font-weight: 400 !important; line-height: 1.4 !important;
+}
+.slide.section-divider .eyebrow {
+  position: relative; z-index: 3;
+  margin-bottom: 24px !important;
+  color: #B1F1B1 !important;
+  font-family: 'JetBrains Mono', 'Courier New', monospace !important;
+  font-size: 12px !important; letter-spacing: 0.2em !important;
+  text-transform: uppercase !important; font-weight: 500 !important;
+}
+.slide.section-divider .slide-footer { color: rgba(212, 232, 217, 0.5) !important; z-index: 4; }
+
+.chevron-flow {
+  display: flex;
+  flex: 1;
+  align-items: stretch;
+  margin-top: 12px;
+  min-height: 0;
+}
+.chevron {
+  flex: 1;
+  position: relative;
+  padding: 28px 26px 28px 52px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: white;
+  clip-path: polygon(0% 0%, calc(100% - 26px) 0%, 100% 50%, calc(100% - 26px) 100%, 0% 100%, 26px 50%);
+  margin-left: -30px;
+}
+.chevron:first-child {
+  clip-path: polygon(0% 0%, calc(100% - 26px) 0%, 100% 50%, calc(100% - 26px) 100%, 0% 100%);
+  margin-left: 0;
+  padding-left: 28px;
+}
+.chevron .num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.85);
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+.chevron h3 {
+  font-family: 'Crimson Pro', serif;
+  font-size: 22px; color: white;
+  margin-bottom: 8px; font-weight: 600;
+  letter-spacing: -0.005em;
+}
+.chevron p {
+  font-size: 13px; line-height: 1.45;
+  color: rgba(255, 255, 255, 0.92);
+}
+.chevron code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px; color: white;
+  background: rgba(255, 255, 255, 0.18);
+  padding: 1px 5px; border-radius: 2px;
+}
+.chevron.shade-1 { background: #6E8AD0; }
+.chevron.shade-2 { background: #4F6BB8; }
+.chevron.shade-3 { background: #334B99; }
+.chevron.shade-4 { background: #25387A; }
+.chevron.shade-5 { background: #1A2654; }
+
+.slide-footer {
+  position: absolute; bottom: 22px; left: 80px; right: 80px;
+  display: flex; justify-content: space-between; align-items: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-faint);
+}
+.slide.dark .slide-footer { color: rgba(212,232,217,0.45); }
+
+.hud {
+  position: fixed; bottom: 14px; right: 14px;
+  display: flex; align-items: center; gap: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; color: rgba(212,232,217,0.55); letter-spacing: 0.08em; z-index: 100;
+}
+.hud button {
+  background: rgba(212,232,217,0.08);
+  border: 1px solid rgba(212,232,217,0.15);
+  color: rgba(212,232,217,0.7);
+  padding: 4px 10px; font-family: inherit;
+  font-size: 10px; cursor: pointer; letter-spacing: 0.08em;
+}
+.hud button:hover { background: rgba(212,232,217,0.15); }
+.progress-bar {
+  position: fixed; bottom: 0; left: 0;
+  height: 2px; background: var(--pop); transition: width 0.35s ease; z-index: 100;
+}
+.help-text {
+  position: fixed; top: 14px; left: 14px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; color: rgba(212,232,217,0.35);
+  letter-spacing: 0.1em; z-index: 100; pointer-events: none;
+}
+
+@media print {
+  @page { size: 1280px 720px; margin: 0; }
+  html, body {
+    background: var(--bg) !important;
+    overflow: visible !important;
+    height: auto !important; width: auto !important;
+  }
+  body { background: var(--dark) !important; }
+  .deck { width: auto !important; height: auto !important; position: static !important; }
+  .slide {
+    position: relative !important;
+    top: auto !important; left: auto !important;
+    transform: none !important;
+    box-shadow: none !important;
+    opacity: 1 !important; visibility: visible !important;
+    page-break-after: always; break-after: page;
+    margin: 0 !important;
+    width: 1280px !important; height: 720px !important;
+    transition: none !important;
+  }
+  .hud, .help-text, .progress-bar { display: none !important; }
+  .slide:last-child { page-break-after: auto; break-after: auto; }
+}
+</style>
+</head>
+<body>
+<div class="help-text">arrows to move, F for fullscreen</div>
+<div class="deck" id="deck">
+
+<!-- WELCOME -->
+<section class="slide slide-title active">
+  <div class="slide-title-inner" style="justify-content: center; align-items: center; text-align: center;">
+    <div class="corner">Day 02 / 03 &middot; Part 1/2</div>
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 36px; text-align: center; width: 100%;">
+      <h1 style="font-size: 104px; line-height: 1; margin: 0;">Welcome to</h1>
+      <img src="../instats_logo.png" alt="Instats" style="height: 140px; display: block; margin: 0 auto;">
+      <p class="lede" style="font-size: 32px; margin: 0; font-style: italic;">The session will begin shortly.</p>
+    </div>
+  </div>
+</section>
+
+<!-- START -->
+<section class="slide" style="justify-content: center; align-items: center; padding: 0;">
+  <h1 style="font-size: 280px; text-align: center; line-height: 1; letter-spacing: -0.04em; margin: 0;">Start</h1>
+</section>
+
+<!-- 1. TITLE -->
+<section class="slide slide-title">
+  <div class="slide-title-inner">
+    <div class="corner">Day 02 / 03</div>
+    <div style="margin-top: 88px;">
+      <div class="eyebrow">A 3-day workshop on LLMs for measurement</div>
+      <h1>From a model<br>to a measurement.</h1>
+      <p class="lede">Walk-through, gold set, validation, time series. The pipeline that turns a notebook into a defensible proxy.</p>
+    </div>
+    <div class="meta">
+      <div><span class="label">Instructor</span>Jihye Park, University of Geneva</div>
+      <div><span class="label">Audience</span>Political scientists, no Python required</div>
+      <div><span class="label">Duration</span>2 hours 30 minutes</div>
+    </div>
+  </div>
+</section>
+<!-- 2. ROADMAP -->
+<section class="slide">
+  <div class="eyebrow">Today</div>
+  <h2>Four movements,<br>two breaks, one CSV.</h2>
+  <div class="rule"></div>
+  <div class="four-col">
+    <div class="card">
+      <div class="label">Movement 01, 40 min</div>
+      <h3>Walk-through</h3>
+      <p>Load UNGDC. Score in batches. Save speech-level CSV. Aggregate to country-year.</p>
+    </div>
+    <div class="card">
+      <div class="label">Movement 02, 35 min</div>
+      <h3>Validity check</h3>
+      <p>Thirty-row gold set. Confusion matrix. Cohen's kappa. Pearson r. Subgroup table.</p>
+    </div>
+    <div class="card">
+      <div class="label">Movement 03, 35 min</div>
+      <h3>Time series</h3>
+      <p>Plot climate emphasis from 1970 onward. Compare to the Paris Agreement.</p>
+    </div>
+    <div class="card">
+      <div class="label">Movement 04, 15 min</div>
+      <h3>Q&amp;A and checklist</h3>
+      <p>The validation appendix in two columns. What to ship. What revisions usually ask for.</p>
+    </div>
+  </div>
+  <p class="small" style="margin-top: 20px;">Two breaks of ten minutes total. The instructor demos run on paid Colab Pro for speed. Notebooks pinned in chat.</p>
+  <div class="slide-footer"><span>Day 2, Roadmap</span><span>02 / 32</span></div>
+</section>
+<!-- 3. RECAP DAY 1 -->
+<section class="slide">
+  <div class="eyebrow">Recap, Day 1</div>
+  <h2>Two model families.<br>Today is encoder day.</h2>
+  <div class="rule"></div>
+  <div class="two-col">
+    <div>
+      <p>Yesterday you ran a zero-shot DeBERTa pipeline on roughly two hundred sentences from the UN General Debate Corpus. Three candidate labels. One pass. About ninety seconds on T4.</p>
+      <p>Clear-cut sentences with explicit climate vocabulary landed where you would expect. Mixed sentences and sentences with implicit framing were the misclassifications.</p>
+      <p class="small" style="margin-top: 14px;">A notebook that classifies two hundred sentences is a demo. A measurement is something else.</p>
+    </div>
+    <div>
+      <h4>Where Day 2 picks up</h4>
+      <ul class="bare">
+        <li>Run the same model across the full corpus, not just two hundred sentences.</li>
+        <li>Hand-code thirty paragraphs as the gold answer key.</li>
+        <li>Compute the validation numbers your appendix needs.</li>
+        <li>Aggregate to country-year, plot against an external event.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="slide-footer"><span>Day 2, Recap</span><span>03 / 32</span></div>
+</section>
+<!-- 4. WHAT IS A MEASUREMENT -->
+<section class="slide">
+  <div class="eyebrow">Adcock and Collier, APSR 2001</div>
+  <h2>A measurement assigns numbers<br>to cases in a defensible way.</h2>
+  <div class="rule"></div>
+  <div class="three-col">
+    <div class="card">
+      <div class="label">Property 01</div>
+      <h3>Validity</h3>
+      <p>The number tracks the concept it claims to track. If your concept is "stance toward climate cooperation" and your number is "general positivity," you have a validity problem.</p>
+    </div>
+    <div class="card">
+      <div class="label">Property 02</div>
+      <h3>Reliability</h3>
+      <p>Re-running the pipeline on the same input gives the same output. Two human coders applied to the same paragraph reach the same answer.</p>
+    </div>
+    <div class="card">
+      <div class="label">Property 03</div>
+      <h3>Comparability</h3>
+      <p>Scores compare across countries and years without systematic drift. If the encoder is more confident on EU speeches than on small-economy speeches, you have a comparability problem.</p>
+    </div>
+  </div>
+  <p class="tiny" style="margin-top: 16px;">Adcock and Collier predate LLMs by two decades. The framework still applies. Drop it in your appendix and methods reviewers will recognize it.</p>
+  <div class="slide-footer"><span>Day 2, Framing</span><span>04 / 32</span></div>
+</section>
+<!-- 5. FOUR REVIEWER QUESTIONS -->
+<section class="slide">
+  <div class="eyebrow">The four movements as four questions</div>
+  <h2>Each movement<br>answers one reviewer question.</h2>
+  <div class="rule"></div>
+  <table>
+    <thead>
+      <tr><th style="width: 18%;">Movement</th><th style="width: 42%;">Reviewer question</th><th>What you ship</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><span class="highlight">01 walk-through</span></td><td>How did you compute the score for every observation in your sample?</td><td>The notebook with model ID pinned, the candidate-label list, the speech-level CSV.</td></tr>
+      <tr><td><span class="highlight">02 validity</span></td><td>How do you know the score actually measures the concept you claim?</td><td>Thirty-row gold set, confusion matrix, Cohen's kappa, Pearson r, Spearman rho.</td></tr>
+      <tr><td><span class="highlight">03 time series</span></td><td>Show me the score on a known case where I can check it against external reality.</td><td>Country-year time series with the Paris Agreement marked.</td></tr>
+      <tr><td><span class="highlight">04 checklist</span></td><td>What do I need in your appendix to call this defensible?</td><td>The two-column appendix checklist, must-have and often-asked-for.</td></tr>
+    </tbody>
+  </table>
+  <p class="lede" style="margin-top: 22px; font-size: 22px;">Each row is a slide on screen, an output cell in the notebook, and a paragraph in your future paper.</p>
+  <div class="slide-footer"><span>Day 2, Framing</span><span>05 / 32</span></div>
+</section>
+<!-- 6. SECTION DIVIDER 1 -->
+<section class="slide section-divider dark">
+  <div class="num">01</div>
+  <div class="eyebrow">First movement, 40 minutes</div>
+  <h1>The walk-through.</h1>
+  <p class="lede">Load the corpus. Run the model in batches. Save the scores. Aggregate by year.</p>
+  <div class="slide-footer"><span>Day 2</span><span>06 / 32</span></div>
+</section>
+<!-- 7. THE CORPUS -->
+<section class="slide">
+  <div class="eyebrow">The corpus</div>
+  <h2>UN General Debate Corpus,<br>1970 to present.</h2>
+  <div class="rule"></div>
+  <div class="two-col">
+    <div>
+      <h4>Specs</h4>
+      <ul class="bare">
+        <li><span class="highlight">Source.</span> Harvard Dataverse, doi:10.7910/DVN/0TJX8Y.</li>
+        <li><span class="highlight">License.</span> CC0. Fully open.</li>
+        <li><span class="highlight">Size.</span> ~80 MB, about 8000 speeches.</li>
+        <li><span class="highlight">Coverage.</span> Heads of delegation, opening of the UN General Assembly.</li>
+        <li><span class="highlight">For today.</span> A stratified five-thousand-row sample.</li>
+      </ul>
+    </div>
+    <div>
+      <h4>Columns we use</h4>
+      <pre><span class="com"># speech-level dataframe</span>
+country     <span class="com"># ISO3 alpha</span>
+session     <span class="com"># UN GA session number</span>
+year        <span class="com"># 1970 to present</span>
+text        <span class="com"># full speech, English</span></pre>
+      <p class="tiny" style="margin-top: 12px;">We will not sentence-tokenize today. Working at the speech level keeps the live encoder pass under five minutes on T4.</p>
+    </div>
+  </div>
+  <div class="slide-footer"><span>Day 2, Movement 01</span><span>07 / 32</span></div>
+</section>
+<!-- 8. PIPELINE DIAGRAM -->
+<section class="slide">
+  <div class="eyebrow">Pipeline, five steps</div>
+  <h2>Each step is a cell in the notebook.</h2>
+  <div class="rule"></div>
+  <div class="chevron-flow">
+    <div class="chevron shade-1">
+      <div class="num">01 Load</div>
+      <h3>Read CSV</h3>
+      <p>Download from Dataverse, cache locally. Sample five thousand speeches stratified by year.</p>
+    </div>
+    <div class="chevron shade-2">
+      <div class="num">02 Truncate</div>
+      <h3>To 512 tokens</h3>
+      <p>DeBERTa context window. Speeches average two thousand words. Document the choice.</p>
+    </div>
+    <div class="chevron shade-3">
+      <div class="num">03 Score</div>
+      <h3>Zero-shot, batches</h3>
+      <p>Three candidate labels. <code>batch_size=16</code> on T4. About three minutes total.</p>
+    </div>
+    <div class="chevron shade-4">
+      <div class="num">04 Save</div>
+      <h3>Speech-level CSV</h3>
+      <p>One row per speech. Country, year, top label, top score, supportive probability.</p>
+    </div>
+    <div class="chevron shade-5">
+      <div class="num">05 Aggregate</div>
+      <h3>Country-year CSV</h3>
+      <p>Group by country and year. Share supportive. Mean supportive probability. Always keep n.</p>
+    </div>
+  </div>
+  <div class="slide-footer"><span>Day 2, Movement 01</span><span>08 / 32</span></div>
+</section>
+<!-- 9. LIVE LOAD AND SAMPLE -->
+<section class="slide">
+  <div class="eyebrow">Live, demo notebook Section A</div>
+  <h2>Load and sample.</h2>
+  <div class="rule"></div>
+  <div class="two-col">
+    <div>
+      <pre><span class="com"># cache the 80 MB CSV</span>
+<span class="kw">if</span> <span class="kw">not</span> os.path.<span class="fn">exists</span>(<span class="str">"ungdc.csv"</span>):
+  urllib.request.<span class="fn">urlretrieve</span>(URL, <span class="str">"ungdc.csv"</span>)
+
+ungdc = pd.<span class="fn">read_csv</span>(<span class="str">"ungdc.csv"</span>)
+
+<span class="com"># stratified sample by year</span>
+sample = (ungdc.<span class="fn">groupby</span>(<span class="str">"year"</span>)
+  .<span class="fn">sample</span>(n=<span class="kw">66</span>, random_state=<span class="kw">42</span>))</pre>
+    </div>
+    <div>
+      <h4>What to point out live</h4>
+      <ul class="bare">
+        <li><span class="highlight">Cache the download.</span> Re-running the cell does not re-download.</li>
+        <li><span class="highlight">Stratified by year.</span> The right default for a measurement project that cares about temporal trends.</li>
+        <li><span class="highlight">Year-coverage histogram.</span> Bottom of the cell output. Coverage should look balanced across decades.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="slide-footer"><span>Day 2, Movement 01</span><span>09 / 32</span></div>
+</section>
+<!-- 10. LIVE SCORE -->
+<section class="slide">
+  <div class="eyebrow">Live, demo notebook Section B</div>
+  <h2>Score in batches.</h2>
+  <div class="rule"></div>
+  <div class="two-col">
+    <div>
+      <pre><span class="kw">from</span> transformers <span class="kw">import</span> pipeline
+zsc = <span class="fn">pipeline</span>(
+  <span class="str">"zero-shot-classification"</span>,
+  model=<span class="str">"MoritzLaurer/DeBERTa-v3-"</span>
+        <span class="str">"base-mnli-fever-anli"</span>,
+  device=<span class="kw">0</span>,
+)
+
+labels = [
+  <span class="str">"supports stronger climate action"</span>,
+  <span class="str">"skeptical of climate action"</span>,
+  <span class="str">"does not discuss climate"</span>,
+]
+
+results = <span class="fn">zsc</span>(texts,
+  candidate_labels=labels,
+  batch_size=<span class="kw">16</span>)</pre>
+    </div>
+    <div>
+      <h4>The off-topic label is doing real work</h4>
+      <p>Without a third "does not discuss climate" label, every speech that does not mention climate would be forced into either supportive or skeptical. The proxy would be contaminated with off-topic noise.</p>
+      <p>The third label is the sink. It absorbs the speeches that should not contribute to the climate-stance signal.</p>
+      <p class="lede" style="margin-top: 18px; font-size: 22px;">Five thousand speeches. About three minutes on T4 GPU.</p>
+    </div>
+  </div>
+  <div class="slide-footer"><span>Day 2, Movement 01</span><span>10 / 32</span></div>
+</section>
+<!-- 11. LIVE SAVE AND AGGREGATE -->
+<section class="slide">
+  <div class="eyebrow">Live, demo notebook Section C</div>
+  <h2>Save speech-level.<br>Aggregate to country-year.</h2>
+  <div class="rule"></div>
+  <div class="two-col">
+    <div>
+      <pre><span class="com"># speech-level</span>
+scored = pd.<span class="fn">DataFrame</span>({
+  <span class="str">"country"</span>:    sample.country,
+  <span class="str">"year"</span>:       sample.year,
+  <span class="str">"top_label"</span>:  [r[<span class="str">"labels"</span>][<span class="kw">0</span>]
+                  <span class="kw">for</span> r <span class="kw">in</span> results],
+  <span class="str">"p_supportive"</span>: [<span class="fn">supp_prob</span>(r)
+                  <span class="kw">for</span> r <span class="kw">in</span> results],
+})
+scored.<span class="fn">to_csv</span>(<span class="str">"ungdc_speech.csv"</span>)
+
+<span class="com"># country-year</span>
+cy = (scored
+  .<span class="fn">groupby</span>([<span class="str">"country"</span>, <span class="str">"year"</span>])
+  .<span class="fn">agg</span>(n=(<span class="str">"top_label"</span>, <span class="str">"size"</span>),
+       share=(<span class="str">"top_label"</span>, supp_share),
+       mean_p=(<span class="str">"p_supportive"</span>, <span class="str">"mean"</span>)))</pre>
+    </div>
+    <div>
+      <h4>The deliverable</h4>
+      <p>One row per country-year. Three new columns. Merges into your regression dataset on country and year.</p>
+      <p>Share supportive is a count. Mean supportive probability uses the underlying continuous signal.</p>
+      <p class="small" style="margin-top: 12px;"><span class="highlight">Always keep n.</span> Country-years with one speech are not the same as country-years with thirty.</p>
+    </div>
+  </div>
+  <div class="slide-footer"><span>Day 2, Movement 01</span><span>11 / 32</span></div>
+</section>
+<!-- 12. CSV IS THE DELIVERABLE -->
+<section class="slide">
+  <div class="eyebrow">What replication looks like</div>
+  <h2>One notebook,<br>one model ID,<br>one prompt list.</h2>
+  <div class="rule"></div>
+  <div class="three-col">
+    <div class="card">
+      <div class="label">Property 01</div>
+      <h3>Pin the model</h3>
+      <p>Column name encodes provenance. <code>score_deberta_v3_base</code>. The HF model ID is in the script. Weights shipped with the repo.</p>
+    </div>
+    <div class="card">
+      <div class="label">Property 02</div>
+      <h3>Pin the labels</h3>
+      <p>Candidate labels documented in a sidecar text file. Anyone re-running the notebook gets the same prompts.</p>
+    </div>
+    <div class="card">
+      <div class="label">Property 03</div>
+      <h3>Pin the seed</h3>
+      <p>Random sample uses a fixed seed. Two runs of the notebook produce the same scored CSV byte-for-byte.</p>
+    </div>
+  </div>
+  <p class="lede" style="margin-top: 22px; font-size: 22px;">If a reviewer asks where the column came from, the answer is one notebook, one model ID, one prompt list.</p>
+  <div class="slide-footer"><span>Day 2, Movement 01</span><span>12 / 32</span></div>
+</section>
+<!-- 13. OFF-THE-SHELF CEILING -->
+<section class="slide">
+  <div class="eyebrow">Three things to flag before the break</div>
+  <h2>The off-the-shelf ceiling.</h2>
+  <div class="rule"></div>
+  <div class="three-col">
+    <div class="card">
+      <div class="label">Caveat 01</div>
+      <h3>Truncation</h3>
+      <p>The 512-token cut drops most of each speech. For "speech mentions climate," the lead two pages are enough. For "speech proposes specific policies," they are not. Document the choice.</p>
+    </div>
+    <div class="card">
+      <div class="label">Caveat 02</div>
+      <h3>Wording sensitivity</h3>
+      <p>The supportive label is one wording. A different wording would give different scores. Movement 02 puts a number on the wording sensitivity through the gold set.</p>
+    </div>
+    <div class="card">
+      <div class="label">Caveat 03</div>
+      <h3>Translation drift</h3>
+      <p>UNGDC speeches are translated into English by the corpus maintainers. Translation introduces drift the encoder cannot quantify. Worth a paragraph in the appendix.</p>
+    </div>
+  </div>
+  <p class="tiny" style="margin-top: 16px;">None of the three is a problem to solve today. All three belong in a real paper's limitations section.</p>
+  <div class="slide-footer"><span>Day 2, Movement 01</span><span>13 / 32</span></div>
+</section>
+<!-- STOP -->
+<section class="slide" style="justify-content: center; align-items: center; padding: 0;">
+  <h1 style="font-size: 280px; text-align: center; line-height: 1; letter-spacing: -0.04em; margin: 0;">Stop</h1>
+</section>
+
+</div>
+<div class="hud">
+  <button id="prev">PREV</button>
+  <span id="counter">1 / 16</span>
+  <button id="next">NEXT</button>
+</div>
+<div class="progress-bar" id="bar" style="width: 6.25%"></div>
+
+<script>
+const slides = Array.from(document.querySelectorAll('.slide'));
+const total = slides.length;
+let idx = 0;
+
+function fit() {
+  const s = Math.min(window.innerWidth / 1280, window.innerHeight / 720) * 0.95;
+  document.documentElement.style.setProperty('--s', s);
+}
+window.addEventListener('resize', fit);
+fit();
+
+function show(i) {
+  i = Math.max(0, Math.min(i, total - 1));
+  slides[idx].classList.remove('active');
+  slides[i].classList.add('active');
+  idx = i;
+  document.getElementById('counter').textContent = `${idx+1} / ${total}`;
+  document.getElementById('bar').style.width = `${((idx+1)/total)*100}%`;
+  history.replaceState(null, '', `#${idx+1}`);
+}
+
+document.addEventListener('keydown', (e) => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { show(idx+1); e.preventDefault(); }
+  else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { show(idx-1); e.preventDefault(); }
+  else if (e.key === 'Home') { show(0); e.preventDefault(); }
+  else if (e.key === 'End') { show(total-1); e.preventDefault(); }
+  else if (e.key === 'f' || e.key === 'F') {
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+    else document.exitFullscreen();
+  }
+});
+
+document.getElementById('prev').addEventListener('click', () => show(idx-1));
+document.getElementById('next').addEventListener('click', () => show(idx+1));
+
+const initial = parseInt((location.hash || '#1').slice(1)) - 1;
+if (!isNaN(initial) && initial >= 0 && initial < total) show(initial);
+</script>
+</body>
+</html>

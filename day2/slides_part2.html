@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Day 2 · Part 2 · Validation and Time Series</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #D4E8D9;
+  --bg-tint: #E5EFE8;
+  --bg-deep: #BFD9C4;
+  --ink: #132025;
+  --ink-soft: #2D493C;
+  --ink-faint: #5C7B6A;
+  --rule: #A8C9AE;
+  --accent: #2D493C;
+  --highlight: #334B99;
+  --pop: #B1F1B1;
+  --dark: #132025;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  height: 100%; width: 100%; overflow: hidden;
+  background: var(--dark);
+  font-family: 'Inter', -apple-system, sans-serif;
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+}
+.deck { position: relative; width: 100vw; height: 100vh; }
+.slide {
+  position: absolute; top: 50%; left: 50%;
+  width: 1280px; height: 720px;
+  background: var(--bg);
+  box-shadow: 0 30px 90px rgba(0,0,0,0.55);
+  padding: 64px 80px;
+  display: flex; flex-direction: column;
+  transform: translate(-50%, -50%) scale(var(--s, 1));
+  transform-origin: center center;
+  opacity: 0; visibility: hidden;
+  transition: opacity 0.35s ease;
+  overflow: hidden;
+}
+.slide.active { opacity: 1; visibility: visible; }
+.slide.dark { background: var(--dark); color: var(--bg); }
+.slide.dark h1, .slide.dark h2 { color: var(--bg); }
+.slide.dark .lede, .slide.dark p, .slide.dark .small, .slide.dark .tiny { color: var(--bg); }
+.slide.dark .eyebrow { color: var(--pop); }
+.slide.dark h4 { color: var(--pop); }
+
+.eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--highlight); margin-bottom: 18px; font-weight: 500;
+}
+h1 {
+  font-family: 'Crimson Pro', serif;
+  font-weight: 700; font-size: 88px; line-height: 1.02;
+  color: var(--accent); letter-spacing: -0.025em;
+}
+h2 {
+  font-family: 'Crimson Pro', serif;
+  font-weight: 600; font-size: 52px; line-height: 1.06;
+  color: var(--accent); letter-spacing: -0.018em; margin-bottom: 24px;
+}
+h3 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600; font-size: 24px;
+  color: var(--ink); margin-bottom: 10px; letter-spacing: -0.005em;
+}
+h4 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600; font-size: 14px;
+  color: var(--highlight); letter-spacing: 0.1em;
+  text-transform: uppercase; margin-bottom: 10px;
+}
+p { font-size: 21px; line-height: 1.5; color: var(--ink); margin-bottom: 12px; }
+p.lede {
+  font-family: 'Crimson Pro', serif;
+  font-size: 30px; font-weight: 400; line-height: 1.35;
+  color: var(--ink-soft); font-style: italic;
+}
+.small { font-size: 16px; color: var(--ink-soft); line-height: 1.5; margin-bottom: 8px; }
+.tiny { font-size: 13px; color: var(--ink-faint); line-height: 1.4; }
+.accent { color: var(--accent); }
+.highlight { color: var(--highlight); font-weight: 600; }
+.muted { color: var(--ink-faint); }
+.serif { font-family: 'Crimson Pro', serif; }
+
+.rule { width: 56px; height: 3px; background: var(--highlight); margin-bottom: 24px; }
+
+ul.bare { list-style: none; }
+ul.bare li {
+  font-size: 19px; line-height: 1.5; margin-bottom: 12px;
+  padding-left: 28px; position: relative; color: var(--ink);
+}
+ul.bare li::before {
+  content: ''; position: absolute; left: 0; top: 13px;
+  width: 16px; height: 1px; background: var(--highlight);
+}
+
+code, pre, .mono { font-family: 'JetBrains Mono', monospace; font-variant-numeric: tabular-nums; }
+pre {
+  background: var(--bg-deep); padding: 18px 22px;
+  border-left: 3px solid var(--highlight);
+  font-size: 15px; line-height: 1.5; color: var(--ink);
+  overflow: hidden; border-radius: 2px;
+}
+pre .kw { color: var(--highlight); font-weight: 500; }
+pre .str { color: var(--accent); }
+pre .com { color: var(--ink-faint); font-style: italic; }
+pre .fn { color: var(--accent); font-weight: 500; }
+
+.flex { display: flex; }
+.col { display: flex; flex-direction: column; }
+.flex-1 { flex: 1; min-height: 0; }
+
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; flex: 1; min-height: 0; }
+.three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; flex: 1; min-height: 0; }
+.four-col { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 16px; flex: 1; min-height: 0; }
+.card {
+  background: var(--bg-tint); padding: 22px 24px;
+  border-top: 3px solid var(--highlight);
+  display: flex; flex-direction: column; border-radius: 2px;
+}
+.card.cool { border-top-color: var(--highlight); background: #DCE8F0; }
+.card.warm { border-top-color: var(--accent); background: var(--bg-tint); }
+.card .label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--ink-faint); margin-bottom: 8px;
+}
+.card h3 { font-size: 20px; margin-bottom: 10px; color: var(--accent); }
+.card p { font-size: 16px; line-height: 1.45; color: var(--ink); margin-bottom: 8px; }
+.card .tag {
+  display: inline-block; padding: 3px 10px;
+  background: var(--pop); color: var(--accent);
+  font-size: 11px; font-weight: 600; letter-spacing: 0.08em;
+  font-family: 'JetBrains Mono', monospace;
+  margin-top: auto; align-self: flex-start; border-radius: 2px;
+}
+
+table { width: 100%; border-collapse: collapse; font-size: 16px; font-variant-numeric: tabular-nums; }
+th, td {
+  padding: 10px 14px; text-align: left;
+  border-bottom: 1px solid var(--rule); vertical-align: top; line-height: 1.4;
+}
+thead th {
+  font-weight: 600; color: var(--accent);
+  font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase;
+  border-bottom: 2px solid var(--accent); padding-bottom: 8px;
+}
+
+.slide-title { padding: 0; }
+.slide-title-inner {
+  flex: 1; padding: 64px 80px 56px;
+  display: flex; flex-direction: column;
+  justify-content: space-between; position: relative;
+}
+.slide-title h1 { font-size: 104px; max-width: 940px; line-height: 0.98; }
+.slide-title .lede { font-size: 26px; max-width: 740px; margin-top: 24px; }
+.slide-title .meta {
+  display: flex; gap: 48px; padding-top: 18px;
+  border-top: 1px solid var(--rule);
+  font-size: 14px; color: var(--ink-soft); letter-spacing: 0.02em;
+}
+.slide-title .meta .label {
+  display: block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--ink-faint); margin-bottom: 6px;
+}
+.slide-title .corner {
+  position: absolute; top: 64px; right: 80px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px; letter-spacing: 0.2em;
+  color: var(--highlight); text-transform: uppercase;
+}
+
+.slide.section-divider {
+  background-color: #2D493C !important;
+  padding: 80px !important;
+  display: flex !important; flex-direction: column !important;
+  justify-content: center !important; overflow: hidden;
+}
+.slide.section-divider::before {
+  content: ''; position: absolute;
+  top: 80px; left: 80px;
+  width: 56px; height: 3px; background: #B1F1B1; z-index: 4;
+}
+.slide.section-divider .num {
+  font-family: 'Crimson Pro', Georgia, serif;
+  font-weight: 200; font-size: 200px; line-height: 0.85;
+  color: rgba(177, 241, 177, 0.45);
+  position: absolute; bottom: 56px; right: 80px;
+  letter-spacing: -0.04em; pointer-events: none; z-index: 1; margin: 0;
+}
+.slide.section-divider h1 {
+  color: #D4E8D9 !important;
+  font-size: 84px !important; line-height: 1.02 !important;
+  position: relative; z-index: 3; max-width: 900px; margin: 0;
+  font-family: 'Crimson Pro', Georgia, serif !important; font-weight: 700 !important;
+}
+.slide.section-divider p.lede {
+  color: #B1F1B1 !important;
+  margin-top: 24px !important; margin-bottom: 0 !important;
+  position: relative; z-index: 3; max-width: 760px;
+  font-size: 24px !important; font-style: italic !important;
+  font-family: 'Crimson Pro', Georgia, serif !important;
+  font-weight: 400 !important; line-height: 1.4 !important;
+}
+.slide.section-divider .eyebrow {
+  position: relative; z-index: 3;
+  margin-bottom: 24px !important;
+  color: #B1F1B1 !important;
+  font-family: 'JetBrains Mono', 'Courier New', monospace !important;
+  font-size: 12px !important; letter-spacing: 0.2em !important;
+  text-transform: uppercase !important; font-weight: 500 !important;
+}
+.slide.section-divider .slide-footer { color: rgba(212, 232, 217, 0.5) !important; z-index: 4; }
+
+.chevron-flow {
+  display: flex;
+  flex: 1;
+  align-items: stretch;
+  margin-top: 12px;
+  min-height: 0;
+}
+.chevron {
+  flex: 1;
+  position: relative;
+  padding: 28px 26px 28px 52px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: white;
+  clip-path: polygon(0% 0%, calc(100% - 26px) 0%, 100% 50%, calc(100% - 26px) 100%, 0% 100%, 26px 50%);
+  margin-left: -30px;
+}
+.chevron:first-child {
+  clip-path: polygon(0% 0%, calc(100% - 26px) 0%, 100% 50%, calc(100% - 26px) 100%, 0% 100%);
+  margin-left: 0;
+  padding-left: 28px;
+}
+.chevron .num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.85);
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+.chevron h3 {
+  font-family: 'Crimson Pro', serif;
+  font-size: 22px; color: white;
+  margin-bottom: 8px; font-weight: 600;
+  letter-spacing: -0.005em;
+}
+.chevron p {
+  font-size: 13px; line-height: 1.45;
+  color: rgba(255, 255, 255, 0.92);
+}
+.chevron code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px; color: white;
+  background: rgba(255, 255, 255, 0.18);
+  padding: 1px 5px; border-radius: 2px;
+}
+.chevron.shade-1 { background: #6E8AD0; }
+.chevron.shade-2 { background: #4F6BB8; }
+.chevron.shade-3 { background: #334B99; }
+.chevron.shade-4 { background: #25387A; }
+.chevron.shade-5 { background: #1A2654; }
+
+.slide-footer {
+  position: absolute; bottom: 22px; left: 80px; right: 80px;
+  display: flex; justify-content: space-between; align-items: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-faint);
+}
+.slide.dark .slide-footer { color: rgba(212,232,217,0.45); }
+
+.hud {
+  position: fixed; bottom: 14px; right: 14px;
+  display: flex; align-items: center; gap: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; color: rgba(212,232,217,0.55); letter-spacing: 0.08em; z-index: 100;
+}
+.hud button {
+  background: rgba(212,232,217,0.08);
+  border: 1px solid rgba(212,232,217,0.15);
+  color: rgba(212,232,217,0.7);
+  padding: 4px 10px; font-family: inherit;
+  font-size: 10px; cursor: pointer; letter-spacing: 0.08em;
+}
+.hud button:hover { background: rgba(212,232,217,0.15); }
+.progress-bar {
+  position: fixed; bottom: 0; left: 0;
+  height: 2px; background: var(--pop); transition: width 0.35s ease; z-index: 100;
+}
+.help-text {
+  position: fixed; top: 14px; left: 14px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; color: rgba(212,232,217,0.35);
+  letter-spacing: 0.1em; z-index: 100; pointer-events: none;
+}
+
+@media print {
+  @page { size: 1280px 720px; margin: 0; }
+  html, body {
+    background: var(--bg) !important;
+    overflow: visible !important;
+    height: auto !important; width: auto !important;
+  }
+  body { background: var(--dark) !important; }
+  .deck { width: auto !important; height: auto !important; position: static !important; }
+  .slide {
+    position: relative !important;
+    top: auto !important; left: auto !important;
+    transform: none !important;
+    box-shadow: none !important;
+    opacity: 1 !important; visibility: visible !important;
+    page-break-after: always; break-after: page;
+    margin: 0 !important;
+    width: 1280px !important; height: 720px !important;
+    transition: none !important;
+  }
+  .hud, .help-text, .progress-bar { display: none !important; }
+  .slide:last-child { page-break-after: auto; break-after: auto; }
+}
+</style>
+</head>
+<body>
+<div class="help-text">arrows to move, F for fullscreen</div>
+<div class="deck" id="deck">
+
+<!-- WELCOME -->
+<section class="slide slide-title active">
+  <div class="slide-title-inner" style="justify-content: center; align-items: center; text-align: center;">
+    <div class="corner">Day 02 / 03 &middot; Part 2/2</div>
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 36px; text-align: center; width: 100%;">
+      <h1 style="font-size: 104px; line-height: 1; margin: 0;">Welcome to</h1>
+      <img src="../instats_logo.png" alt="Instats" style="height: 140px; display: block; margin: 0 auto;">
+      <p class="lede" style="font-size: 32px; margin: 0; font-style: italic;">The session will begin shortly.</p>
+    </div>
+  </div>
+</section>
+
+<!-- START -->
+<section class="slide" style="justify-content: center; align-items: center; padding: 0;">
+  <h1 style="font-size: 280px; text-align: center; line-height: 1; letter-spacing: -0.04em; margin: 0;">Start</h1>
+</section>
+
+<!-- 15. SECTION DIVIDER 2 -->
+<section class="slide section-divider dark">
+  <div class="num">02</div>
+  <div class="eyebrow">Second movement, 35 minutes</div>
+  <h1>The validity<br>check.</h1>
+  <p class="lede">Thirty-row gold set. Confusion matrix. Cohen's kappa. Pearson r. Subgroup table.</p>
+  <div class="slide-footer"><span>Day 2</span><span>15 / 32</span></div>
+</section>
+<!-- 16. WHY 30 PARAGRAPHS -->
+<section class="slide">
+  <div class="eyebrow">A common question</div>
+  <h2>Why thirty paragraphs.</h2>
+  <div class="rule"></div>
+  <div class="three-col">
+    <div class="card">
+      <div class="label">Too few</div>
+      <h3>Five</h3>
+      <p>Cannot distinguish a sixty-percent accurate model from an eighty-percent accurate one. The standard error on accuracy at n=5 is enormous.</p>
+    </div>
+    <div class="card cool">
+      <div class="label">Sweet spot</div>
+      <h3>Thirty</h3>
+      <p>Big enough to compute a usable kappa with a reasonable confidence interval. Small enough that two coders can finish in an afternoon. Stratify by year and you can spot subgroup drift early.</p>
+    </div>
+    <div class="card">
+      <div class="label">Too many for first cut</div>
+      <h3>Three hundred</h3>
+      <p>A week of careful work. You will not actually do it before stopping to look at results. Better to start with thirty and add another thirty if the first round leaves you uncertain.</p>
+    </div>
+  </div>
+  <p class="lede" style="margin-top: 22px; font-size: 22px;">The thirty-paragraph gold set is the iteration unit. Code, look, refine, code again.</p>
+  <div class="slide-footer"><span>Day 2, Movement 02</span><span>16 / 32</span></div>
+</section>
+<!-- 17. CODEBOOK 3 RULES -->
+<section class="slide">
+  <div class="eyebrow">Step one. Write the codebook.</div>
+  <h2>Three rules for our<br>climate-stance task.</h2>
+  <div class="rule"></div>
+  <div class="three-col">
+    <div class="card">
+      <div class="label">Rule 01, +1</div>
+      <h3>Praises stronger international climate action</h3>
+      <p>No offsetting skepticism. Examples. Endorsing Paris. Praising COP outcomes. Calling for higher emissions targets.</p>
+    </div>
+    <div class="card warm">
+      <div class="label">Rule 02, -1</div>
+      <h3>Skeptical of stronger international climate action</h3>
+      <p>No offsetting praise. Examples. Rejecting binding targets. Defending fossil-fuel investment as a national priority.</p>
+    </div>
+    <div class="card">
+      <div class="label">Rule 03, 0</div>
+      <h3>Other</h3>
+      <p>Mixed. Off-topic. Aspirational without evaluation. Most of the corpus lands here.</p>
+    </div>
+  </div>
+  <p class="lede" style="margin-top: 22px; font-size: 22px;">Three rules. Operational. Disjoint. Testable. Print this on a sticky note.</p>
+  <div class="slide-footer"><span>Day 2, Movement 02</span><span>17 / 32</span></div>
+</section>
+<!-- 18. LIVE BUILD GOLD -->
+<section class="slide">
+  <div class="eyebrow">Live, demo notebook Section D</div>
+  <h2>Five paragraphs through the codebook.</h2>
+  <div class="rule"></div>
+  <table>
+    <thead>
+      <tr><th style="width: 60%;">Paragraph (paraphrased)</th><th style="width: 12%;">Score</th><th>Why</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Reaffirmation of Paris with a call for more ambitious nationally determined contributions.</td><td><span class="highlight">+1</span></td><td>Pure praise.</td></tr>
+      <tr><td>Rejection of binding targets imposed on developing economies, framed as climate justice.</td><td><span class="highlight">0</span></td><td>Mixed. Document the call.</td></tr>
+      <tr><td>List of ratifications of the Glasgow Climate Pact.</td><td><span class="highlight">+1</span></td><td>Pure praise.</td></tr>
+      <tr><td>Description of national fossil-fuel infrastructure as priority for energy security.</td><td><span class="highlight">-1</span></td><td>No offsetting climate language.</td></tr>
+      <tr><td>Speech entirely about Security Council reform.</td><td><span class="highlight">0</span></td><td>Off-topic.</td></tr>
+    </tbody>
+  </table>
+  <p class="tiny" style="margin-top: 14px;">Pre-coded gold labels for the demo are bundled in <code>demo.ipynb</code> Section D. In a real project, you replace this column with your own hand codes.</p>
+  <div class="slide-footer"><span>Day 2, Movement 02</span><span>18 / 32</span></div>
+</section>
+<!-- 19. CONFUSION MATRIX AND KAPPA -->
+<section class="slide">
+  <div class="eyebrow">Live, demo notebook Section D</div>
+  <h2>Confusion matrix<br>and Cohen's kappa.</h2>
+  <div class="rule"></div>
+  <div class="two-col">
+    <div>
+      <h4>What you see live</h4>
+      <p>The confusion matrix compares the off-the-shelf zero-shot prediction to the hand-coded gold label on the thirty-row sample.</p>
+      <p>Diagonal cells are agreement. Off-diagonal cells are disagreement. Diagonal totals between two-thirds and three-quarters are typical for off-the-shelf zero-shot on a three-way climate task.</p>
+      <p class="small" style="margin-top: 12px;">Cohen's kappa adjusts accuracy for chance agreement. Read whatever the live number is and treat it as the headline.</p>
+    </div>
+    <div>
+      <h4>Kappa thresholds, Landis and Koch 1977</h4>
+      <table style="font-size: 14px;">
+        <thead><tr><th>Kappa</th><th>Verdict</th></tr></thead>
+        <tbody>
+          <tr><td><span class="highlight">&gt; 0.80</span></td><td>Almost perfect</td></tr>
+          <tr><td><span class="highlight">0.60 to 0.80</span></td><td>Substantial</td></tr>
+          <tr><td><span class="highlight">0.40 to 0.60</span></td><td>Moderate</td></tr>
+          <tr><td><span class="highlight">0.20 to 0.40</span></td><td>Fair</td></tr>
+          <tr><td><span class="highlight">&lt; 0.20</span></td><td>Poor</td></tr>
+        </tbody>
+      </table>
+      <p class="tiny" style="margin-top: 10px;">Off-the-shelf on this corpus typically lands 0.40 to 0.70. The single best one-number summary of model-versus-human agreement.</p>
+    </div>
+  </div>
+  <div class="slide-footer"><span>Day 2, Movement 02</span><span>19 / 32</span></div>
+</section>
+<!-- 20. PEARSON AND SPEARMAN -->
+<section class="slide">
+  <div class="eyebrow">Two more numbers worth computing</div>
+  <h2>Pearson r and Spearman rho<br>use the continuous signal.</h2>
+  <div class="rule"></div>
+  <div class="two-col">
+    <div>
+      <h4>Why both kappa and r</h4>
+      <p>Different failures. Kappa low and r high means the argmax cutoff is wrong but the model knows what it is looking at. Kappa high and r low means the argmax is correct but probabilities are noisy.</p>
+      <ul class="bare" style="margin-top: 12px;">
+        <li><span class="highlight">Pearson r.</span> Continuous supportive probability versus hand-coded score. Can be 0.5 to 0.7 for off-the-shelf zero-shot.</li>
+        <li><span class="highlight">Spearman rho.</span> Rank correlation. Robust to outliers and non-linear monotone shifts.</li>
+        <li><span class="highlight">Report both.</span> They typically agree to within a couple of points.</li>
+      </ul>
+    </div>
+    <div>
+      <pre><span class="kw">from</span> scipy.stats <span class="kw">import</span> pearsonr, spearmanr
+
+r, _   = <span class="fn">pearsonr</span>(p_supportive, gold_score)
+rho, _ = <span class="fn">spearmanr</span>(p_supportive, gold_score)
+
+<span class="fn">print</span>(<span class="str">f"Pearson r    {r:+.2f}"</span>)
+<span class="fn">print</span>(<span class="str">f"Spearman rho {rho:+.2f}"</span>)</pre>
+      <p class="tiny" style="margin-top: 12px;">Both numbers belong in your appendix. Headline kappa for the binary call. Pearson r for the continuous signal underneath.</p>
+    </div>
+  </div>
+  <div class="slide-footer"><span>Day 2, Movement 02</span><span>20 / 32</span></div>
+</section>
+<!-- 21. SUBGROUP TABLE -->
+<section class="slide">
+  <div class="eyebrow">Live, demo notebook Section D</div>
+  <h2>One last validity check.<br>Subgroup performance.</h2>
+  <div class="rule"></div>
+  <table>
+    <thead>
+      <tr><th>Split</th><th>Subgroup</th><th>n</th><th>Share supportive</th><th>Mean P(supportive)</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><span class="highlight">Era</span></td><td>pre-2015</td><td>~3000</td><td>illustrative</td><td>illustrative</td></tr>
+      <tr><td></td><td>post-2015</td><td>~2000</td><td>illustrative</td><td>illustrative</td></tr>
+      <tr><td><span class="highlight">Region</span></td><td>Europe</td><td>~700</td><td>illustrative</td><td>illustrative</td></tr>
+      <tr><td></td><td>Africa</td><td>~1500</td><td>illustrative</td><td>illustrative</td></tr>
+      <tr><td></td><td>Oceania</td><td>~250</td><td>illustrative</td><td>illustrative</td></tr>
+      <tr><td></td><td>Americas</td><td>~900</td><td>illustrative</td><td>illustrative</td></tr>
+      <tr><td></td><td>Asia</td><td>~1300</td><td>illustrative</td><td>illustrative</td></tr>
+    </tbody>
+  </table>
+  <p class="lede" style="margin-top: 18px; font-size: 22px;">If kappa varies by more than 0.15 across subgroups, you have a comparability problem.</p>
+  <p class="tiny" style="margin-top: 8px;">Numbers in the table are illustrative placeholders. Live values fill the slide once the demo cell finishes.</p>
+  <div class="slide-footer"><span>Day 2, Movement 02</span><span>21 / 32</span></div>
+</section>
+<!-- 22. SECTION DIVIDER 3 -->
+<section class="slide section-divider dark">
+  <div class="num">03</div>
+  <div class="eyebrow">Third movement, 35 minutes</div>
+  <h1>Climate emphasis<br>over time.</h1>
+  <p class="lede">Country-year scores. Time series 1970 to present. Compare against the Paris Agreement.</p>
+  <div class="slide-footer"><span>Day 2</span><span>22 / 32</span></div>
+</section>
+<!-- 23. PUBLISHED-STYLE MEASURE -->
+<section class="slide">
+  <div class="eyebrow">A published-style measure</div>
+  <h2>One small piece<br>of a much-built family.</h2>
+  <div class="rule"></div>
+  <div class="two-col">
+    <div>
+      <p>The plot we are about to build is the kind of measure that has been constructed from UNGDC many times. Baturo, Dasandi, and Mikhaylov 2017 introduced UNGDC and demonstrated several text-as-data measures on it. More recent papers have extracted topic emphasis, sentiment toward institutions, and stance toward specific issues from the same corpus.</p>
+      <p>What we are doing today is one small piece of that family. Climate-emphasis share by country and year, computed from a zero-shot encoder, plotted from 1970 to the most recent year, with the Paris Agreement marked.</p>
+    </div>
+    <div>
+      <h4>What we are not doing</h4>
+      <ul class="bare">
+        <li>Causal claims about Paris Agreement effects.</li>
+        <li>Event-study estimation.</li>
+        <li>A complete replication of any single published proxy.</li>
+      </ul>
+      <p class="lede" style="margin-top: 18px; font-size: 22px;">The plot is a face-validity check, not an event study. The methodology is the point.</p>
+    </div>
+  </div>
+  <div class="slide-footer"><span>Day 2, Movement 03</span><span>23 / 32</span></div>
+</section>
+<!-- 24. AGGREGATION CHOICES -->
+<section class="slide">
+  <div class="eyebrow">Three ways to aggregate</div>
+  <h2>None is neutral.</h2>
+  <div class="rule"></div>
+  <div class="three-col">
+    <div class="card">
+      <div class="label">Option 01</div>
+      <h3>Mean P(supportive)</h3>
+      <p>Average the supportive-class probability across all speeches in a country-year. Sensitive. Uses the continuous signal.</p>
+    </div>
+    <div class="card">
+      <div class="label">Option 02</div>
+      <h3>Share supportive</h3>
+      <p>Count the share of speeches where the argmax is supportive. Simpler. Throws away the underlying probability.</p>
+    </div>
+    <div class="card warm">
+      <div class="label">Option 03</div>
+      <h3>Top-K</h3>
+      <p>Keep only the most extreme K speeches per country-year. Useful when most speeches are administrative. K is a hyper-parameter. Validate it against the gold set before publishing.</p>
+    </div>
+  </div>
+  <p class="tiny" style="margin-top: 16px;">For "is climate language increasing on average," mean works. For "are some countries pivoting hard in particular years," top-K is more honest. Document the choice in the appendix and run a robustness check with one alternative.</p>
+  <div class="slide-footer"><span>Day 2, Movement 03</span><span>24 / 32</span></div>
+</section>
+<!-- 25. LIVE TIME SERIES -->
+<section class="slide">
+  <div class="eyebrow">Live, demo notebook Section E</div>
+  <h2>Two views of the time series.</h2>
+  <div class="rule"></div>
+  <div class="two-col">
+    <div>
+      <h4>View 01, global mean</h4>
+      <p>Mean of supportive-class probability across all speeches, by year, 1970 to present.</p>
+      <p>Low through the 1970s and 1980s. Ticks up through the 1990s. Accelerates in the early 2000s. Visible bend around 2015.</p>
+      <p class="small" style="margin-top: 12px;">Vertical line marks the Paris Agreement signing in December 2015.</p>
+    </div>
+    <div>
+      <h4>View 02, regional split</h4>
+      <p>Same curve broken out by UN region. Africa, Americas, Asia, Europe, Oceania.</p>
+      <p>Oceania often leads. Small island states have been making climate central to UN speeches since the late 1980s. Europe joins them visibly post-Paris. Asia and the Americas track the global mean. Africa is more volatile.</p>
+    </div>
+  </div>
+  <p class="lede" style="margin-top: 22px; font-size: 22px;">The Oceania line is the moment when off-the-shelf, with thirty seconds of label engineering, produces a substantively informative time series.</p>
+  <div class="slide-footer"><span>Day 2, Movement 03</span><span>25 / 32</span></div>
+</section>
+<!-- 26. COMPARE TO KNOWN EVENT -->
+<section class="slide">
+  <div class="eyebrow">Face-validity check</div>
+  <h2>The slope around Paris<br>is what a reviewer wants to see.</h2>
+  <div class="rule"></div>
+  <div class="two-col">
+    <div>
+      <h4>What the curve does</h4>
+      <ul class="bare">
+        <li>Pre-Paris years (2010 to 2014). Roughly flat trend.</li>
+        <li>2015 to 2017 stretch. Visible bend upward.</li>
+        <li>Post-2017. Curve flattens at a higher level.</li>
+      </ul>
+      <p class="small" style="margin-top: 14px;">The Paris Agreement was signed in December 2015 and entered into force in November 2016. The 2016 General Assembly is the first one fully after Paris.</p>
+    </div>
+    <div>
+      <h4>What this is and is not</h4>
+      <p><span class="highlight">Is.</span> A face-validity check. The curve is doing what a sensible measure should do near a major external event in the same domain.</p>
+      <p><span class="highlight">Is not.</span> An event-study estimate. We have not adjusted for country composition, speech length, or shift in topic prevalence outside climate. Doing those adjustments is the next step in a real paper.</p>
+      <p class="lede" style="margin-top: 18px; font-size: 22px;">If the picture is wrong, fix the measure before estimating any effect.</p>
+    </div>
+  </div>
+  <div class="slide-footer"><span>Day 2, Movement 03</span><span>26 / 32</span></div>
+</section>
+<!-- 27. APPENDIX TWO COLUMNS -->
+<section class="slide">
+  <div class="eyebrow">The validation appendix</div>
+  <h2>Two columns.<br>Must-have. Often-asked-for.</h2>
+  <div class="rule"></div>
+  <div class="two-col">
+    <div>
+      <h4>Must-have</h4>
+      <ul class="bare">
+        <li>Codebook reproduced in full, dated.</li>
+        <li>Gold-set sample size and selection method.</li>
+        <li>Cohen's kappa, accuracy, Pearson r, Spearman rho versus gold.</li>
+        <li>Confusion matrix.</li>
+        <li>Model ID with version pin. Candidate-label list. Aggregation rule.</li>
+      </ul>
+    </div>
+    <div>
+      <h4>Often asked for in revisions</h4>
+      <ul class="bare">
+        <li>Subgroup performance by era and region.</li>
+        <li>Sensitivity to candidate-label wording.</li>
+        <li>Comparison against a simpler baseline (keyword search, lexicon).</li>
+        <li>Notebook and gold-set CSV in replication package.</li>
+      </ul>
+    </div>
+  </div>
+  <p class="lede" style="margin-top: 22px; font-size: 22px;">If the appendix has all of column one, the proxy is defensible.</p>
+  <div class="slide-footer"><span>Day 2, Movement 03</span><span>27 / 32</span></div>
+</section>
+<!-- 28. WHAT ENSEMBLING / FINE-TUNING WOULD BUY -->
+<section class="slide">
+  <div class="eyebrow">If the off-the-shelf gap is too wide</div>
+  <h2>Two next steps.<br>Signposts only.</h2>
+  <div class="rule"></div>
+  <div class="two-col">
+    <div class="card cool">
+      <div class="label">Step 01, no extra training data</div>
+      <h3>Hypothesis ensembling</h3>
+      <p>Replace one supportive label with three or five differently worded versions of the same hypothesis. Average their probabilities. The wording-sensitivity collapses.</p>
+      <p>Kappa typically rises by 0.05 to 0.10. No new training data. Days of work, not weeks.</p>
+    </div>
+    <div class="card warm">
+      <div class="label">Step 02, three hundred hand-codes</div>
+      <h3>Fine-tuning</h3>
+      <p>Hand-code 300 paragraphs and fine-tune a DeBERTa-v3-base or v3-large on them.</p>
+      <p>Kappa typically rises by 0.10 to 0.20. The cost is a week of hand-coding. The benefit is a measure that can survive serious validation scrutiny.</p>
+    </div>
+  </div>
+  <p class="tiny" style="margin-top: 16px;">Today we stop at off-the-shelf with hand-coded validation. That is the right tool for most concept-measurement jobs in our discipline at first pass.</p>
+  <div class="slide-footer"><span>Day 2, Movement 03</span><span>28 / 32</span></div>
+</section>
+<!-- 29. Q&A -->
+<section class="slide">
+  <div class="eyebrow">Movement 04, Q&amp;A</div>
+  <h2>Open chat.<br>Nine minutes.</h2>
+  <div class="rule"></div>
+  <table>
+    <thead>
+      <tr><th style="width: 42%;">Pre-answered</th><th>Short answer</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Can I run today's pipeline on free Colab CPU?</td><td>Yes, but the five-thousand-row pass takes about 30 minutes instead of three. Use a smaller sample for the first run.</td></tr>
+      <tr><td>What if my corpus is in another language?</td><td>Translate first, or pick a multilingual encoder like XLM-RoBERTa-NLI. Both have tradeoffs.</td></tr>
+      <tr><td>How big can the encoder be on free GPU?</td><td>DeBERTa-v3-base, the model we used, fits free T4 with room. v3-large also fits, but slower. Above 1B parameters needs paid Pro.</td></tr>
+      <tr><td>Where do I publish my replication notebook?</td><td>Code on OSF or GitHub. Data on Harvard Dataverse or your institutional repo. Ship the gold-set CSV with the code.</td></tr>
+    </tbody>
+  </table>
+  <div class="slide-footer"><span>Day 2, Movement 04</span><span>29 / 32</span></div>
+</section>
+<!-- 30. CHECKLIST AS ONE SLIDE -->
+<section class="slide">
+  <div class="eyebrow">The validation checklist as one slide</div>
+  <h2>Five lines.<br>Memorize them.</h2>
+  <div class="rule"></div>
+  <ul class="bare" style="margin-top: 18px; font-size: 24px;">
+    <li><span class="accent" style="font-weight: 600;">One codebook with three rules.</span></li>
+    <li><span class="accent" style="font-weight: 600;">Thirty hand-coded paragraphs.</span></li>
+    <li><span class="accent" style="font-weight: 600;">One confusion matrix.</span></li>
+    <li><span class="accent" style="font-weight: 600;">Cohen's kappa, accuracy, Pearson r, Spearman rho.</span></li>
+    <li><span class="accent" style="font-weight: 600;">One subgroup table.</span></li>
+  </ul>
+  <p class="lede" style="margin-top: 28px; font-size: 26px;">If you have those five things in the appendix, your encoder-based measure is defensible.</p>
+  <div class="slide-footer"><span>Day 2, Movement 04</span><span>30 / 32</span></div>
+</section>
+<!-- 31. DAY 3 PREVIEW -->
+<section class="slide">
+  <div class="eyebrow">Tomorrow</div>
+  <h2>Three jobs<br>encoders cannot easily do.</h2>
+  <div class="rule"></div>
+  <div class="three-col">
+    <div class="card">
+      <div class="label">Job 01</div>
+      <h3>Free-text extraction</h3>
+      <p>Pull structured fields from a press release, even when the fields are not labels you can list in advance.</p>
+    </div>
+    <div class="card">
+      <div class="label">Job 02</div>
+      <h3>Normalization</h3>
+      <p>Resolve "USA," "United States," and "U.S." to a single ISO code across messy crawled text. Encoders are bad at this. Generative models are good at it.</p>
+    </div>
+    <div class="card">
+      <div class="label">Job 03</div>
+      <h3>Lightweight crawling</h3>
+      <p>Pull paragraphs off a public site, store the raw HTML for reproducibility, feed the cleaned text to a generative model. End-to-end pipeline.</p>
+    </div>
+  </div>
+  <p class="lede" style="margin-top: 22px; font-size: 22px;">Same reproducibility demands as today. New tools.</p>
+  <div class="slide-footer"><span>Day 2, Day 3 preview</span><span>31 / 32</span></div>
+</section>
+<!-- 32. CLOSING -->
+<section class="slide section-divider dark">
+  <div class="eyebrow">End of Day 2</div>
+  <h1>You turned a notebook<br>into a measurement.</h1>
+  <p class="lede">A codebook with three rules. A thirty-paragraph hand-coded gold set. A confusion matrix. A country-year CSV plotted against the Paris Agreement. A validation appendix that satisfies most political-science reviewers.</p>
+  <div style="margin-top: 32px; position: relative; z-index: 2;">
+    <h4>Optional reading before Day 3</h4>
+    <p style="color: var(--bg); font-size: 17px; line-height: 1.5; max-width: 760px;">Adcock and Collier (2001, APSR), "Measurement Validity, A Shared Standard for Qualitative and Quantitative Research." The framework decides which of today's checks belong in the paper and which stay in the notebook.</p>
+  </div>
+  <div class="slide-footer"><span>End of Day 2</span><span>32 / 32</span></div>
+</section>
+<!-- STOP -->
+<section class="slide" style="justify-content: center; align-items: center; padding: 0;">
+  <h1 style="font-size: 280px; text-align: center; line-height: 1; letter-spacing: -0.04em; margin: 0;">Stop</h1>
+</section>
+
+</div>
+<div class="hud">
+  <button id="prev">PREV</button>
+  <span id="counter">1 / 21</span>
+  <button id="next">NEXT</button>
+</div>
+<div class="progress-bar" id="bar" style="width: 4.76%"></div>
+
+<script>
+const slides = Array.from(document.querySelectorAll('.slide'));
+const total = slides.length;
+let idx = 0;
+
+function fit() {
+  const s = Math.min(window.innerWidth / 1280, window.innerHeight / 720) * 0.95;
+  document.documentElement.style.setProperty('--s', s);
+}
+window.addEventListener('resize', fit);
+fit();
+
+function show(i) {
+  i = Math.max(0, Math.min(i, total - 1));
+  slides[idx].classList.remove('active');
+  slides[i].classList.add('active');
+  idx = i;
+  document.getElementById('counter').textContent = `${idx+1} / ${total}`;
+  document.getElementById('bar').style.width = `${((idx+1)/total)*100}%`;
+  history.replaceState(null, '', `#${idx+1}`);
+}
+
+document.addEventListener('keydown', (e) => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { show(idx+1); e.preventDefault(); }
+  else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { show(idx-1); e.preventDefault(); }
+  else if (e.key === 'Home') { show(0); e.preventDefault(); }
+  else if (e.key === 'End') { show(total-1); e.preventDefault(); }
+  else if (e.key === 'f' || e.key === 'F') {
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+    else document.exitFullscreen();
+  }
+});
+
+document.getElementById('prev').addEventListener('click', () => show(idx-1));
+document.getElementById('next').addEventListener('click', () => show(idx+1));
+
+const initial = parseInt((location.hash || '#1').slice(1)) - 1;
+if (!isNaN(initial) && initial >= 0 && initial < total) show(initial);
+</script>
+</body>
+</html>
