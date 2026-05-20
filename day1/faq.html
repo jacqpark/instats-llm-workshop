@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Day 1 FAQ · LLMs for Political Scientists</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #D4E8D9;
+  --bg-tint: #E5EFE8;
+  --bg-deep: #BFD9C4;
+  --ink: #132025;
+  --ink-soft: #2D493C;
+  --ink-faint: #5C7B6A;
+  --rule: #A8C9AE;
+  --accent: #2D493C;
+  --highlight: #334B99;
+  --pop: #B1F1B1;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  background: #14202E;
+  font-family: 'Inter', -apple-system, sans-serif;
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  line-height: 1.5;
+}
+.page {
+  background: var(--bg);
+  width: 8.5in;
+  margin: 24px auto;
+  padding: 0.5in 0.55in;
+  box-shadow: 0 30px 90px rgba(0,0,0,0.55);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Header */
+.head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--accent);
+}
+.head .title-block { display: flex; flex-direction: column; }
+.head .eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--highlight);
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+.head h1 {
+  font-family: 'Crimson Pro', serif;
+  font-weight: 700;
+  font-size: 27px;
+  line-height: 1.05;
+  color: var(--accent);
+  letter-spacing: -0.02em;
+}
+.head .sub {
+  font-size: 10px;
+  color: var(--ink-soft);
+  margin-top: 5px;
+  max-width: 4.7in;
+  line-height: 1.4;
+}
+.head .meta {
+  text-align: right;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  line-height: 1.5;
+}
+.head .meta strong { color: var(--accent); }
+
+/* Question card */
+.qcard {
+  background: var(--bg-tint);
+  border-left: 3px solid var(--pop);
+  border-radius: 2px;
+  padding: 11px 15px;
+}
+.qcard .qtag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--highlight);
+  font-weight: 500;
+  margin-bottom: 3px;
+}
+.qcard h2 {
+  font-family: 'Crimson Pro', serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--accent);
+  line-height: 1.18;
+  margin-bottom: 7px;
+}
+.qcard .a { font-size: 9.8px; line-height: 1.5; color: var(--ink); }
+.qcard .a p { margin-bottom: 6px; }
+.qcard .a strong { color: var(--accent); }
+.qcard .a code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: var(--highlight);
+}
+.qcard .a ol { list-style: none; counter-reset: step; margin: 2px 0 6px; }
+.qcard .a ol li {
+  position: relative; padding-left: 20px; margin-bottom: 4px; line-height: 1.45;
+}
+.qcard .a ol li::before {
+  counter-increment: step; content: counter(step);
+  position: absolute; left: 0; top: 0; width: 14px; height: 14px;
+  background: var(--accent); color: var(--bg); border-radius: 50%;
+  font-family: 'JetBrains Mono', monospace; font-size: 8.5px; font-weight: 600;
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* Model shelf */
+.shelf-head {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8.5px; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--accent); font-weight: 600; margin: 8px 0 3px;
+}
+.shelf .item { font-size: 8.8px; line-height: 1.4; margin-bottom: 2px; padding: 1px 0; }
+.shelf .item.start { background: rgba(177,241,177,0.45); padding: 3px 6px; border-radius: 2px; }
+.shelf .item .mid {
+  font-family: 'JetBrains Mono', monospace; font-size: 8.3px; color: var(--highlight); font-weight: 500;
+}
+.shelf .item.start .mid { color: var(--accent); font-weight: 600; }
+.shelf .item .g { color: var(--ink-soft); }
+.shelf .item .g .b { color: var(--accent); font-weight: 600; }
+.then { margin-top: 7px; font-size: 9.5px; line-height: 1.46; }
+.then .b { color: var(--accent); font-weight: 600; }
+.default {
+  margin-top: 8px; padding: 7px 10px; background: var(--bg-deep);
+  border-left: 2px solid var(--accent); font-size: 9.5px; line-height: 1.45;
+}
+.default strong { color: var(--accent); }
+
+/* Footer */
+.foot {
+  border-top: 1px solid var(--rule);
+  padding-top: 8px; margin-top: 4px;
+  display: flex; justify-content: space-between;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-faint);
+}
+
+@media print {
+  html, body { background: white; }
+  .page { box-shadow: none; margin: 0; width: 100%; padding: 0.5in; }
+  .qcard { break-inside: avoid; }
+  @page { size: letter; margin: 0; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="head">
+  <div class="title-block">
+    <div class="eyebrow">Workshop · Day 01 · FAQ</div>
+    <h1>Getting started. The questions you asked.</h1>
+    <div class="sub">Three questions came up over and over. Here are working answers, written for someone new to Python and to encoders.</div>
+  </div>
+  <div class="meta">
+    Workshop materials<br>
+    github.com/jacqpark/<br>
+    <strong>instats-llm-workshop</strong>
+  </div>
+</div>
+
+<div class="qcard">
+  <div class="qtag">Q1 · choosing a model</div>
+  <h2>"Which encoder should I start with? There seem to be so many, and why is it always DeBERTa?"</h2>
+  <div class="a">
+    <p>The catalog is long, but it sorts into a few backbone families and one default. Zero-shot classification works with any model trained on natural language inference (the MNLI, XNLI, and ANLI corpora), whatever the backbone underneath. The backbones you will meet are <strong>BERT</strong>, <strong>RoBERTa</strong>, <strong>DeBERTa</strong>, and the newer <strong>ModernBERT</strong>. We lean on DeBERTa-v3 for one concrete reason. Timoneda and Vallejo Vera (2025) benchmarked the families on political text and found DeBERTa generally ahead. RoBERTa and BART models are entirely valid and are sometimes the better fit for speed, ecosystem, or language coverage.</p>
+
+    <div class="shelf-head">English, general purpose · start here</div>
+    <div class="shelf">
+      <div class="item start"><span class="mid">MoritzLaurer/DeBERTa-v3-base-mnli-fever-anli</span> <span class="g"><span class="b">— Start here.</span> The workshop default. DeBERTa backbone, about 184M, runs on free Colab CPU.</span></div>
+      <div class="item"><span class="mid">facebook/bart-large-mnli</span> <span class="g">— The original zero-shot default. BART backbone. By far the most downloaded. English.</span></div>
+      <div class="item"><span class="mid">roberta-large-mnli</span> <span class="g">— The classic RoBERTa NLI model. Fast, well documented, a fine alternative to DeBERTa.</span></div>
+    </div>
+
+    <div class="shelf-head">Higher accuracy or newer architecture · English</div>
+    <div class="shelf">
+      <div class="item"><span class="mid">MoritzLaurer/DeBERTa-v3-large-mnli-fever-anli-ling-wanli</span> <span class="g">— Large DeBERTa. Best English accuracy when you have a GPU.</span></div>
+      <div class="item"><span class="mid">MoritzLaurer/deberta-v3-base-zeroshot-v2.0</span> <span class="g">— Trained specifically for zero-shot, with a cleaner commercial license.</span></div>
+      <div class="item"><span class="mid">MoritzLaurer/ModernBERT-base-zeroshot-v2.0</span> <span class="g">— Newest backbone. Fast, and it handles long inputs (see Q3).</span></div>
+    </div>
+
+    <div class="shelf-head">Multilingual · non-English text</div>
+    <div class="shelf">
+      <div class="item"><span class="mid">joeddav/xlm-roberta-large-xnli</span> <span class="g">— RoBERTa backbone, trained on XNLI across many languages.</span></div>
+      <div class="item"><span class="mid">MoritzLaurer/mDeBERTa-v3-base-mnli-xnli</span> <span class="g">— DeBERTa backbone, roughly 100 languages.</span></div>
+      <div class="item"><span class="mid">MoritzLaurer/bge-m3-zeroshot-v2.0</span> <span class="g">— Multilingual and built for long documents.</span></div>
+    </div>
+
+    <div class="then"><span class="b">Then.</span> Once you gather roughly 300 or more hand-labels, fine-tune a base encoder (DeBERTa-v3-base or RoBERTa-base) rather than staying zero-shot. Score whichever model you pick on your own gold set with Cohen's kappa before you optimize, and pin the exact Hugging Face model ID so the result replicates. For ready-made political classifiers, look at the Political DEBATE models.</div>
+
+    <div class="default"><strong>Default to remember.</strong> Begin with <code>MoritzLaurer/DeBERTa-v3-base-mnli-fever-anli</code>. The backbone family matters far less than validating your choice on your own labeled data.</div>
+  </div>
+</div>
+
+<div class="qcard">
+  <div class="qtag">Q2 · coding with an AI agent</div>
+  <h2>"I'm not a Python whiz. I want to code with Claude Code or Codex. How do I write these scripts, and what is Colab for if I run them with those tools?"</h2>
+  <div class="a">
+    <p>Claude Code, Codex, and similar tools are AI coding agents. You describe the task in plain English, for example "load this CSV, run zero-shot classification with these three labels, and save a results table," and the agent writes and edits the Python for you. You do not write it from scratch. You do read it, run it, and check that the output makes sense.</p>
+    <p>Writing the code and running the code are two separate jobs. The agent does the writing. Something still has to execute the result, with Python installed, the libraries present (<code>transformers</code>, <code>torch</code>), and ideally a GPU attached. That second job is what Colab handles. It hands you a ready-made Python environment and a free GPU in the browser, with nothing to install. Encoder inference runs roughly 10 to 50 times faster on that GPU than on a typical laptop CPU.</p>
+    <p>Two setups work well.</p>
+    <ol>
+      <li><strong>Write with the agent, run on Colab.</strong> Have the agent produce the script on your laptop, push it to a GitHub repo or copy the cells across, then open Colab and run it on the free GPU. Colab cells also accept shell commands with a leading <code>!</code>, so <code>!pip install</code> and <code>!python myscript.py</code> work right inside the notebook.</li>
+      <li><strong>Write and run on your own machine.</strong> If your laptop has a usable GPU (an NVIDIA card, or Apple Silicon) the agent can run the script locally and you can skip Colab. On a CPU-only laptop, small jobs are fine and large ones are slow.</li>
+    </ol>
+    <p>So the agent and Colab solve different problems. The agent writes the script. Colab gives you free hardware and a clean environment to run it on. If you already own a capable machine, you may not need Colab at all.</p>
+    <div class="default"><strong>One safety rule for every setup.</strong> Keep API keys out of the script. Use Colab's Secrets panel or an environment variable. Never paste a key into a code cell.</div>
+  </div>
+</div>
+
+<div class="qcard">
+  <div class="qtag">Q3 · long text</div>
+  <h2>"Can I feed long paragraphs into these encoders? Your demo examples are only 10 to 20 words."</h2>
+  <div class="a">
+    <p>Yes, up to a limit, and the limit is counted in tokens rather than words. A token is roughly three quarters of an English word. The classic encoders (BERT, RoBERTa, DeBERTa-v3, in base or large) accept up to <strong>512 tokens</strong>, which is about 350 to 400 English words, a healthy paragraph. The short sentences in the demo are only for clarity. The very same <code>pipeline</code> call takes a full paragraph with no change.</p>
+    <p>The catch is silent truncation. When the text runs past the model's limit, the pipeline quietly drops the overflow and scores only the beginning. A 2,000-word UN speech fed in whole would be judged on its first few hundred words, and no warning would appear. Always know how long your texts are and confirm they fit.</p>
+    <p>For text longer than the limit, two clean options.</p>
+    <ol>
+      <li><strong>Split and aggregate.</strong> Break the document into sentences or paragraphs, score each piece, then combine the scores into one document measure with a mean, a max, or a weighted sum. This is exactly how the case-study paper from Slide 14 builds a country-year measure out of paragraph-level scores.</li>
+      <li><strong>Use a long-context encoder.</strong> ModernBERT models accept up to 8,192 tokens, and bge-m3 also handles long input. These let you score a long passage in a single pass.</li>
+    </ol>
+    <div class="default"><strong>A good habit.</strong> Decide whether your concept lives at the sentence, the paragraph, or the document level, then score at that level on purpose. The unit you choose shapes every number downstream.</div>
+  </div>
+</div>
+
+<div class="qcard">
+  <div class="qtag">Q4 · sensitive data</div>
+  <h2>"Is it okay to run analyses on sensitive or protected data on Colab?"</h2>
+  <div class="a">
+    <p>Treat free Colab as a third-party cloud service. Anything you upload is sent to Google's servers and processed there. For public text (UN speeches, news, public social-media posts) that is perfectly fine. For sensitive, personal, or regulated data, the honest default answer is no, at least not without clearance.</p>
+    <p>The decision is governed by your data rules, not by convenience. Three things to check before any upload.</p>
+    <ol>
+      <li><strong>Your IRB approval and data use agreement.</strong> Many agreements forbid moving data to non-approved third-party processors. Human-subjects, personal, or health data often cannot leave approved infrastructure at all.</li>
+      <li><strong>GDPR and your institution's policy.</strong> If the data contains personal data of EU residents, uploading it to free Colab can count as an unlawful transfer to a third party. Clear this with your institution's data protection officer first.</li>
+      <li><strong>The tier of Colab.</strong> Free and Pro Colab are consumer-grade and carry no data-processing contract. Mounted Google Drive data is stored on Google. Only Colab Enterprise, through Google Cloud, offers the contractual protections regulated data usually requires.</li>
+    </ol>
+    <p>Here is the good news, and it is the reason we spend Day 1 on encoders. An encoder runs offline. After the one-time model download, the model sits on your machine and no text ever leaves it. That makes a local encoder the strongest privacy option in this whole workshop. A generative API is the opposite, since every call ships your text to the provider.</p>
+    <div class="default"><strong>Bottom line.</strong> Public text on Colab is fine. For sensitive data, run the encoder locally on your own machine or on institution-approved compute, de-identify wherever you can, and clear it with your data use agreement, IRB, and data protection officer before you start.</div>
+  </div>
+</div>
+
+<div class="foot">
+  <span>Day 01 of 03 · LLMs for Political Scientists · model IDs verified on Hugging Face</span>
+  <span>github.com/jacqpark/instats-llm-workshop</span>
+</div>
+
+</div>
+</body>
+</html>

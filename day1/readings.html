@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Day 1 Reading List · LLMs for Political Scientists</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #D4E8D9;
+  --bg-tint: #E5EFE8;
+  --bg-deep: #BFD9C4;
+  --ink: #132025;
+  --ink-soft: #2D493C;
+  --ink-faint: #5C7B6A;
+  --rule: #A8C9AE;
+  --accent: #2D493C;
+  --highlight: #334B99;
+  --pop: #B1F1B1;
+  --dark: #132025;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  background: #14202E;
+  font-family: 'Inter', -apple-system, sans-serif;
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  line-height: 1.5;
+}
+.page {
+  background: var(--bg);
+  width: 8.5in;
+  min-height: 11in;
+  margin: 24px auto;
+  padding: 0.5in 0.55in;
+  box-shadow: 0 30px 90px rgba(0,0,0,0.55);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Header */
+.head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--accent);
+}
+.head .title-block { display: flex; flex-direction: column; }
+.head .eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--highlight);
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+.head h1 {
+  font-family: 'Crimson Pro', serif;
+  font-weight: 700;
+  font-size: 27px;
+  line-height: 1.05;
+  color: var(--accent);
+  letter-spacing: -0.02em;
+}
+.head .sub {
+  font-size: 10px;
+  color: var(--ink-soft);
+  margin-top: 5px;
+  max-width: 4.7in;
+  line-height: 1.4;
+}
+.head .meta {
+  text-align: right;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  line-height: 1.5;
+}
+.head .meta strong { color: var(--accent); }
+
+/* FAQ feature box */
+.faq {
+  background: var(--bg-tint);
+  padding: 11px 15px;
+  border-radius: 2px;
+  border-left: 3px solid var(--pop);
+  font-size: 10px;
+  line-height: 1.5;
+}
+.faq .lead {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--highlight);
+  margin-bottom: 3px;
+}
+.faq .q {
+  font-family: 'Crimson Pro', serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--accent);
+  margin-bottom: 6px;
+}
+.faq .tldr { margin-bottom: 7px; }
+.faq strong { color: var(--accent); }
+.faq code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: var(--highlight);
+}
+.faq ol { list-style: none; counter-reset: step; }
+.faq ol li {
+  position: relative;
+  padding-left: 20px;
+  margin-bottom: 4px;
+  font-size: 9.5px;
+  line-height: 1.42;
+}
+.faq ol li::before {
+  counter-increment: step;
+  content: counter(step);
+  position: absolute;
+  left: 0; top: 0;
+  width: 14px; height: 14px;
+  background: var(--accent);
+  color: var(--bg);
+  border-radius: 50%;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8.5px;
+  font-weight: 600;
+  display: flex; align-items: center; justify-content: center;
+}
+.faq .default {
+  margin-top: 7px;
+  padding: 7px 10px;
+  background: var(--bg-deep);
+  border-left: 2px solid var(--accent);
+  font-size: 9.5px;
+}
+.faq .shelf-head {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 600;
+  margin: 8px 0 4px;
+}
+.shelf .item { font-size: 8.8px; line-height: 1.4; margin-bottom: 3px; padding: 1px 0; }
+.shelf .item.start { background: rgba(177,241,177,0.4); padding: 3px 6px; border-radius: 2px; }
+.shelf .item .mid {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8.3px;
+  color: var(--highlight);
+  font-weight: 500;
+}
+.shelf .item.start .mid { color: var(--accent); font-weight: 600; }
+.shelf .item .g { color: var(--ink-soft); }
+.shelf .item .g .b { color: var(--accent); font-weight: 600; }
+.faq .then { margin-top: 7px; font-size: 9.5px; line-height: 1.45; }
+.faq .then .b { color: var(--accent); font-weight: 600; }
+
+/* References */
+.refs h2 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--highlight);
+  margin: 4px 0 5px;
+  padding-bottom: 3px;
+  border-bottom: 1px solid var(--rule);
+}
+.ref {
+  font-size: 9px;
+  line-height: 1.4;
+  margin-bottom: 7px;
+  padding-left: 16px;
+  position: relative;
+}
+.ref .num {
+  position: absolute;
+  left: 0; top: 1px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--highlight);
+}
+.ref .cite { color: var(--ink); }
+.ref .cite .au { font-weight: 700; color: var(--accent); }
+.ref .cite .ti { font-style: italic; }
+.ref .cite .ve { color: var(--ink-soft); }
+.ref .doi {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8px;
+  color: var(--highlight);
+  text-decoration: none;
+}
+.ref .why {
+  display: block;
+  margin-top: 1px;
+  color: var(--ink-faint);
+  font-size: 8.5px;
+}
+.ref .why b { color: var(--accent); font-weight: 600; }
+
+/* Footer */
+.foot {
+  border-top: 1px solid var(--rule);
+  padding-top: 8px;
+  margin-top: auto;
+  display: flex;
+  justify-content: space-between;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+@media print {
+  html, body { background: white; }
+  .page { box-shadow: none; margin: 0; width: 100%; min-height: auto; padding: 0.5in; }
+  @page { size: letter; margin: 0; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="head">
+  <div class="title-block">
+    <div class="eyebrow">Workshop · Day 01 · Reading List</div>
+    <h1>Build the pipeline. Read these.</h1>
+    <div class="sub">A short, vetted shelf for writing your own encoder pipeline in Python. Every entry is a real, peer-reviewed source with a working DOI. Start at the top.</div>
+  </div>
+  <div class="meta">
+    Workshop materials<br>
+    github.com/jacqpark/<br>
+    <strong>instats-llm-workshop</strong>
+  </div>
+</div>
+
+<div class="faq">
+  <div class="lead">Companion · Day 1 FAQ sheet</div>
+  <div class="q">The practical questions live next door.</div>
+  <div class="tldr">Four questions came up enough to get their own sheet, <code>faq.html</code>. Which model to start with, and why the shelf is not all DeBERTa. How to write these scripts with an AI coding agent, and where Colab fits. Whether encoders can take long paragraphs. And whether sensitive data belongs on Colab. The reading list below is the shelf those answers point back to. Start with ref 1.</div>
+</div>
+
+<div class="refs">
+
+  <h2>Start here · the method and the tool</h2>
+  <div class="ref"><span class="num">1</span><span class="cite"><span class="au">Laurer, M., van Atteveldt, W., Casas, A., &amp; Welbers, K.</span> (2024). <span class="ti">Less annotating, more classifying. Addressing the data scarcity issue of supervised machine learning with deep transfer learning and BERT-NLI.</span> <span class="ve">Political Analysis, 32(1), 84–100.</span> <a class="doi" href="https://doi.org/10.1017/pan.2023.20">doi.org/10.1017/pan.2023.20</a></span><span class="why"><b>Why.</b> The exact zero-shot BERT-NLI approach the workshop pipeline runs. Read it first.</span></div>
+
+  <div class="ref"><span class="num">2</span><span class="cite"><span class="au">Burnham, M., Kahn, K., Wang, R. Y., &amp; Peng, R. X.</span> (2025). <span class="ti">Political DEBATE. Efficient zero-shot and few-shot classifiers for political text.</span> <span class="ve">Political Analysis, 1–15 (online first).</span> <a class="doi" href="https://doi.org/10.1017/pan.2025.10028">doi.org/10.1017/pan.2025.10028</a></span><span class="why"><b>Why.</b> Open DeBERTa classifiers tuned for political text, with a package you can drop straight into a script.</span></div>
+
+  <div class="ref"><span class="num">3</span><span class="cite"><span class="au">Burnham, M.</span> (2025). <span class="ti">Stance detection. A practical guide to classifying political beliefs in text.</span> <span class="ve">Political Science Research and Methods, 13(3), 611–628.</span> <a class="doi" href="https://doi.org/10.1017/psrm.2024.35">doi.org/10.1017/psrm.2024.35</a></span><span class="why"><b>Why.</b> A hands-on walkthrough of stance detection with transformer encoders, end to end.</span></div>
+
+  <div class="ref"><span class="num">4</span><span class="cite"><span class="au">Wolf, T., Debut, L., Sanh, V., Chaumond, J., Delangue, C., Moi, A., et al.</span> (2020). <span class="ti">Transformers. State-of-the-art natural language processing.</span> <span class="ve">Proceedings of the 2020 Conference on Empirical Methods in Natural Language Processing: System Demonstrations, 38–45.</span> <a class="doi" href="https://doi.org/10.18653/v1/2020.emnlp-demos.6">doi.org/10.18653/v1/2020.emnlp-demos.6</a></span><span class="why"><b>Why.</b> The paper behind the Hugging Face <code>transformers</code> library and the <code>pipeline</code> call you will write.</span></div>
+
+  <h2>Choosing a model and validating it</h2>
+  <div class="ref"><span class="num">5</span><span class="cite"><span class="au">Timoneda, J. C., &amp; Vallejo Vera, S.</span> (2025). <span class="ti">BERT, RoBERTa, or DeBERTa? Comparing performance across transformer models in political science text.</span> <span class="ve">The Journal of Politics, 87(1), 347–364.</span> <a class="doi" href="https://doi.org/10.1086/730737">doi.org/10.1086/730737</a></span><span class="why"><b>Why.</b> The direct answer to the FAQ above, with benchmarks on political text.</span></div>
+
+  <div class="ref"><span class="num">6</span><span class="cite"><span class="au">Bestvater, S. E., &amp; Monroe, B. L.</span> (2023). <span class="ti">Sentiment is not stance. Target-aware opinion classification for political text analysis.</span> <span class="ve">Political Analysis, 31(2), 235–256.</span> <a class="doi" href="https://doi.org/10.1017/pan.2022.10">doi.org/10.1017/pan.2022.10</a></span><span class="why"><b>Why.</b> Why an off-the-shelf score can mislead, and how to validate against a hand-coded gold set.</span></div>
+
+  <h2>Foundations and tutorials</h2>
+  <div class="ref"><span class="num">7</span><span class="cite"><span class="au">Wankmüller, S.</span> (2024). <span class="ti">Introduction to neural transfer learning with transformers for social science text analysis.</span> <span class="ve">Sociological Methods &amp; Research, 53(4), 1676–1752.</span> <a class="doi" href="https://doi.org/10.1177/00491241221134527">doi.org/10.1177/00491241221134527</a></span><span class="why"><b>Why.</b> A patient, step-by-step tutorial on transfer learning with encoders for people new to the field.</span></div>
+
+  <div class="ref"><span class="num">8</span><span class="cite"><span class="au">Devlin, J., Chang, M.-W., Lee, K., &amp; Toutanova, K.</span> (2019). <span class="ti">BERT. Pre-training of deep bidirectional transformers for language understanding.</span> <span class="ve">Proceedings of NAACL-HLT 2019, 4171–4186.</span> <a class="doi" href="https://doi.org/10.18653/v1/n19-1423">doi.org/10.18653/v1/n19-1423</a></span><span class="why"><b>Why.</b> The original encoder. Skim it once to understand what every model on this list descends from.</span></div>
+
+  <div class="ref"><span class="num">9</span><span class="cite"><span class="au">Grimmer, J., &amp; Stewart, B. M.</span> (2013). <span class="ti">Text as data. The promise and pitfalls of automatic content analysis methods for political texts.</span> <span class="ve">Political Analysis, 21(3), 267–297.</span> <a class="doi" href="https://doi.org/10.1093/pan/mps028">doi.org/10.1093/pan/mps028</a></span><span class="why"><b>Why.</b> The framing paper for the whole enterprise. Validity first, methods second.</span></div>
+
+  <div class="ref"><span class="num">10</span><span class="cite"><span class="au">Grimmer, J., Roberts, M. E., &amp; Stewart, B. M.</span> (2022). <span class="ti">Text as data. A new framework for machine learning and the social sciences.</span> <span class="ve">Princeton University Press, 360 pp.</span></span><span class="why"><b>Why.</b> The book-length reference. Keep it on the desk while you build and validate.</span></div>
+
+  <h2>The generative alternative</h2>
+  <div class="ref"><span class="num">11</span><span class="cite"><span class="au">Ornstein, J. T., Blasingame, E. N., &amp; Truscott, J. S.</span> (2025). <span class="ti">How to train your stochastic parrot. Large language models for political texts.</span> <span class="ve">Political Science Research and Methods, 13(2), 264–281.</span> <a class="doi" href="https://doi.org/10.1017/psrm.2024.64">doi.org/10.1017/psrm.2024.64</a></span><span class="why"><b>Why.</b> The case for reaching past an encoder to a generative model, and the costs that come with it. Bridge to Day 3.</span></div>
+
+</div>
+
+<div class="foot">
+  <span>Day 01 of 03 · LLMs for Political Scientists · all DOIs verified via CrossRef</span>
+  <span>github.com/jacqpark/instats-llm-workshop</span>
+</div>
+
+</div>
+</body>
+</html>
