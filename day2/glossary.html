@@ -109,6 +109,38 @@ html, body {
   font-size: 9.5px;
   color: var(--highlight);
 }
+.kappa-eq {
+  margin: 8px 0 2px;
+  padding: 8px 10px;
+  background: var(--bg-deep);
+  border-radius: 2px;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.kappa-eq .formula {
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.kappa-eq .formula .frac {
+  display: inline-flex;
+  flex-direction: column;
+  text-align: center;
+  vertical-align: middle;
+  margin: 0 2px;
+}
+.kappa-eq .formula .frac .num { border-bottom: 1px solid var(--accent); padding: 0 4px; }
+.kappa-eq .formula .frac .den { padding: 1px 4px 0; }
+.kappa-eq .legend {
+  font-family: 'Inter', sans-serif;
+  font-size: 8.5px;
+  line-height: 1.45;
+  color: var(--ink-soft);
+}
+.kappa-eq .legend b { color: var(--accent); font-family: 'JetBrains Mono', monospace; }
 .nli-grid {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
@@ -181,7 +213,14 @@ code.inl {
 
 @media print {
   html, body { background: white; }
-  .page { box-shadow: none; margin: 0; width: 100%; min-height: auto; padding: 0.5in; }
+  .page {
+    box-shadow: none;
+    margin: 0;
+    width: 8.5in;
+    min-height: auto;
+    padding: 0.45in 0.5in;
+    zoom: 0.86;
+  }
   @page { size: letter; margin: 0; }
 }
 </style>
@@ -205,6 +244,12 @@ code.inl {
 <div class="nli-box">
   <div class="lead">The one to memorize · Cohen's kappa</div>
   <strong>Cohen's kappa</strong> is the single best one-number summary of how well your model agrees with a human coder. Plain accuracy flatters you, because two coders labeling at random would still agree some of the time by luck. Kappa subtracts that luck. It takes the agreement you <strong>observed</strong>, removes the agreement you would <strong>expect by chance</strong>, and rescales so 1.0 is perfect and 0 is no better than guessing. Report it on your thirty-paragraph gold set and your methods reviewer will recognize it on sight.
+  <div class="kappa-eq">
+    <span class="formula">&#954; =
+      <span class="frac"><span class="num">p<sub>o</sub> &minus; p<sub>e</sub></span><span class="den">1 &minus; p<sub>e</sub></span></span>
+    </span>
+    <span class="legend"><b>p<sub>o</sub></b> observed agreement, the share of paragraphs where model and coder match.<br><b>p<sub>e</sub></b> agreement expected by chance, summed over classes from each side's label shares.</span>
+  </div>
   <div class="nli-grid">
     <div class="cell"><b>Observed</b>Model and coder give the same score on 22 of 30 paragraphs. Raw accuracy is 0.73.</div>
     <div class="cell"><b>Expected by chance</b>Given each side's class shares, luck alone would land about 0.41 of them.</div>
@@ -222,19 +267,16 @@ code.inl {
       <div class="term"><dt>Reliability</dt><dd>Re-running on the same input gives the same answer. Two coders on one paragraph reach the same score.</dd></div>
       <div class="term"><dt>Comparability</dt><dd>Scores line up across countries and years with no drift introduced by the model itself.</dd></div>
       <div class="term"><dt>Proxy</dt><dd>A measurable stand-in for a concept you cannot observe directly. Your new CSV column is a proxy.</dd></div>
-      <div class="term"><dt>Adcock &amp; Collier</dt><dd>The <em>APSR</em> 2001 framework behind those three properties. Cite it in your methods appendix.</dd></div>
     </dl>
   </div>
 
   <div class="gsec">
     <h2>The corpus &amp; the run</h2>
     <dl>
-      <div class="term"><dt>UNGDC</dt><dd>UN General Debate Corpus. About 4,700 stratified speeches, 1946 to 2025, on Harvard Dataverse.</dd></div>
       <div class="term"><dt>Stratified sample</dt><dd>A sample drawn to keep balanced coverage, here across years, so a temporal trend is not distorted.</dd></div>
       <div class="term"><dt>Context window <span class="alt">512 tokens</span></dt><dd>The most tokens a model reads at once. DeBERTa's is 512, roughly 350 to 400 words.</dd></div>
       <div class="term"><dt>Truncation</dt><dd>Cutting each text to the first 512 tokens before scoring. Document the choice in your appendix.</dd></div>
       <div class="term"><dt>Batch <span class="alt">batch size</span></dt><dd>How many texts the GPU scores at once. Sixteen here. Larger batches run faster on a T4.</dd></div>
-      <div class="term"><dt>Country-year</dt><dd>One row per country per year. The unit that merges into a regression dataset.</dd></div>
     </dl>
   </div>
 
