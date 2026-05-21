@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Day 2 FAQ · LLMs for Political Scientists</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #D4E8D9;
+  --bg-tint: #E5EFE8;
+  --bg-deep: #BFD9C4;
+  --ink: #132025;
+  --ink-soft: #2D493C;
+  --ink-faint: #5C7B6A;
+  --rule: #A8C9AE;
+  --accent: #2D493C;
+  --highlight: #334B99;
+  --pop: #B1F1B1;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  background: #14202E;
+  font-family: 'Inter', -apple-system, sans-serif;
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  line-height: 1.5;
+}
+.page {
+  background: var(--bg);
+  width: 8.5in;
+  margin: 24px auto;
+  padding: 0.5in 0.55in;
+  box-shadow: 0 30px 90px rgba(0,0,0,0.55);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Header */
+.head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--accent);
+}
+.head .title-block { display: flex; flex-direction: column; }
+.head .eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--highlight);
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+.head h1 {
+  font-family: 'Crimson Pro', serif;
+  font-weight: 700;
+  font-size: 27px;
+  line-height: 1.05;
+  color: var(--accent);
+  letter-spacing: -0.02em;
+}
+.head .sub {
+  font-size: 10px;
+  color: var(--ink-soft);
+  margin-top: 5px;
+  max-width: 4.7in;
+  line-height: 1.4;
+}
+.head .meta {
+  text-align: right;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  line-height: 1.5;
+}
+.head .meta strong { color: var(--accent); }
+
+/* Question card */
+.qcard {
+  background: var(--bg-tint);
+  border-left: 3px solid var(--pop);
+  border-radius: 2px;
+  padding: 11px 15px;
+}
+.qcard .qtag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--highlight);
+  font-weight: 500;
+  margin-bottom: 3px;
+}
+.qcard h2 {
+  font-family: 'Crimson Pro', serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--accent);
+  line-height: 1.18;
+  margin-bottom: 7px;
+}
+.qcard .a { font-size: 9.8px; line-height: 1.5; color: var(--ink); }
+.qcard .a p { margin-bottom: 6px; }
+.qcard .a strong { color: var(--accent); }
+.qcard .a code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: var(--highlight);
+}
+.qcard .a ol { list-style: none; counter-reset: step; margin: 2px 0 6px; }
+.qcard .a ol li {
+  position: relative; padding-left: 20px; margin-bottom: 4px; line-height: 1.45;
+}
+.qcard .a ol li::before {
+  counter-increment: step; content: counter(step);
+  position: absolute; left: 0; top: 0; width: 14px; height: 14px;
+  background: var(--accent); color: var(--bg); border-radius: 50%;
+  font-family: 'JetBrains Mono', monospace; font-size: 8.5px; font-weight: 600;
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* Default callout */
+.default {
+  margin-top: 8px; padding: 7px 10px; background: var(--bg-deep);
+  border-left: 2px solid var(--accent); font-size: 9.5px; line-height: 1.45;
+}
+.default strong { color: var(--accent); }
+
+/* Footer */
+.foot {
+  border-top: 1px solid var(--rule);
+  padding-top: 8px; margin-top: 4px;
+  display: flex; justify-content: space-between;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-faint);
+}
+
+@media print {
+  html, body { background: white; }
+  .page { box-shadow: none; margin: 0; width: 100%; padding: 0.5in; }
+  .qcard { break-inside: avoid; }
+  @page { size: letter; margin: 0; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="head">
+  <div class="title-block">
+    <div class="eyebrow">Workshop · Day 02 · FAQ</div>
+    <h1>Zero-shot in practice. The questions you asked.</h1>
+    <div class="sub">Four questions came up around labels, ensembling, SetFit, and validation. Here are working answers, with the trap each one hides spelled out.</div>
+  </div>
+  <div class="meta">
+    Workshop materials<br>
+    github.com/jacqpark/<br>
+    <strong>instats-llm-workshop</strong>
+  </div>
+</div>
+
+<div class="qcard">
+  <div class="qtag">Q1 · the neutral label</div>
+  <h2>"Should I drop the neutral label, or filter out neutral texts before they reach the model?"</h2>
+  <div class="a">
+    <p>These are two different decisions, and the question hides that. <strong>Dropping the neutral label</strong> changes how the model scores the texts it sees. <strong>Pre-filtering neutral texts</strong> removes them from the pipeline before the model scores anything. They have different consequences.</p>
+    <p>On dropping the label, the worry is forced choice. In a single-label setup without a neutral option, genuinely neutral texts get pushed to a pole, which inflates the apparent prevalence of both substantive categories and adds error where the text carries no signal. That is the real case for keeping neutral. But "always keep it" is too strong. Neutral is one of the hardest hypotheses to verbalize, and a vague neutral hypothesis can act as an attractor that pulls in real positive and negative texts, hurting recall. The cleaner design is <strong>multi-label scoring with a threshold</strong>. Score each substantive label on its own, and anything that clears no threshold is neutral by construction, with no neutral hypothesis to phrase.</p>
+    <p>On pre-filtering, the risk is larger. A separate process to find neutrals has its own error that then propagates silently into your estimates, and discarding neutrals destroys the base rate you would need for any prevalence claim. There is one defensible version. A deliberate two-stage hurdle design, where stage one detects stance presence and stage two assigns direction, with each stage validated separately. Ad hoc filtering to clean up the input is not that.</p>
+    <div class="default"><strong>Default to remember.</strong> Keep a neutral or none-of-the-above category, or move to multi-label thresholding. Avoid pre-filtering unless you are explicitly building a validated two-stage design. Settle it on a hand-labeled set, not by rule.</div>
+  </div>
+</div>
+
+<div class="qcard">
+  <div class="qtag">Q2 · hypothesis ensembling</div>
+  <h2>"For hypothesis ensembling, is it better to use diverse wordings or hypotheses that share similar language?"</h2>
+  <div class="a">
+    <p>Diversity wins, with one hard constraint. Averaging several hypotheses for the same label is a variance-reduction move, and it follows the standard ensemble result. An ensemble beats its average member only to the extent the members make uncorrelated errors. Near-paraphrases make the same mistakes on the same texts, so averaging buys almost nothing. Diverse wording is what gives the ensemble something to cancel.</p>
+    <p>There is an NLI-specific reason too. These models lean on lexical overlap between the text and the hypothesis as a shortcut to entailment. If every hypothesis shares the same key words, they all inherit the same overlap bias and the ensemble cannot correct it. Varied vocabulary and syntax let that artifact partly cancel.</p>
+    <p>The constraint governs everything. Diversity helps only among hypotheses that are each faithful to the construct. A mis-verbalized hypothesis is not harmless noise. It is a biased measurement of the wrong thing, and it drags the whole average toward that wrong target. So vary <strong>how</strong> you ask and hold <strong>what</strong> you ask fixed. Diverse surface form, identical underlying construct.</p>
+    <ol>
+      <li>Generate a pool of candidate wordings with real lexical and structural variety, not synonym swaps.</li>
+      <li>Screen each candidate on a labeled set and drop the weak ones. They add bias, not just variance.</li>
+      <li>Ensemble the survivors by averaging entailment probabilities, then report the templates you used.</li>
+    </ol>
+    <div class="default"><strong>Default to remember.</strong> Non-overlapping variety beats shared language, with the standing condition that every member passes validation on its own. Variety among valid hypotheses is the goal.</div>
+  </div>
+</div>
+
+<div class="qcard">
+  <div class="qtag">Q3 · SetFit underperformed</div>
+  <h2>"My SetFit run did much worse than off-the-shelf DeBERTa. What went wrong?"</h2>
+  <div class="a">
+    <p>SetFit losing to a strong zero-shot DeBERTa-MNLI baseline is common and usually not a bug. SetFit's pitch is "give me a few dozen clean examples per class and I will beat zero-shot," and every link in that chain is fragile. Any one weak link hands the win back to NLI. The suspects, in the order they usually bite a demo run.</p>
+    <ol>
+      <li><strong>Tiny labeled set, run once.</strong> Few-shot results have high seed variance. One unlucky draw of 8 to 16 examples can look terrible, and a single run tells you almost nothing. Run several seeds and report the spread. Check this first.</li>
+      <li><strong>Sequence-length truncation.</strong> SetFit's default base encoders (MiniLM, mpnet) often cap <code>max_seq_length</code> at 128 or 256 tokens. If your texts are long, the encoder silently discards most of each one, while DeBERTa-MNLI reads up to 512. For long inputs this single setting can sink it.</li>
+      <li><strong>The construct favors label semantics.</strong> Zero-shot NLI exploits the meaning of the label and the hypothesis. SetFit never sees the label text, only example embeddings and integer codes. If your handful of examples does not span the real variation, NLI wins on something SetFit cannot access.</li>
+      <li><strong>Base encoder mismatch.</strong> The default sentence transformers are small and general. For a nuanced distinction they may not separate your classes, where DeBERTa-large-MNLI is bigger with strong entailment pretraining. A stronger or domain-fit base often closes the gap.</li>
+    </ol>
+    <p>Also rule out class imbalance in the support set, overfitting from too many epochs on tiny data, and a non-identical evaluation. Make sure both methods are scored on the exact same test set, the same single-label or multi-label setup, and the same thresholds.</p>
+    <div class="default"><strong>What to do.</strong> Run five seeds and read the variance before concluding anything. Then check <code>max_seq_length</code> against your real text lengths, the cheapest high-impact fix. Then try a stronger base encoder.</div>
+  </div>
+</div>
+
+<div class="qcard">
+  <div class="qtag">Q4 · the validation split</div>
+  <h2>"When I compute validation indices against the gold set, am I pulling from data the model already ran on, or held-out data?"</h2>
+  <div class="a">
+    <p>Held-out, always, for any number you report. The sharper part is what "held out" has to mean, because the obvious version leaks in exactly the setups from Q1 and Q2.</p>
+    <p>It is tempting to reason that a zero-shot model never trained on your corpus, so every text is unseen and any gold subset is fair game. That breaks the moment you tuned anything against gold labels. Screening hypothesis templates, trying the neutral label both ways, setting a threshold. Each is a development decision made by looking at gold labels, and any gold set used for those decisions is now a tuning set. Reporting your headline precision, recall, and F1 on it is optimistic, even though no gradient ever touched your data. The principle is broader than "do not test on training data." The reported gold set must be held out from everything you used to build the classifier.</p>
+    <ol>
+      <li><strong>Tuning gold.</strong> Used to choose hypotheses, thresholds, the neutral question, the base model, and hyperparameters. For SetFit this also holds the training examples. Look at it freely.</li>
+      <li><strong>Held-out test gold.</strong> Used once, at the end, to compute the indices you report. No decisions made on it. Touch it as little as possible.</li>
+    </ol>
+    <p>When labeled data is scarce, use nested cross-validation so tuning happens inside each training fold and the held-out fold is scored clean. And watch for slow contamination. If you keep returning to the test set to see how you are doing, repeated peeking quietly turns it into a tuning set and your indices drift optimistic.</p>
+    <div class="default"><strong>Default to remember.</strong> Validation indices come from held-out gold that you and the model both stayed away from during development. A zero-shot model not training on your data does not make a tuning set clean for reporting. The <code>validation_template.ipynb</code> in this folder sets up the tuning and held-out split for you.</div>
+  </div>
+</div>
+
+<div class="foot">
+  <span>Day 02 of 03 · LLMs for Political Scientists · zero-shot, ensembling, SetFit, validation</span>
+  <span>github.com/jacqpark/instats-llm-workshop</span>
+</div>
+
+</div>
+</body>
+</html>
