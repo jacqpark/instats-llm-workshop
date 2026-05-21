@@ -381,9 +381,9 @@ thead th {
       <p>Load UNGDC. Score in batches. Save speech-level CSV. Aggregate to country-year.</p>
     </div>
     <div class="card">
-      <div class="label">Movement 02, 35 min</div>
+      <div class="label">Movement 02, 35 min + fine-tuning</div>
       <h3>Validity check</h3>
-      <p>Thirty-row gold set. Confusion matrix. Cohen's kappa. Pearson r. Subgroup table.</p>
+      <p>Thirty-row gold set. Confusion matrix. Cohen's kappa. Pearson r. Subgroup table. Then SetFit fine-tuning when the kappa is too low.</p>
     </div>
     <div class="card">
       <div class="label">Movement 03, 35 min</div>
@@ -396,8 +396,8 @@ thead th {
       <p>The validation appendix in two columns. What to ship. What revisions usually ask for.</p>
     </div>
   </div>
-  <p class="small" style="margin-top: 20px;">Two breaks of ten minutes total. The instructor demos run on paid Colab Pro for speed. Notebooks pinned in chat.</p>
-  <div class="slide-footer"><span>Day 2, Roadmap</span><span>02 / 32</span></div>
+  <p class="small" style="margin-top: 20px;">Two breaks of ten minutes total. The instructor demos run on paid Colab Pro for speed. Notebooks on the seminar webpage.</p>
+  <div class="slide-footer"><span>Day 2, Roadmap</span><span>02 / 37</span></div>
 </section>
 <!-- 3. RECAP DAY 1 -->
 <section class="slide">
@@ -420,7 +420,7 @@ thead th {
       </ul>
     </div>
   </div>
-  <div class="slide-footer"><span>Day 2, Recap</span><span>03 / 32</span></div>
+  <div class="slide-footer"><span>Day 2, Recap</span><span>03 / 37</span></div>
 </section>
 <!-- 4. WHAT IS A MEASUREMENT -->
 <section class="slide">
@@ -445,7 +445,7 @@ thead th {
     </div>
   </div>
   <p class="tiny" style="margin-top: 16px;">Adcock and Collier predate LLMs by two decades. The framework still applies. Drop it in your appendix and methods reviewers will recognize it.</p>
-  <div class="slide-footer"><span>Day 2, Framing</span><span>04 / 32</span></div>
+  <div class="slide-footer"><span>Day 2, Framing</span><span>04 / 37</span></div>
 </section>
 <!-- 5. FOUR REVIEWER QUESTIONS -->
 <section class="slide">
@@ -458,13 +458,13 @@ thead th {
     </thead>
     <tbody>
       <tr><td><span class="highlight">01 walk-through</span></td><td>How did you compute the score for every observation in your sample?</td><td>The notebook with model ID pinned, the candidate-label list, the speech-level CSV.</td></tr>
-      <tr><td><span class="highlight">02 validity</span></td><td>How do you know the score actually measures the concept you claim?</td><td>Thirty-row gold set, confusion matrix, Cohen's kappa, Pearson r, Spearman rho.</td></tr>
+      <tr><td><span class="highlight">02 validity</span></td><td>How do you know the score actually measures the concept you claim?</td><td>Thirty-row gold set, confusion matrix, Cohen's kappa, Pearson r, Spearman rho. A SetFit fine-tune if the kappa is too low.</td></tr>
       <tr><td><span class="highlight">03 time series</span></td><td>Show me the score on a known case where I can check it against external reality.</td><td>Country-year time series with the Paris Agreement marked.</td></tr>
       <tr><td><span class="highlight">04 checklist</span></td><td>What do I need in your appendix to call this defensible?</td><td>The two-column appendix checklist, must-have and often-asked-for.</td></tr>
     </tbody>
   </table>
   <p class="lede" style="margin-top: 22px; font-size: 22px;">Each row is a slide on screen, an output cell in the notebook, and a paragraph in your future paper.</p>
-  <div class="slide-footer"><span>Day 2, Framing</span><span>05 / 32</span></div>
+  <div class="slide-footer"><span>Day 2, Framing</span><span>05 / 37</span></div>
 </section>
 <!-- 6. SECTION DIVIDER 1 -->
 <section class="slide section-divider dark">
@@ -472,7 +472,7 @@ thead th {
   <div class="eyebrow">First movement, 40 minutes</div>
   <h1>The walk-through.</h1>
   <p class="lede">Load the corpus. Run the model in batches. Save the scores. Aggregate by year.</p>
-  <div class="slide-footer"><span>Day 2</span><span>06 / 32</span></div>
+  <div class="slide-footer"><span>Day 2</span><span>06 / 37</span></div>
 </section>
 <!-- 7. THE CORPUS -->
 <section class="slide">
@@ -500,7 +500,7 @@ text        <span class="com"># full speech, English</span></pre>
       <p class="tiny" style="margin-top: 12px;">We will not sentence-tokenize today. Working at the speech level keeps the live encoder pass under five minutes on T4.</p>
     </div>
   </div>
-  <div class="slide-footer"><span>Day 2, Movement 01</span><span>07 / 32</span></div>
+  <div class="slide-footer"><span>Day 2, Movement 01</span><span>07 / 37</span></div>
 </section>
 <!-- 8. PIPELINE DIAGRAM -->
 <section class="slide">
@@ -534,7 +534,7 @@ text        <span class="com"># full speech, English</span></pre>
       <p>Group by country and year. Share supportive. Mean supportive probability. Always keep n.</p>
     </div>
   </div>
-  <div class="slide-footer"><span>Day 2, Movement 01</span><span>08 / 32</span></div>
+  <div class="slide-footer"><span>Day 2, Movement 01</span><span>08 / 37</span></div>
 </section>
 <!-- 9. LIVE LOAD AND SAMPLE -->
 <section class="slide">
@@ -561,7 +561,7 @@ ungdc = pd.<span class="fn">read_csv</span>(<span class="str">"ungdc_sample.csv.
       </ul>
     </div>
   </div>
-  <div class="slide-footer"><span>Day 2, Movement 01</span><span>09 / 32</span></div>
+  <div class="slide-footer"><span>Day 2, Movement 01</span><span>09 / 37</span></div>
 </section>
 <!-- 10. LIVE SCORE -->
 <section class="slide">
@@ -595,7 +595,7 @@ results = <span class="fn">zsc</span>(texts,
       <p class="lede" style="margin-top: 18px; font-size: 22px;">About 4,761 speeches. Three minutes on T4 GPU.</p>
     </div>
   </div>
-  <div class="slide-footer"><span>Day 2, Movement 01</span><span>10 / 32</span></div>
+  <div class="slide-footer"><span>Day 2, Movement 01</span><span>10 / 37</span></div>
 </section>
 <!-- 11. LIVE SAVE AND AGGREGATE -->
 <section class="slide">
@@ -629,7 +629,7 @@ cy = (scored
       <p class="small" style="margin-top: 12px;"><span class="highlight">Always keep n.</span> Country-years with one speech are not the same as country-years with thirty.</p>
     </div>
   </div>
-  <div class="slide-footer"><span>Day 2, Movement 01</span><span>11 / 32</span></div>
+  <div class="slide-footer"><span>Day 2, Movement 01</span><span>11 / 37</span></div>
 </section>
 <!-- 12. CSV IS THE DELIVERABLE -->
 <section class="slide">
@@ -654,7 +654,7 @@ cy = (scored
     </div>
   </div>
   <p class="lede" style="margin-top: 22px; font-size: 22px;">If a reviewer asks where the column came from, the answer is one notebook, one model ID, one prompt list.</p>
-  <div class="slide-footer"><span>Day 2, Movement 01</span><span>12 / 32</span></div>
+  <div class="slide-footer"><span>Day 2, Movement 01</span><span>12 / 37</span></div>
 </section>
 <!-- 13. OFF-THE-SHELF CEILING -->
 <section class="slide">
@@ -678,8 +678,8 @@ cy = (scored
       <p>UNGDC speeches are translated into English by the corpus maintainers. Translation introduces drift the encoder cannot quantify. Worth a paragraph in the appendix.</p>
     </div>
   </div>
-  <p class="tiny" style="margin-top: 16px;">None of the three is a problem to solve today. All three belong in a real paper's limitations section.</p>
-  <div class="slide-footer"><span>Day 2, Movement 01</span><span>13 / 32</span></div>
+  <p class="tiny" style="margin-top: 16px;">None of the three is a problem to solve today. All three belong in a real paper's limitations section. After the break, once the gold set quantifies the ceiling, we fine-tune past it with SetFit on those same thirty labels.</p>
+  <div class="slide-footer"><span>Day 2, Movement 01</span><span>13 / 37</span></div>
 </section>
 <!-- STOP -->
 <section class="slide" style="justify-content: center; align-items: center; padding: 0;">
@@ -699,6 +699,29 @@ const slides = Array.from(document.querySelectorAll('.slide'));
 const total = slides.length;
 let idx = 0;
 
+// --- presenter-monitor sync ---
+const SYNC_DAY = 2;
+const SYNC_KEY = 'workshop-sync';
+const slideNums = slides.map(s => {
+  let n = s.previousSibling;
+  while (n && n.nodeType !== 8 /* COMMENT_NODE */) n = n.previousSibling;
+  const m = n && n.nodeValue && n.nodeValue.match(/^\s*(\d+)\./);
+  return m ? parseInt(m[1], 10) : null;
+});
+const syncChannel = ('BroadcastChannel' in window) ? new BroadcastChannel(SYNC_KEY) : null;
+function publishSync() {
+  const num = slideNums[idx];
+  if (num == null) return;
+  const payload = { day: SYNC_DAY, slide: num, t: Date.now() };
+  if (syncChannel) syncChannel.postMessage(payload);
+  try { localStorage.setItem(SYNC_KEY, JSON.stringify(payload)); } catch (_) {}
+}
+if (syncChannel) {
+  syncChannel.addEventListener('message', e => {
+    if (e.data && e.data.request === 'current') publishSync();
+  });
+}
+
 function fit() {
   const s = Math.min(window.innerWidth / 1280, window.innerHeight / 720) * 0.95;
   document.documentElement.style.setProperty('--s', s);
@@ -714,6 +737,7 @@ function show(i) {
   document.getElementById('counter').textContent = `${idx+1} / ${total}`;
   document.getElementById('bar').style.width = `${((idx+1)/total)*100}%`;
   history.replaceState(null, '', `#${idx+1}`);
+  publishSync();
 }
 
 document.addEventListener('keydown', (e) => {

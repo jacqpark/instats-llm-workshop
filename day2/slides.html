@@ -341,9 +341,9 @@ thead th {
       <p>Load UNGDC. Score in batches. Save speech-level CSV. Aggregate to country-year.</p>
     </div>
     <div class="card">
-      <div class="label">Movement 02, 35 min</div>
+      <div class="label">Movement 02, 35 min + fine-tuning</div>
       <h3>Validity check</h3>
-      <p>Thirty-row gold set. Confusion matrix. Cohen's kappa. Pearson r. Subgroup table.</p>
+      <p>Thirty-row gold set. Confusion matrix. Cohen's kappa. Pearson r. Subgroup table. Then SetFit fine-tuning when the kappa is too low.</p>
     </div>
     <div class="card">
       <div class="label">Movement 03, 35 min</div>
@@ -356,8 +356,8 @@ thead th {
       <p>The validation appendix in two columns. What to ship. What revisions usually ask for.</p>
     </div>
   </div>
-  <p class="small" style="margin-top: 20px;">Two breaks of ten minutes total. The instructor demos run on paid Colab Pro for speed. Notebooks pinned in chat.</p>
-  <div class="slide-footer"><span>Day 2, Roadmap</span><span>02 / 32</span></div>
+  <p class="small" style="margin-top: 20px;">Two breaks of ten minutes total. The instructor demos run on paid Colab Pro for speed. Notebooks on the seminar webpage.</p>
+  <div class="slide-footer"><span>Day 2, Roadmap</span><span>2 / 37</span></div>
 </section>
 
 <!-- 3. RECAP DAY 1 -->
@@ -381,7 +381,7 @@ thead th {
       </ul>
     </div>
   </div>
-  <div class="slide-footer"><span>Day 2, Recap</span><span>03 / 32</span></div>
+  <div class="slide-footer"><span>Day 2, Recap</span><span>3 / 37</span></div>
 </section>
 
 <!-- 4. WHAT IS A MEASUREMENT -->
@@ -407,7 +407,7 @@ thead th {
     </div>
   </div>
   <p class="tiny" style="margin-top: 16px;">Adcock and Collier predate LLMs by two decades. The framework still applies. Drop it in your appendix and methods reviewers will recognize it.</p>
-  <div class="slide-footer"><span>Day 2, Framing</span><span>04 / 32</span></div>
+  <div class="slide-footer"><span>Day 2, Framing</span><span>4 / 37</span></div>
 </section>
 
 <!-- 5. FOUR REVIEWER QUESTIONS -->
@@ -421,13 +421,13 @@ thead th {
     </thead>
     <tbody>
       <tr><td><span class="highlight">01 walk-through</span></td><td>How did you compute the score for every observation in your sample?</td><td>The notebook with model ID pinned, the candidate-label list, the speech-level CSV.</td></tr>
-      <tr><td><span class="highlight">02 validity</span></td><td>How do you know the score actually measures the concept you claim?</td><td>Thirty-row gold set, confusion matrix, Cohen's kappa, Pearson r, Spearman rho.</td></tr>
+      <tr><td><span class="highlight">02 validity</span></td><td>How do you know the score actually measures the concept you claim?</td><td>Thirty-row gold set, confusion matrix, Cohen's kappa, Pearson r, Spearman rho. A SetFit fine-tune if the kappa is too low.</td></tr>
       <tr><td><span class="highlight">03 time series</span></td><td>Show me the score on a known case where I can check it against external reality.</td><td>Country-year time series with the Paris Agreement marked.</td></tr>
       <tr><td><span class="highlight">04 checklist</span></td><td>What do I need in your appendix to call this defensible?</td><td>The two-column appendix checklist, must-have and often-asked-for.</td></tr>
     </tbody>
   </table>
   <p class="lede" style="margin-top: 22px; font-size: 22px;">Each row is a slide on screen, an output cell in the notebook, and a paragraph in your future paper.</p>
-  <div class="slide-footer"><span>Day 2, Framing</span><span>05 / 32</span></div>
+  <div class="slide-footer"><span>Day 2, Framing</span><span>5 / 37</span></div>
 </section>
 
 <!-- 6. SECTION DIVIDER 1 -->
@@ -436,7 +436,7 @@ thead th {
   <div class="eyebrow">First movement, 40 minutes</div>
   <h1>The walk-through.</h1>
   <p class="lede">Load the corpus. Run the model in batches. Save the scores. Aggregate by year.</p>
-  <div class="slide-footer"><span>Day 2</span><span>06 / 32</span></div>
+  <div class="slide-footer"><span>Day 2</span><span>6 / 37</span></div>
 </section>
 
 <!-- 7. THE CORPUS -->
@@ -465,7 +465,7 @@ text        <span class="com"># full speech, English</span></pre>
       <p class="tiny" style="margin-top: 12px;">We will not sentence-tokenize today. Working at the speech level keeps the live encoder pass under five minutes on T4.</p>
     </div>
   </div>
-  <div class="slide-footer"><span>Day 2, Movement 01</span><span>07 / 32</span></div>
+  <div class="slide-footer"><span>Day 2, Movement 01</span><span>7 / 37</span></div>
 </section>
 
 <!-- 8. PIPELINE DIAGRAM -->
@@ -500,7 +500,7 @@ text        <span class="com"># full speech, English</span></pre>
       <p>Group by country and year. Share supportive. Mean supportive probability. Always keep n.</p>
     </div>
   </div>
-  <div class="slide-footer"><span>Day 2, Movement 01</span><span>08 / 32</span></div>
+  <div class="slide-footer"><span>Day 2, Movement 01</span><span>8 / 37</span></div>
 </section>
 
 <!-- 9. LIVE LOAD AND SAMPLE -->
@@ -528,7 +528,7 @@ ungdc = pd.<span class="fn">read_csv</span>(<span class="str">"ungdc_sample.csv.
       </ul>
     </div>
   </div>
-  <div class="slide-footer"><span>Day 2, Movement 01</span><span>09 / 32</span></div>
+  <div class="slide-footer"><span>Day 2, Movement 01</span><span>9 / 37</span></div>
 </section>
 
 <!-- 10. LIVE SCORE -->
@@ -563,7 +563,7 @@ results = <span class="fn">zsc</span>(texts,
       <p class="lede" style="margin-top: 18px; font-size: 22px;">About 4,761 speeches. Three minutes on T4 GPU.</p>
     </div>
   </div>
-  <div class="slide-footer"><span>Day 2, Movement 01</span><span>10 / 32</span></div>
+  <div class="slide-footer"><span>Day 2, Movement 01</span><span>10 / 37</span></div>
 </section>
 
 <!-- 11. LIVE SAVE AND AGGREGATE -->
@@ -598,7 +598,7 @@ cy = (scored
       <p class="small" style="margin-top: 12px;"><span class="highlight">Always keep n.</span> Country-years with one speech are not the same as country-years with thirty.</p>
     </div>
   </div>
-  <div class="slide-footer"><span>Day 2, Movement 01</span><span>11 / 32</span></div>
+  <div class="slide-footer"><span>Day 2, Movement 01</span><span>11 / 37</span></div>
 </section>
 
 <!-- 12. CSV IS THE DELIVERABLE -->
@@ -624,7 +624,7 @@ cy = (scored
     </div>
   </div>
   <p class="lede" style="margin-top: 22px; font-size: 22px;">If a reviewer asks where the column came from, the answer is one notebook, one model ID, one prompt list.</p>
-  <div class="slide-footer"><span>Day 2, Movement 01</span><span>12 / 32</span></div>
+  <div class="slide-footer"><span>Day 2, Movement 01</span><span>12 / 37</span></div>
 </section>
 
 <!-- 13. OFF-THE-SHELF CEILING -->
@@ -649,8 +649,8 @@ cy = (scored
       <p>UNGDC speeches are translated into English by the corpus maintainers. Translation introduces drift the encoder cannot quantify. Worth a paragraph in the appendix.</p>
     </div>
   </div>
-  <p class="tiny" style="margin-top: 16px;">None of the three is a problem to solve today. All three belong in a real paper's limitations section.</p>
-  <div class="slide-footer"><span>Day 2, Movement 01</span><span>13 / 32</span></div>
+  <p class="tiny" style="margin-top: 16px;">None of the three is a problem to solve today. All three belong in a real paper's limitations section. After the break, once the gold set quantifies the ceiling, we fine-tune past it with SetFit on those same thirty labels.</p>
+  <div class="slide-footer"><span>Day 2, Movement 01</span><span>13 / 37</span></div>
 </section>
 
 <!-- 14. BREAK -->
@@ -659,7 +659,7 @@ cy = (scored
   <h1 style="font-size: 120px;">Ten minute<br>break.</h1>
   <div class="rule" style="margin-top: 28px;"></div>
   <p class="lede" style="margin-top: 8px;">Stretch. Refill. The gold set we are about to build becomes the answer key for everything else.</p>
-  <div class="slide-footer"><span>Day 2</span><span>14 / 32</span></div>
+  <div class="slide-footer"><span>Day 2</span><span>14 / 37</span></div>
 </section>
 
 <!-- 15. SECTION DIVIDER 2 -->
@@ -668,7 +668,7 @@ cy = (scored
   <div class="eyebrow">Second movement, 35 minutes</div>
   <h1>The validity<br>check.</h1>
   <p class="lede">Thirty-row gold set. Confusion matrix. Cohen's kappa. Pearson r. Subgroup table.</p>
-  <div class="slide-footer"><span>Day 2</span><span>15 / 32</span></div>
+  <div class="slide-footer"><span>Day 2</span><span>15 / 37</span></div>
 </section>
 
 <!-- 16. WHY 30 PARAGRAPHS -->
@@ -694,7 +694,7 @@ cy = (scored
     </div>
   </div>
   <p class="lede" style="margin-top: 22px; font-size: 22px;">The thirty-paragraph gold set is the iteration unit. Code, look, refine, code again.</p>
-  <div class="slide-footer"><span>Day 2, Movement 02</span><span>16 / 32</span></div>
+  <div class="slide-footer"><span>Day 2, Movement 02</span><span>16 / 37</span></div>
 </section>
 
 <!-- 17. CODEBOOK 3 RULES -->
@@ -720,7 +720,7 @@ cy = (scored
     </div>
   </div>
   <p class="lede" style="margin-top: 22px; font-size: 22px;">Three rules. Operational. Disjoint. Testable. Print this on a sticky note.</p>
-  <div class="slide-footer"><span>Day 2, Movement 02</span><span>17 / 32</span></div>
+  <div class="slide-footer"><span>Day 2, Movement 02</span><span>17 / 37</span></div>
 </section>
 
 <!-- 18. LIVE BUILD GOLD -->
@@ -741,7 +741,7 @@ cy = (scored
     </tbody>
   </table>
   <p class="tiny" style="margin-top: 14px;">Pre-coded gold labels for the demo are bundled in <code>demo.ipynb</code> Section D. In a real project, you replace this column with your own hand codes.</p>
-  <div class="slide-footer"><span>Day 2, Movement 02</span><span>18 / 32</span></div>
+  <div class="slide-footer"><span>Day 2, Movement 02</span><span>18 / 37</span></div>
 </section>
 
 <!-- 19. CONFUSION MATRIX AND KAPPA -->
@@ -771,7 +771,7 @@ cy = (scored
       <p class="tiny" style="margin-top: 10px;">Off-the-shelf on this corpus typically lands 0.40 to 0.70. The single best one-number summary of model-versus-human agreement.</p>
     </div>
   </div>
-  <div class="slide-footer"><span>Day 2, Movement 02</span><span>19 / 32</span></div>
+  <div class="slide-footer"><span>Day 2, Movement 02</span><span>19 / 37</span></div>
 </section>
 
 <!-- 20. PEARSON AND SPEARMAN -->
@@ -800,7 +800,7 @@ rho, _ = <span class="fn">spearmanr</span>(p_supportive, gold_score)
       <p class="tiny" style="margin-top: 12px;">Both numbers belong in your appendix. Headline kappa for the binary call. Pearson r for the continuous signal underneath.</p>
     </div>
   </div>
-  <div class="slide-footer"><span>Day 2, Movement 02</span><span>20 / 32</span></div>
+  <div class="slide-footer"><span>Day 2, Movement 02</span><span>20 / 37</span></div>
 </section>
 
 <!-- 21. SUBGROUP TABLE -->
@@ -824,19 +824,121 @@ rho, _ = <span class="fn">spearmanr</span>(p_supportive, gold_score)
   </table>
   <p class="lede" style="margin-top: 18px; font-size: 22px;">If kappa varies by more than 0.15 across subgroups, you have a comparability problem.</p>
   <p class="tiny" style="margin-top: 8px;">Numbers in the table are illustrative placeholders. Live values fill the slide once the demo cell finishes.</p>
-  <div class="slide-footer"><span>Day 2, Movement 02</span><span>21 / 32</span></div>
+  <div class="slide-footer"><span>Day 2, Movement 02</span><span>21 / 37</span></div>
 </section>
 
-<!-- 22. SECTION DIVIDER 3 -->
+<!-- 22. FINE-TUNING DIVIDER -->
+<section class="slide section-divider dark">
+  <div class="eyebrow">Still Movement 02, when the kappa is too low</div>
+  <h1>Beat the ceiling<br>with the labels<br>you already have.</h1>
+  <p class="lede">No new data. The thirty paragraphs you just hand-coded become training data. Fine-tune in two minutes with SetFit.</p>
+  <div class="slide-footer"><span>Day 2, Fine-tuning</span><span>22 / 37</span></div>
+</section>
+<!-- 23. ZERO-SHOT VS FEW-SHOT -->
+<section class="slide">
+  <div class="eyebrow">Two ways to use an encoder</div>
+  <h2>Zero-shot asks.<br>Few-shot learns.</h2>
+  <div class="rule"></div>
+  <div class="two-col">
+    <div>
+      <h4>Zero-shot, what we did all morning</h4>
+      <p>A generic NLI model judges whether your label sentence is entailed by the text. No training. Fast to stand up. The wording of the label is the whole model.</p>
+      <h4 style="margin-top: 18px;">Few-shot fine-tuning</h4>
+      <p>Teach the model your specific task from a handful of examples. The label wording stops mattering. The examples do the work.</p>
+    </div>
+    <div class="card cool">
+      <div class="label">Why SetFit over classic fine-tuning</div>
+      <h3>Learns from eight examples per class</h3>
+      <p>Classic fine-tuning wants hundreds of labels. SetFit fine-tunes a sentence-embedding model with contrastive pairs, so it learns from as few as eight examples per class.</p>
+      <p class="small" style="margin-top: 12px;">Thirty hand-codes is enough to try it. That is exactly what the gold set gives you.</p>
+    </div>
+  </div>
+  <p class="tiny" style="margin-top: 16px;">Architecturally the two differ. The DeBERTa-NLI model from this morning is a cross-encoder. It reads your text and your candidate label together and judges entailment, and it never learns your task. SetFit sits on a sentence-transformer, a bi-encoder that maps each text to a single embedding vector. Fine-tuning pulls same-label vectors closer, then a small head reads them. The examples do the work the label wording did before.</p>
+  <div class="slide-footer"><span>Day 2, Fine-tuning</span><span>23 / 37</span></div>
+</section>
+<!-- 24. REUSE THE GOLD SET -->
+<section class="slide">
+  <div class="eyebrow">The move</div>
+  <h2>The gold set was never<br>just for validation.</h2>
+  <div class="rule"></div>
+  <div class="two-col">
+    <div>
+      <h4>Split the thirty</h4>
+      <ul class="bare">
+        <li><span class="highlight">~20 to train.</span> Two thirds of the gold set, stratified by label.</li>
+        <li><span class="highlight">~10 held out.</span> One third, never seen in training, scored honestly.</li>
+        <li><span class="highlight">Same labels, two jobs.</span> Validation this morning. Training data this afternoon.</li>
+      </ul>
+    </div>
+    <div class="card warm">
+      <div class="label">One honest warning</div>
+      <h3>Thirty labels is a proof of concept</h3>
+      <p>Enough to demonstrate the method, often enough to beat zero-shot. Not enough for a final published number. The held-out set is tiny, so the kappa you read is noisy.</p>
+      <p class="small" style="margin-top: 12px;">Collect a hundred or more labels before you trust the gain.</p>
+    </div>
+  </div>
+  <div class="slide-footer"><span>Day 2, Fine-tuning</span><span>24 / 37</span></div>
+</section>
+<!-- 25. FIVE LINES TO FINE-TUNE -->
+<section class="slide">
+  <div class="eyebrow">Live, demo notebook Section D-bis</div>
+  <h2>Five lines to fine-tune.</h2>
+  <div class="rule"></div>
+  <div class="two-col">
+    <div>
+      <pre><span class="kw">from</span> setfit <span class="kw">import</span> SetFitModel, Trainer
+<span class="kw">from</span> datasets <span class="kw">import</span> Dataset
+
+train, test = <span class="fn">train_test_split</span>(gold,
+  test_size=<span class="kw">0.34</span>, stratify=gold.gold_label,
+  random_state=<span class="kw">7</span>)
+
+ds = Dataset.<span class="fn">from_pandas</span>(train.<span class="fn">rename</span>(
+  columns={<span class="str">"gold_label"</span>: <span class="str">"label"</span>}))
+
+ft = SetFitModel.<span class="fn">from_pretrained</span>(
+  <span class="str">"sentence-transformers/"</span>
+  <span class="str">"paraphrase-MiniLM-L6-v2"</span>)
+
+<span class="fn">Trainer</span>(model=ft, train_dataset=ds).<span class="fn">train</span>()</pre>
+    </div>
+    <div>
+      <h4>What it is doing</h4>
+      <p>SetFit nudges the embedding space so paragraphs with the same label sit closer together, then fits a light classifier head on top.</p>
+      <p>No giant gradient update to a 400-million-parameter model. That is why it runs on a free GPU.</p>
+      <p class="lede" style="margin-top: 18px; font-size: 22px;">About two minutes on a T4.</p>
+    </div>
+  </div>
+  <div class="slide-footer"><span>Day 2, Fine-tuning</span><span>25 / 37</span></div>
+</section>
+<!-- 26. DID IT BEAT THE CEILING -->
+<section class="slide">
+  <div class="eyebrow">Live, demo notebook Section D-bis</div>
+  <h2>Did it beat the ceiling?</h2>
+  <div class="rule"></div>
+  <table>
+    <thead>
+      <tr><th style="width: 52%;">Scored on the same held-out gold rows</th><th>Cohen's kappa</th><th>Accuracy</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Off-the-shelf zero-shot, the number from before the break</td><td><span class="highlight">0.52</span></td><td>0.70</td></tr>
+      <tr><td>SetFit, fine-tuned on ~20 of your own labels</td><td><span class="highlight">0.71</span></td><td>0.80</td></tr>
+    </tbody>
+  </table>
+  <p class="tiny" style="margin-top: 14px;">Numbers are illustrative. Live values fill the slide once the comparison cell finishes. On thirty labels SetFit usually edges out zero-shot, sometimes by a wide margin, sometimes within the noise.</p>
+  <p class="lede" style="margin-top: 18px; font-size: 22px;">The takeaway is the workflow, not the single number. Hand-code, validate, and fine-tune with the labels you already have.</p>
+  <div class="slide-footer"><span>Day 2, Fine-tuning</span><span>26 / 37</span></div>
+</section>
+<!-- 27. SECTION DIVIDER 3 -->
 <section class="slide section-divider dark">
   <div class="num">03</div>
   <div class="eyebrow">Third movement, 35 minutes</div>
   <h1>Climate emphasis<br>over time.</h1>
   <p class="lede">Country-year scores. Time series 1946 to 2025. Compare against the Paris Agreement.</p>
-  <div class="slide-footer"><span>Day 2</span><span>22 / 32</span></div>
+  <div class="slide-footer"><span>Day 2</span><span>27 / 37</span></div>
 </section>
 
-<!-- 23. PUBLISHED-STYLE MEASURE -->
+<!-- 28. PUBLISHED-STYLE MEASURE -->
 <section class="slide">
   <div class="eyebrow">A published-style measure</div>
   <h2>One small piece<br>of a much-built family.</h2>
@@ -856,10 +958,10 @@ rho, _ = <span class="fn">spearmanr</span>(p_supportive, gold_score)
       <p class="lede" style="margin-top: 18px; font-size: 22px;">The plot is a face-validity check, not an event study. The methodology is the point.</p>
     </div>
   </div>
-  <div class="slide-footer"><span>Day 2, Movement 03</span><span>23 / 32</span></div>
+  <div class="slide-footer"><span>Day 2, Movement 03</span><span>28 / 37</span></div>
 </section>
 
-<!-- 24. AGGREGATION CHOICES -->
+<!-- 29. AGGREGATION CHOICES -->
 <section class="slide">
   <div class="eyebrow">Three ways to aggregate</div>
   <h2>None is neutral.</h2>
@@ -882,10 +984,10 @@ rho, _ = <span class="fn">spearmanr</span>(p_supportive, gold_score)
     </div>
   </div>
   <p class="tiny" style="margin-top: 16px;">For "is climate language increasing on average," mean works. For "are some countries pivoting hard in particular years," top-K is more honest. Document the choice in the appendix and run a robustness check with one alternative.</p>
-  <div class="slide-footer"><span>Day 2, Movement 03</span><span>24 / 32</span></div>
+  <div class="slide-footer"><span>Day 2, Movement 03</span><span>29 / 37</span></div>
 </section>
 
-<!-- 25. LIVE TIME SERIES -->
+<!-- 30. LIVE TIME SERIES -->
 <section class="slide">
   <div class="eyebrow">Live, demo notebook Section E</div>
   <h2>Two views of the time series.</h2>
@@ -904,10 +1006,10 @@ rho, _ = <span class="fn">spearmanr</span>(p_supportive, gold_score)
     </div>
   </div>
   <p class="lede" style="margin-top: 22px; font-size: 22px;">The Oceania line is the moment when off-the-shelf, with thirty seconds of label engineering, produces a substantively informative time series.</p>
-  <div class="slide-footer"><span>Day 2, Movement 03</span><span>25 / 32</span></div>
+  <div class="slide-footer"><span>Day 2, Movement 03</span><span>30 / 37</span></div>
 </section>
 
-<!-- 26. COMPARE TO KNOWN EVENT -->
+<!-- 31. COMPARE TO KNOWN EVENT -->
 <section class="slide">
   <div class="eyebrow">Face-validity check</div>
   <h2>The slope around Paris<br>is what a reviewer wants to see.</h2>
@@ -929,10 +1031,10 @@ rho, _ = <span class="fn">spearmanr</span>(p_supportive, gold_score)
       <p class="lede" style="margin-top: 18px; font-size: 22px;">If the picture is wrong, fix the measure before estimating any effect.</p>
     </div>
   </div>
-  <div class="slide-footer"><span>Day 2, Movement 03</span><span>26 / 32</span></div>
+  <div class="slide-footer"><span>Day 2, Movement 03</span><span>31 / 37</span></div>
 </section>
 
-<!-- 27. APPENDIX TWO COLUMNS -->
+<!-- 32. APPENDIX TWO COLUMNS -->
 <section class="slide">
   <div class="eyebrow">The validation appendix</div>
   <h2>Two columns.<br>Must-have. Often-asked-for.</h2>
@@ -959,33 +1061,33 @@ rho, _ = <span class="fn">spearmanr</span>(p_supportive, gold_score)
     </div>
   </div>
   <p class="lede" style="margin-top: 22px; font-size: 22px;">If the appendix has all of column one, the proxy is defensible.</p>
-  <div class="slide-footer"><span>Day 2, Movement 03</span><span>27 / 32</span></div>
+  <div class="slide-footer"><span>Day 2, Movement 03</span><span>32 / 37</span></div>
 </section>
 
-<!-- 28. WHAT ENSEMBLING / FINE-TUNING WOULD BUY -->
+<!-- 33. WHAT ENSEMBLING / FINE-TUNING WOULD BUY -->
 <section class="slide">
-  <div class="eyebrow">If the off-the-shelf gap is too wide</div>
-  <h2>Two next steps.<br>Signposts only.</h2>
+  <div class="eyebrow">When SetFit on a handful of labels is not enough</div>
+  <h2>Two rungs beyond<br>the SetFit demo.</h2>
   <div class="rule"></div>
   <div class="two-col">
     <div class="card cool">
-      <div class="label">Step 01, no extra training data</div>
+      <div class="label">Rung 01, no extra training data</div>
       <h3>Hypothesis ensembling</h3>
       <p>Replace one supportive label with three or five differently worded versions of the same hypothesis. Average their probabilities. The wording-sensitivity collapses.</p>
       <p>Kappa typically rises by 0.05 to 0.10. No new training data. Days of work, not weeks.</p>
     </div>
     <div class="card warm">
-      <div class="label">Step 02, three hundred hand-codes</div>
-      <h3>Fine-tuning</h3>
-      <p>Hand-code 300 paragraphs and fine-tune a DeBERTa-v3-base or v3-large on them.</p>
+      <div class="label">Rung 02, three hundred hand-codes</div>
+      <h3>Full supervised fine-tuning</h3>
+      <p>When SetFit on a handful of labels is not enough, hand-code 300 paragraphs and fine-tune a DeBERTa-v3-base or v3-large head on them.</p>
       <p>Kappa typically rises by 0.10 to 0.20. The cost is a week of hand-coding. The benefit is a measure that can survive serious validation scrutiny.</p>
     </div>
   </div>
-  <p class="tiny" style="margin-top: 16px;">Today we stop at off-the-shelf with hand-coded validation. That is the right tool for most concept-measurement jobs in our discipline at first pass.</p>
-  <div class="slide-footer"><span>Day 2, Movement 03</span><span>28 / 32</span></div>
+  <p class="tiny" style="margin-top: 16px;">The ladder is the point. Off-the-shelf zero-shot first. SetFit on your validation labels when the ceiling bites. These two rungs when the stakes justify the labels.</p>
+  <div class="slide-footer"><span>Day 2, Movement 03</span><span>33 / 37</span></div>
 </section>
 
-<!-- 29. Q&A -->
+<!-- 34. Q&A -->
 <section class="slide">
   <div class="eyebrow">Movement 04, Q&amp;A</div>
   <h2>Open chat.<br>Nine minutes.</h2>
@@ -1001,10 +1103,10 @@ rho, _ = <span class="fn">spearmanr</span>(p_supportive, gold_score)
       <tr><td>Where do I publish my replication notebook?</td><td>Code on OSF or GitHub. Data on Harvard Dataverse or your institutional repo. Ship the gold-set CSV with the code.</td></tr>
     </tbody>
   </table>
-  <div class="slide-footer"><span>Day 2, Movement 04</span><span>29 / 32</span></div>
+  <div class="slide-footer"><span>Day 2, Movement 04</span><span>34 / 37</span></div>
 </section>
 
-<!-- 30. CHECKLIST AS ONE SLIDE -->
+<!-- 35. CHECKLIST AS ONE SLIDE -->
 <section class="slide">
   <div class="eyebrow">The validation checklist as one slide</div>
   <h2>Five lines.<br>Memorize them.</h2>
@@ -1017,10 +1119,10 @@ rho, _ = <span class="fn">spearmanr</span>(p_supportive, gold_score)
     <li><span class="accent" style="font-weight: 600;">One subgroup table.</span></li>
   </ul>
   <p class="lede" style="margin-top: 28px; font-size: 26px;">If you have those five things in the appendix, your encoder-based measure is defensible.</p>
-  <div class="slide-footer"><span>Day 2, Movement 04</span><span>30 / 32</span></div>
+  <div class="slide-footer"><span>Day 2, Movement 04</span><span>35 / 37</span></div>
 </section>
 
-<!-- 31. DAY 3 PREVIEW -->
+<!-- 36. DAY 3 PREVIEW -->
 <section class="slide">
   <div class="eyebrow">Tomorrow</div>
   <h2>Three jobs<br>encoders cannot easily do.</h2>
@@ -1043,10 +1145,10 @@ rho, _ = <span class="fn">spearmanr</span>(p_supportive, gold_score)
     </div>
   </div>
   <p class="lede" style="margin-top: 22px; font-size: 22px;">Same reproducibility demands as today. New tools.</p>
-  <div class="slide-footer"><span>Day 2, Day 3 preview</span><span>31 / 32</span></div>
+  <div class="slide-footer"><span>Day 2, Day 3 preview</span><span>36 / 37</span></div>
 </section>
 
-<!-- 32. CLOSING -->
+<!-- 37. CLOSING -->
 <section class="slide section-divider dark">
   <div class="eyebrow">End of Day 2</div>
   <h1>You turned a notebook<br>into a measurement.</h1>
@@ -1055,21 +1157,44 @@ rho, _ = <span class="fn">spearmanr</span>(p_supportive, gold_score)
     <h4>Optional reading before Day 3</h4>
     <p style="color: var(--bg); font-size: 17px; line-height: 1.5; max-width: 760px;">Adcock and Collier (2001, APSR), "Measurement Validity, A Shared Standard for Qualitative and Quantitative Research." The framework decides which of today's checks belong in the paper and which stay in the notebook.</p>
   </div>
-  <div class="slide-footer"><span>End of Day 2</span><span>32 / 32</span></div>
+  <div class="slide-footer"><span>End of Day 2</span><span>37 / 37</span></div>
 </section>
 
 </div>
 <div class="hud">
   <button id="prev">PREV</button>
-  <span id="counter">1 / 32</span>
+  <span id="counter">1 / 37</span>
   <button id="next">NEXT</button>
 </div>
-<div class="progress-bar" id="bar" style="width: 3.1%"></div>
+<div class="progress-bar" id="bar" style="width: 2.7%"></div>
 
 <script>
 const slides = Array.from(document.querySelectorAll('.slide'));
 const total = slides.length;
 let idx = 0;
+
+// --- presenter-monitor sync ---
+const SYNC_DAY = 2;
+const SYNC_KEY = 'workshop-sync';
+const slideNums = slides.map(s => {
+  let n = s.previousSibling;
+  while (n && n.nodeType !== 8 /* COMMENT_NODE */) n = n.previousSibling;
+  const m = n && n.nodeValue && n.nodeValue.match(/^\s*(\d+)\./);
+  return m ? parseInt(m[1], 10) : null;
+});
+const syncChannel = ('BroadcastChannel' in window) ? new BroadcastChannel(SYNC_KEY) : null;
+function publishSync() {
+  const num = slideNums[idx];
+  if (num == null) return;
+  const payload = { day: SYNC_DAY, slide: num, t: Date.now() };
+  if (syncChannel) syncChannel.postMessage(payload);
+  try { localStorage.setItem(SYNC_KEY, JSON.stringify(payload)); } catch (_) {}
+}
+if (syncChannel) {
+  syncChannel.addEventListener('message', e => {
+    if (e.data && e.data.request === 'current') publishSync();
+  });
+}
 
 function fit() {
   const s = Math.min(window.innerWidth / 1280, window.innerHeight / 720) * 0.95;
@@ -1086,6 +1211,7 @@ function show(i) {
   document.getElementById('counter').textContent = `${idx+1} / ${total}`;
   document.getElementById('bar').style.width = `${((idx+1)/total)*100}%`;
   history.replaceState(null, '', `#${idx+1}`);
+  publishSync();
 }
 
 document.addEventListener('keydown', (e) => {
