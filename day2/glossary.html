@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Day 2 Glossary · LLMs for Political Scientists</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #D4E8D9;
+  --bg-tint: #E5EFE8;
+  --bg-deep: #BFD9C4;
+  --ink: #132025;
+  --ink-soft: #2D493C;
+  --ink-faint: #5C7B6A;
+  --rule: #A8C9AE;
+  --accent: #2D493C;
+  --highlight: #334B99;
+  --pop: #B1F1B1;
+  --dark: #132025;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  background: #14202E;
+  font-family: 'Inter', -apple-system, sans-serif;
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  line-height: 1.5;
+}
+.page {
+  background: var(--bg);
+  width: 8.5in;
+  min-height: 11in;
+  margin: 24px auto;
+  padding: 0.5in 0.55in;
+  box-shadow: 0 30px 90px rgba(0,0,0,0.55);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Header */
+.head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--accent);
+}
+.head .title-block { display: flex; flex-direction: column; }
+.head .eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--highlight);
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+.head h1 {
+  font-family: 'Crimson Pro', serif;
+  font-weight: 700;
+  font-size: 27px;
+  line-height: 1.05;
+  color: var(--accent);
+  letter-spacing: -0.02em;
+}
+.head .sub {
+  font-size: 10px;
+  color: var(--ink-soft);
+  margin-top: 5px;
+  max-width: 4.6in;
+  line-height: 1.4;
+}
+.head .meta {
+  text-align: right;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  line-height: 1.5;
+}
+.head .meta strong { color: var(--accent); }
+
+/* Headline feature box */
+.nli-box {
+  background: var(--bg-tint);
+  padding: 10px 14px;
+  border-radius: 2px;
+  border-left: 3px solid var(--pop);
+  font-size: 10px;
+  line-height: 1.5;
+}
+.nli-box .lead {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--highlight);
+  margin-bottom: 5px;
+}
+.nli-box strong { color: var(--accent); }
+.nli-box code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9.5px;
+  color: var(--highlight);
+}
+.nli-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+  margin-top: 8px;
+}
+.nli-grid .cell {
+  background: var(--bg-deep);
+  padding: 7px 9px;
+  border-radius: 2px;
+  font-size: 9px;
+  line-height: 1.4;
+}
+.nli-grid .cell b {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  color: var(--accent);
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 2px;
+}
+
+/* Glossary columns */
+.gloss { columns: 3; column-gap: 16px; }
+.gsec { break-inside: avoid; margin-bottom: 10px; }
+.gsec h2 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--highlight);
+  margin-bottom: 5px;
+  padding-bottom: 3px;
+  border-bottom: 1px solid var(--rule);
+}
+.term { margin-bottom: 6px; font-size: 9px; line-height: 1.38; }
+.term dt {
+  font-weight: 700;
+  color: var(--accent);
+  font-size: 9.5px;
+}
+.term dt .alt {
+  font-weight: 400;
+  color: var(--ink-faint);
+  font-style: italic;
+}
+.term dd { color: var(--ink); }
+.term dd em { color: var(--highlight); font-style: normal; font-weight: 500; }
+code.inl {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8.5px;
+  color: var(--highlight);
+}
+
+/* Footer */
+.foot {
+  border-top: 1px solid var(--rule);
+  padding-top: 8px;
+  margin-top: auto;
+  display: flex;
+  justify-content: space-between;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+@media print {
+  html, body { background: white; }
+  .page { box-shadow: none; margin: 0; width: 100%; min-height: auto; padding: 0.5in; }
+  @page { size: letter; margin: 0; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="head">
+  <div class="title-block">
+    <div class="eyebrow">Workshop · Day 02 · Glossary</div>
+    <h1>From a model to a measurement.</h1>
+    <div class="sub">Every term you will hear today, defined for someone arriving cold. Yesterday you ran a model. Today you defend a number. Keep this open beside the slides.</div>
+  </div>
+  <div class="meta">
+    Workshop materials<br>
+    github.com/jacqpark/<br>
+    <strong>instats-llm-workshop</strong>
+  </div>
+</div>
+
+<div class="nli-box">
+  <div class="lead">The one to memorize · Cohen's kappa</div>
+  <strong>Cohen's kappa</strong> is the single best one-number summary of how well your model agrees with a human coder. Plain accuracy flatters you, because two coders labeling at random would still agree some of the time by luck. Kappa subtracts that luck. It takes the agreement you <strong>observed</strong>, removes the agreement you would <strong>expect by chance</strong>, and rescales so 1.0 is perfect and 0 is no better than guessing. Report it on your thirty-paragraph gold set and your methods reviewer will recognize it on sight.
+  <div class="nli-grid">
+    <div class="cell"><b>Observed</b>Model and coder give the same score on 22 of 30 paragraphs. Raw accuracy is 0.73.</div>
+    <div class="cell"><b>Expected by chance</b>Given each side's class shares, luck alone would land about 0.41 of them.</div>
+    <div class="cell"><b>Kappa</b>(0.73 - 0.41) / (1 - 0.41) = 0.54. Moderate. 0.6+ is substantial, 0.8+ almost perfect.</div>
+  </div>
+</div>
+
+<div class="gloss">
+
+  <div class="gsec">
+    <h2>The big idea</h2>
+    <dl>
+      <div class="term"><dt>Measurement</dt><dd>Assigning numbers to cases in a defensible way. A demo just classifies. A measurement can be defended to a reviewer.</dd></div>
+      <div class="term"><dt>Validity</dt><dd>The number tracks the concept it claims to. "Stance on climate" must not quietly become "general positivity."</dd></div>
+      <div class="term"><dt>Reliability</dt><dd>Re-running on the same input gives the same answer. Two coders on one paragraph reach the same score.</dd></div>
+      <div class="term"><dt>Comparability</dt><dd>Scores line up across countries and years with no drift introduced by the model itself.</dd></div>
+      <div class="term"><dt>Proxy</dt><dd>A measurable stand-in for a concept you cannot observe directly. Your new CSV column is a proxy.</dd></div>
+      <div class="term"><dt>Adcock &amp; Collier</dt><dd>The <em>APSR</em> 2001 framework behind those three properties. Cite it in your methods appendix.</dd></div>
+    </dl>
+  </div>
+
+  <div class="gsec">
+    <h2>The corpus &amp; the run</h2>
+    <dl>
+      <div class="term"><dt>UNGDC</dt><dd>UN General Debate Corpus. About 4,700 stratified speeches, 1946 to 2025, on Harvard Dataverse.</dd></div>
+      <div class="term"><dt>Stratified sample</dt><dd>A sample drawn to keep balanced coverage, here across years, so a temporal trend is not distorted.</dd></div>
+      <div class="term"><dt>Context window <span class="alt">512 tokens</span></dt><dd>The most tokens a model reads at once. DeBERTa's is 512, roughly 350 to 400 words.</dd></div>
+      <div class="term"><dt>Truncation</dt><dd>Cutting each text to the first 512 tokens before scoring. Document the choice in your appendix.</dd></div>
+      <div class="term"><dt>Batch <span class="alt">batch size</span></dt><dd>How many texts the GPU scores at once. Sixteen here. Larger batches run faster on a T4.</dd></div>
+      <div class="term"><dt>Country-year</dt><dd>One row per country per year. The unit that merges into a regression dataset.</dd></div>
+    </dl>
+  </div>
+
+  <div class="gsec">
+    <h2>Rolling scores up</h2>
+    <dl>
+      <div class="term"><dt>Aggregation</dt><dd>Combining speech-level scores into a country-year number. The choice is never neutral.</dd></div>
+      <div class="term"><dt>Mean probability</dt><dd>Average the supportive-class probability across speeches. Keeps the continuous signal.</dd></div>
+      <div class="term"><dt>Share supportive</dt><dd>The fraction of speeches whose top label is supportive. Simpler, and it discards the probability.</dd></div>
+      <div class="term"><dt>Top-K</dt><dd>Keep only the most extreme K speeches per country-year. K is a hyper-parameter. Validate it against the gold set.</dd></div>
+      <div class="term"><dt>Sink label</dt><dd>The third "does not discuss climate" option. It absorbs off-topic speeches so they do not contaminate the proxy.</dd></div>
+    </dl>
+  </div>
+
+  <div class="gsec">
+    <h2>The gold set</h2>
+    <dl>
+      <div class="term"><dt>Gold set <span class="alt">hand-coded</span></dt><dd>The paragraphs you label by hand. The answer key you grade the model against. Thirty is the sweet spot.</dd></div>
+      <div class="term"><dt>Codebook</dt><dd>The written rules you fix before coding. Ours is three operational, disjoint, testable rules.</dd></div>
+      <div class="term"><dt>Inter-coder agreement</dt><dd>How often two human coders give the same paragraph the same score. Your human ceiling.</dd></div>
+      <div class="term"><dt>Class balance</dt><dd>How many cases fall in each label. Print it so a lopsided sample does not fool the accuracy.</dd></div>
+      <div class="term"><dt>Random seed</dt><dd>A fixed number that makes a random draw repeat exactly. We use seed 7 so the sample is reproducible.</dd></div>
+    </dl>
+  </div>
+
+  <div class="gsec">
+    <h2>Grading the model</h2>
+    <dl>
+      <div class="term"><dt>Confusion matrix</dt><dd>A table of model labels against gold labels. The diagonal is agreement, off-diagonal cells are the mistakes.</dd></div>
+      <div class="term"><dt>Accuracy</dt><dd>Share of paragraphs the model got right. It can mislead when the classes are imbalanced.</dd></div>
+      <div class="term"><dt>Weighted F1</dt><dd>Accuracy's more honest cousin. Balances precision and recall, then weights by class size.</dd></div>
+      <div class="term"><dt>Cohen's kappa</dt><dd>Agreement corrected for chance. Day 2's headline number. 0.4 to 0.6 is moderate.</dd></div>
+      <div class="term"><dt>Pearson r</dt><dd>Correlation between the supportive probability and the gold score. High r means sensible probabilities even when the label is wrong.</dd></div>
+      <div class="term"><dt>Spearman rho</dt><dd>The rank version of r. Robust to outliers and monotone shifts. Report both.</dd></div>
+      <div class="term"><dt>Calibration</dt><dd>Whether a 0.9 score really means about 90 percent likely right. Inspect the probability histogram.</dd></div>
+    </dl>
+  </div>
+
+  <div class="gsec">
+    <h2>Comparability checks</h2>
+    <dl>
+      <div class="term"><dt>Subgroup table</dt><dd>Kappa and accuracy computed separately by era and by region.</dd></div>
+      <div class="term"><dt>Drift</dt><dd>Performance that shifts across subgroups. A swing above 0.15 in kappa flags a comparability problem.</dd></div>
+      <div class="term"><dt>Face-validity check</dt><dd>Plotting the measure against a known event, the Paris Agreement here, to see if it behaves sensibly.</dd></div>
+    </dl>
+  </div>
+
+  <div class="gsec">
+    <h2>Beating the ceiling</h2>
+    <dl>
+      <div class="term"><dt>Off-the-shelf ceiling</dt><dd>The best kappa a generic zero-shot model reaches with no training. Often 0.4 to 0.7 on this corpus.</dd></div>
+      <div class="term"><dt>Few-shot fine-tuning</dt><dd>Teaching a model your specific task from a handful of labeled examples.</dd></div>
+      <div class="term"><dt>SetFit</dt><dd>A method that fine-tunes a sentence embedder with contrastive pairs. Learns from as few as eight examples per class.</dd></div>
+      <div class="term"><dt>Cross-encoder</dt><dd>Reads your text and your label together and judges entailment. The DeBERTa-NLI setup. It never learns your task.</dd></div>
+      <div class="term"><dt>Bi-encoder</dt><dd>Turns each text on its own into one embedding vector. What a sentence-transformer is, and what SetFit fine-tunes.</dd></div>
+      <div class="term"><dt>Contrastive learning</dt><dd>Training that pulls same-label vectors closer together and pushes different-label ones apart.</dd></div>
+      <div class="term"><dt>Train / test split</dt><dd>Holding back part of your labels to score the fine-tune honestly. Two thirds to train, one third held out.</dd></div>
+      <div class="term"><dt>Hypothesis ensembling</dt><dd>Averaging several worded versions of one label. Needs no training data. Lifts kappa about 0.05 to 0.10.</dd></div>
+      <div class="term"><dt>Full fine-tuning</dt><dd>Hand-code 300 paragraphs and train a DeBERTa head. Lifts kappa 0.10 to 0.20 at a week's cost.</dd></div>
+    </dl>
+  </div>
+
+  <div class="gsec">
+    <h2>Reproducibility &amp; the appendix</h2>
+    <dl>
+      <div class="term"><dt>Model ID</dt><dd>A model's permanent Hugging Face name with a version pin, e.g. <code class="inl">MoritzLaurer/DeBERTa-v3-base-mnli-fever-anli</code>.</dd></div>
+      <div class="term"><dt>Sidecar file</dt><dd>A small text file shipped beside the CSV that records the exact candidate-label list.</dd></div>
+      <div class="term"><dt>Replication package</dt><dd>The notebook, the gold-set CSV, and the data pointer a reviewer needs to rerun you.</dd></div>
+      <div class="term"><dt>Validation appendix</dt><dd>Where the codebook, kappa, confusion matrix, and subgroup table all live.</dd></div>
+      <div class="term"><dt>Limitations</dt><dd>Where truncation, label wording, and translation drift each get an honest paragraph.</dd></div>
+    </dl>
+  </div>
+
+</div>
+
+<div class="foot">
+  <span>Day 02 of 03 · LLMs for Political Scientists</span>
+  <span>Workshop materials · github.com/jacqpark/instats-llm-workshop</span>
+</div>
+
+</div>
+</body>
+</html>
