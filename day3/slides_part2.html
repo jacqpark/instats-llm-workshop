@@ -889,6 +889,67 @@ validators_passed:     <span class="kw">True</span></div>
   </div>
   <div class="slide-footer"><span>Day 3 &middot; Movement 04</span><span>26 / 30</span></div>
 </section>
+<!-- 59. CHOOSING A MODEL TIER -->
+<section class="slide">
+  <div class="eyebrow">Same provider, several models &middot; picking a tier</div>
+  <h2>Which model tier<br>do you actually need?</h2>
+  <div class="rule"></div>
+  <div class="three-col">
+    <div class="card cool">
+      <div class="label">Claude &middot; cheapest, fastest</div>
+      <h3>Haiku</h3>
+      <p>Quick and cheap, built for high-volume, well-scoped jobs. The tier we run today.</p>
+      <p class="small" style="margin-top: auto;"><span class="highlight">Use for</span> bulk extraction, normalization, tagging.</p>
+    </div>
+    <div class="card cool">
+      <div class="label">Claude &middot; balanced</div>
+      <h3>Sonnet</h3>
+      <p>Stronger reasoning at a middle price. Reach for it when Haiku slips on harder calls.</p>
+      <p class="small" style="margin-top: auto;"><span class="highlight">Use for</span> nuanced calls, longer context.</p>
+    </div>
+    <div class="card warm">
+      <div class="label">Claude &middot; most capable, priciest</div>
+      <h3>Opus</h3>
+      <p>The most capable and the slowest. Save it for the hardest reasoning or for building a gold standard.</p>
+      <p class="small" style="margin-top: auto;"><span class="highlight">Use for</span> hardest cases, adjudication, gold.</p>
+    </div>
+  </div>
+  <div style="margin-top: 14px; padding: 12px 20px; background: var(--bg-tint); border-left: 3px solid var(--accent); border-radius: 2px;">
+    <p style="font-size: 16px; line-height: 1.45; margin: 0;"><span class="highlight">The rule.</span> Start at the cheapest tier, check it against your validators or a small gold set, and climb only if accuracy is short. Most wrangling never leaves the bottom rung.</p>
+  </div>
+  <p class="tiny" style="margin-top: 10px;">Every provider offers the same ladder. OpenAI pairs lightweight tiers like GPT-5 mini and nano with a flagship like GPT-5 and reasoning models like o3 and o4-mini. The names change. The shape does not.</p>
+  <div class="slide-footer"><span>Day 3 &middot; Choosing a model</span><span>Production 1 / 2</span></div>
+</section>
+<!-- 60. BATCH PROCESSING -->
+<section class="slide">
+  <div class="eyebrow">Cutting the bill on big jobs &middot; the batch API</div>
+  <h2>Batch processing, for when<br>you are not in a hurry.</h2>
+  <div class="rule"></div>
+  <div class="two-col">
+    <div>
+      <h4>What it is</h4>
+      <p>A normal call is synchronous. You send one request and wait a moment for the answer, which is what our demo does fifty times in a loop.</p>
+      <p>A batch call hands the provider a whole file of requests at once. It works through them in the background, and you collect the results later, usually within a day.</p>
+      <h4 style="margin-top: 12px;">Why it is cheaper</h4>
+      <p>Anthropic and OpenAI both bill batch work at roughly half the per-token price, for no change to your prompt or schema.</p>
+    </div>
+    <div>
+      <h4>Reach for it when</h4>
+      <ul class="bare">
+        <li>You have thousands or millions of documents to score in one pass.</li>
+        <li>An overnight turnaround is fine.</li>
+        <li>Your prompt and schema are already settled.</li>
+      </ul>
+      <h4 style="margin-top: 12px;">Skip it when</h4>
+      <ul class="bare">
+        <li>The work is interactive or time-sensitive.</li>
+        <li>A synchronous run would finish in minutes anyway.</li>
+      </ul>
+    </div>
+  </div>
+  <p class="tiny" style="margin-top: 14px;"><span class="highlight">The workflow.</span> Validate on a handful of records synchronously, the way we did today, then send the full corpus as one batch and halve the bill.</p>
+  <div class="slide-footer"><span>Day 3 &middot; Batch processing</span><span>Production 2 / 2</span></div>
+</section>
 <!-- 27. SECTION DIVIDER 05 -->
 <section class="slide section-divider dark">
   <div class="num">05</div>
@@ -988,15 +1049,38 @@ validators_passed:     <span class="kw">True</span></div>
 </div>
 <div class="hud">
   <button id="prev">PREV</button>
-  <span id="counter">1 / 17</span>
+  <span id="counter">1 / 19</span>
   <button id="next">NEXT</button>
 </div>
-<div class="progress-bar" id="bar" style="width: 3.3%"></div>
+<div class="progress-bar" id="bar" style="width: 5.3%"></div>
 
 <script>
 const slides = Array.from(document.querySelectorAll('.slide'));
 const total = slides.length;
 let idx = 0;
+
+// --- presenter-monitor sync ---
+const SYNC_DAY = 3;
+const SYNC_KEY = 'workshop-sync';
+const slideNums = slides.map(s => {
+  let n = s.previousSibling;
+  while (n && n.nodeType !== 8 /* COMMENT_NODE */) n = n.previousSibling;
+  const m = n && n.nodeValue && n.nodeValue.match(/^\s*(\d+)\./);
+  return m ? parseInt(m[1], 10) : null;
+});
+const syncChannel = ('BroadcastChannel' in window) ? new BroadcastChannel(SYNC_KEY) : null;
+function publishSync() {
+  const num = slideNums[idx];
+  if (num == null) return;
+  const payload = { day: SYNC_DAY, slide: num, t: Date.now() };
+  if (syncChannel) syncChannel.postMessage(payload);
+  try { localStorage.setItem(SYNC_KEY, JSON.stringify(payload)); } catch (_) {}
+}
+if (syncChannel) {
+  syncChannel.addEventListener('message', e => {
+    if (e.data && e.data.request === 'current') publishSync();
+  });
+}
 
 function fit() {
   const s = Math.min(window.innerWidth / 1280, window.innerHeight / 720) * 0.95;
@@ -1013,6 +1097,7 @@ function show(i) {
   document.getElementById('counter').textContent = `${idx+1} / ${total}`;
   document.getElementById('bar').style.width = `${((idx+1)/total)*100}%`;
   history.replaceState(null, '', `#${idx+1}`);
+  publishSync();
 }
 
 document.addEventListener('keydown', (e) => {

@@ -190,6 +190,10 @@ thead th {
   border-bottom: 2px solid var(--accent);
   padding-bottom: 8px;
 }
+table.compact { font-size: 14px; }
+table.compact th, table.compact td { padding: 6px 12px; line-height: 1.34; }
+table.compact td code { font-size: 12px; }
+table.compact td .rot { display: block; font-size: 11px; color: var(--highlight); margin-top: 3px; letter-spacing: 0.01em; }
 
 /* Title slide */
 .slide-title { padding: 0; }
@@ -666,6 +670,232 @@ thead th {
     </div>
   </div>
 </section>
+<!-- 51. MAKE-UP DIVIDER -->
+<section class="slide section-divider dark">
+  <div class="num">00</div>
+  <div class="eyebrow">Day 2 make-up &middot; 20 minutes</div>
+  <h1>Fine-tuning,<br>done right.</h1>
+  <p class="lede">The live SetFit run did not cooperate yesterday. Here is the same idea on a model that works, taken straight from a paper of mine now in revision.</p>
+  <div class="slide-footer"><span>Day 2 make-up</span><span>MU 1 / 8</span></div>
+</section>
+<!-- 52. THE FINE-TUNING LADDER -->
+<section class="slide">
+  <div class="eyebrow">Where SetFit sits, and why it stalled</div>
+  <h2>Three rungs on the<br>fine-tuning ladder.</h2>
+  <div class="rule"></div>
+  <div class="three-col">
+    <div class="card cool">
+      <div class="label">Rung 01 &middot; Day 1</div>
+      <h3>Zero-shot</h3>
+      <p>An off-the-shelf encoder with no training of your own. Cheap and reproducible. The ceiling is whatever the base model already knows.</p>
+    </div>
+    <div class="card warm">
+      <div class="label">Rung 02 &middot; yesterday's demo</div>
+      <h3>SetFit, few-shot</h3>
+      <p>A small contrastive head fit on a handful of labels. Powerful in principle. The live run depends on a fragile stack, and yesterday it would not converge in front of you.</p>
+    </div>
+    <div class="card warm">
+      <div class="label">Rung 03 &middot; today's make-up</div>
+      <h3>Full fine-tune</h3>
+      <p>Update the transformer weights on a few hundred hand-labeled examples. More setup. The validation numbers are the ones a reviewer will trust.</p>
+    </div>
+  </div>
+  <p class="tiny" style="margin-top: 16px;">SetFit is not wrong. The demo simply hid the payoff behind a setup problem. The cleanest way to see what fine-tuning buys you is a fine-tune that has already shipped through peer review.</p>
+  <div class="slide-footer"><span>Day 2 make-up</span><span>MU 2 / 8</span></div>
+</section>
+<!-- 53. A REAL FINE-TUNE -->
+<section class="slide">
+  <div class="eyebrow">A live example from my own R&amp;R</div>
+  <h2>DeBERTa-v3, fine-tuned on<br>trade-report text.</h2>
+  <div class="rule"></div>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 28px; flex: 1; min-height: 0;">
+    <div>
+      <h4>The framing</h4>
+      <ul class="bare">
+        <li>The task is stance detection cast as natural-language inference.</li>
+        <li>The <span class="highlight">premise</span> is one paragraph from a US trade report on a country's IP regime.</li>
+        <li>The <span class="highlight">hypothesis</span> is a short standardized claim about that country.</li>
+        <li>The model returns an entailment probability. I turn that into a signed stance and average within country and year.</li>
+      </ul>
+      <p class="small" style="margin-top: 12px;">Notebook on screen. <code>NTE_DeBERTa_V3_revised_colab.ipynb</code>, Part 1.</p>
+    </div>
+    <div class="schema-box"><span class="desc"># premise</span>
+"...the IPR situation in
+ country X, year Y: <span class="key">&lt;paragraph&gt;</span>"
+
+<span class="desc"># hypothesis</span>
+"The country has strong
+ IP law."
+
+<span class="desc"># model output</span>
+<span class="type">entailment prob</span> &rarr; signed
+stance on a -5 to +5 scale</div>
+  </div>
+  <div class="slide-footer"><span>Day 2 make-up</span><span>MU 3 / 8</span></div>
+</section>
+<!-- 57. RELATIVE POSITION EMBEDDING -->
+<section class="slide">
+  <div class="eyebrow">Why DeBERTa-v3, and what "relative position" means</div>
+  <h2>How the model keeps<br>track of word order.</h2>
+  <div class="rule"></div>
+  <div class="two-col" style="flex: 0 0 auto;">
+    <div class="card cool">
+      <div class="label">Traditional BERT &middot; absolute position</div>
+      <h3>Numbered seats</h3>
+      <p>BERT learns a fixed list of 512 numbered seats. The first word sits in seat 1, the next in seat 2, on down the line.</p>
+      <p class="small" style="font-style: italic;">There is no seat 513, so BERT cannot read past 512 tokens. The wall is built in.</p>
+    </div>
+    <div class="card warm">
+      <div class="label">DeBERTa-v3 &middot; relative position</div>
+      <h3>Distance between words</h3>
+      <p>DeBERTa tracks how far apart two words are rather than which seat each one holds. "Three words to the left" means the same thing anywhere.</p>
+      <p class="small" style="font-style: italic;">Distance still makes sense past word 512, so the model is not boxed in by a fixed chart.</p>
+    </div>
+  </div>
+  <div style="margin-top: 16px; padding: 14px 20px; background: var(--bg-tint); border-left: 3px solid var(--accent); border-radius: 2px;">
+    <p style="font-size: 15px; line-height: 1.5; margin: 0;"><span class="highlight">Relative position embedding, in one line.</span> The model encodes the gap between two words instead of the fixed slot each word sits in. That single change lets DeBERTa stretch past the 512-token wall that hard-stops BERT. The shipped deberta-v3-large is itself trained at 512 tokens, and because the positions are relative, people run it on longer passages toward 1024 and a little beyond. BERT cannot go there at all.</p>
+  </div>
+  <p class="tiny" style="margin-top: 12px;">Sources. He et al. 2020, DeBERTa, arXiv:2006.03654. Shaw, Uszkoreit, and Vaswani 2018, relative position representations, NAACL. Devlin et al. 2019, BERT, NAACL.</p>
+  <div class="slide-footer"><span>Day 2 make-up</span><span>MU 4 / 8</span></div>
+</section>
+<!-- 54. TRAINING SETUP -->
+<section class="slide">
+  <div class="eyebrow">What the fine-tune actually trains on</div>
+  <h2>Thirteen hypotheses,<br>three thousand pairs.</h2>
+  <div class="rule"></div>
+  <div class="four-col">
+    <div class="card">
+      <div class="label">Labels</div>
+      <h3>300 paragraphs</h3>
+      <p>Hand-labeled IP paragraphs, each paired with every hypothesis. Up to 3,900 premise and hypothesis pairs.</p>
+    </div>
+    <div class="card">
+      <div class="label">Targets</div>
+      <h3>13 hypotheses</h3>
+      <p>Trained on all of them at once, so the model learns factual markers and interpretive claims together.</p>
+    </div>
+    <div class="card">
+      <div class="label">Hyperparameters</div>
+      <h3>Conservative</h3>
+      <p>Learning rate 2e-5. Weight decay 0.03. Batch size 8. Small steps guard against overfitting a tiny corpus.</p>
+    </div>
+    <div class="card">
+      <div class="label">Output</div>
+      <h3>One proxy</h3>
+      <p>A weighted sum of entailment probabilities, scaled to a country-year IP evaluation score.</p>
+    </div>
+  </div>
+  <p class="tiny" style="margin-top: 16px;">Part 2 of the notebook trains the production model on all 300 paragraphs. Part 3 scores 1,432 paragraphs across the full corpus.</p>
+  <div class="slide-footer"><span>Day 2 make-up</span><span>MU 5 / 8</span></div>
+</section>
+<!-- 58. TRAINING ARGUMENTS -->
+<section class="slide">
+  <div class="eyebrow">Every dial we set during training, in plain terms</div>
+  <h2 style="font-size: 40px; margin-bottom: 16px;">The training arguments, one by one.</h2>
+  <div class="rule"></div>
+  <table class="compact">
+    <thead>
+      <tr>
+        <th style="width: 23%;">Argument (our value)</th>
+        <th style="width: 38%;">What it controls</th>
+        <th style="width: 39%;">The trade-off</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Learning rate</strong><br><code>2e-5</code><span class="rot">start 2e-5, range 1e-5 to 5e-5</span></td>
+        <td>How big a step the model takes each time it corrects a mistake.</td>
+        <td>Too high overshoots and never settles. Too low crawls. A small value is the safe choice on little data.</td>
+      </tr>
+      <tr>
+        <td><strong>Epochs</strong><span class="rot">start 3, range 2 to 4</span></td>
+        <td>How many times the model reads through the whole training set.</td>
+        <td>Too many and it memorizes the examples (overfitting). Too few and the pattern is not learned yet.</td>
+      </tr>
+      <tr>
+        <td><strong>Batch size</strong><br><code>8</code><span class="rot">start 16 to 32</span></td>
+        <td>How many examples it studies before each correction.</td>
+        <td>Larger is smoother and faster but uses more memory. Smaller fits a big model on one GPU.</td>
+      </tr>
+      <tr>
+        <td><strong>Weight decay</strong><br><code>0.03</code><span class="rot">start 0.01 to 0.1</span></td>
+        <td>A gentle pull that keeps the model's internal numbers from growing large.</td>
+        <td>Higher guards harder against overfitting but can blur real signal. Zero removes the brake.</td>
+      </tr>
+      <tr>
+        <td><strong>Warmup</strong><span class="rot">start 6 to 10% of steps</span></td>
+        <td>Starting with tiny steps and easing the rate up over the first batches.</td>
+        <td>Skipping it risks wild swings early, when the fresh weights are most fragile.</td>
+      </tr>
+      <tr>
+        <td><strong>Mixed precision</strong><br><code>bf16</code><span class="rot">on when the GPU allows</span></td>
+        <td>Training in 16-bit numbers rather than 32-bit, with a 32-bit master copy kept for safety.</td>
+        <td>Halves memory and speeds training. Plain fp16 can throw NaN errors, so bf16 is the sturdier choice on newer GPUs.</td>
+      </tr>
+    </tbody>
+  </table>
+  <p class="tiny" style="margin-top: 12px;">All set once in <code>TrainingArguments</code>. The starting values follow the BERT and RoBERTa fine-tuning recipes (Devlin et al. 2019, arXiv:1810.04805, and Liu et al. 2019, arXiv:1907.11692). On a few hundred paragraphs, the small learning rate and the non-zero weight decay matter most.</p>
+  <div class="slide-footer"><span>Day 2 make-up</span><span>MU 6 / 8</span></div>
+</section>
+<!-- 55. VALIDATION THAT HOLDS UP -->
+<section class="slide">
+  <div class="eyebrow">Stratified 10-fold cross-validation, full pipeline inside each fold</div>
+  <h2>The numbers a reviewer<br>will actually read.</h2>
+  <div class="rule"></div>
+  <div class="val-strip">
+    <div class="vcard">
+      <h3>Accuracy</h3>
+      <div class="big">77.3%</div>
+      <p>Out-of-sample, dichotomized against hand-coded labels across 300 paragraphs.</p>
+    </div>
+    <div class="vcard">
+      <h3>Weighted F1</h3>
+      <div class="big">0.787</div>
+      <p>Binary split. Pooled across all 13 hypotheses the weighted F1 rises to 0.870.</p>
+    </div>
+    <div class="vcard">
+      <h3>Score correlation</h3>
+      <div class="big">0.68</div>
+      <p>Pearson r between predicted and hand-coded scores. Spearman rho is 0.689.</p>
+    </div>
+    <div class="vcard">
+      <h3>Factual vs. interpretive</h3>
+      <div class="big">.99 / .69</div>
+      <p>Factual hypotheses score near 0.9 to 0.99. Interpretive ones land lower, exactly as expected.</p>
+    </div>
+  </div>
+  <div style="margin-top: 20px; padding: 16px 22px; background: var(--bg-tint); border-left: 3px solid var(--accent); border-radius: 2px;">
+    <p style="font-size: 17px; line-height: 1.5; margin: 0;">The whole preprocessing pipeline runs <span class="highlight">inside each fold</span>, so nothing from the held-out paragraphs leaks into training. That is the honest-validation rule from Grimmer, Roberts, and Stewart.</p>
+  </div>
+  <div class="slide-footer"><span>Day 2 make-up</span><span>MU 7 / 8</span></div>
+</section>
+<!-- 56. WHEN TO FINE-TUNE -->
+<section class="slide">
+  <div class="eyebrow">The takeaway, then on to Day 3</div>
+  <h2>When the fine-tune<br>is worth it.</h2>
+  <div class="rule"></div>
+  <div class="two-col">
+    <div>
+      <h4>Fine-tune when</h4>
+      <ul class="bare">
+        <li>Zero-shot has hit its ceiling on your task.</li>
+        <li>You can afford a few hundred hand-labeled examples.</li>
+        <li>Your construct is multidimensional, like IP protection across enforcement and legislation.</li>
+        <li>You need a defensible, deterministic measurement for a paper.</li>
+      </ul>
+    </div>
+    <div>
+      <h4>Skip it when</h4>
+      <ul class="bare">
+        <li>A zero-shot encoder already clears your bar.</li>
+        <li>You have almost no labels and no time to make them.</li>
+        <li>The job is free-text wrangling rather than fixed-label classification. That is today.</li>
+      </ul>
+      <p class="small" style="margin-top: 12px;">Day 3 leaves the encoder behind and picks up the generative family for the wrangling jobs a fine-tune cannot reach.</p>
+    </div>
+  </div>
+  <div class="slide-footer"><span>Day 2 make-up</span><span>MU 8 / 8</span></div>
+</section>
 <!-- 2. ROADMAP -->
 <section class="slide">
   <div class="eyebrow">Today</div>
@@ -854,6 +1084,40 @@ thead th {
   <p class="lede">Fifty news leads. Four JSON fields. The single most common pattern political scientists need from a generative model.</p>
   <div class="slide-footer"><span>Day 3</span><span>09 / 30</span></div>
 </section>
+<!-- 61. API VS CHAT WINDOW -->
+<section class="slide">
+  <div class="eyebrow">From the chat window to a reproducible API call</div>
+  <h2>How we actually<br>call the model.</h2>
+  <div class="rule"></div>
+  <div class="two-col">
+    <div>
+      <h4>An API call, in plain terms</h4>
+      <p class="small">Rather than typing into a chat box, your notebook sends the request for you and gets the answer back as data. A few lines do the whole job.</p>
+      <div class="codeblock" style="font-size: 13px; margin-top: 8px;"><span class="com"># the whole call</span>
+resp = client.messages.<span class="fn">create</span>(
+    model=<span class="str">"claude-haiku-4-5-..."</span>,
+    system=SCHEMA_PROMPT,    <span class="com"># fixed, cached</span>
+    messages=[{<span class="str">"role"</span>: <span class="str">"user"</span>,
+               <span class="str">"content"</span>: lead}],
+    temperature=<span class="num">0</span>,
+)</div>
+      <p class="tiny" style="margin-top: 8px;">The live demo runs exactly this, fifty times, in a loop.</p>
+    </div>
+    <div>
+      <h4>Why not just use the chat app</h4>
+      <ul class="bare">
+        <li><span class="highlight">Scale.</span> Code loops over fifty or fifty thousand documents unattended. The chat window takes one message at a time, by hand.</li>
+        <li><span class="highlight">Reproducibility.</span> The call records the model version, the prompt, and the settings, so you can re-run and ship it. The chat window keeps no record and hides its system prompt.</li>
+        <li><span class="highlight">Control.</span> You set temperature, max tokens, caching, and the model pin. The chat app keeps those dials out of reach.</li>
+        <li><span class="highlight">Clean output.</span> You get JSON straight into your table instead of prose to copy out of a window.</li>
+      </ul>
+    </div>
+  </div>
+  <div style="margin-top: 16px; padding: 14px 20px; background: var(--bg-tint); border-left: 3px solid var(--accent); border-radius: 2px;">
+    <p style="font-size: 16px; line-height: 1.5; margin: 0;"><span class="highlight">The line to remember.</span> The chat window is for exploring an idea. The API is for measurement, since a result you cannot re-run is hard to defend in a methods appendix.</p>
+  </div>
+  <div class="slide-footer"><span>Day 3 &middot; Calling the model</span><span>API vs chat window</span></div>
+</section>
 <!-- 10. THE SCHEMA -->
 <section class="slide">
   <div class="eyebrow">The one-hour decision that makes everything else defensible</div>
@@ -1024,15 +1288,38 @@ Example output:
 </div>
 <div class="hud">
   <button id="prev">PREV</button>
-  <span id="counter">1 / 18</span>
+  <span id="counter">1 / 27</span>
   <button id="next">NEXT</button>
 </div>
-<div class="progress-bar" id="bar" style="width: 3.3%"></div>
+<div class="progress-bar" id="bar" style="width: 3.7%"></div>
 
 <script>
 const slides = Array.from(document.querySelectorAll('.slide'));
 const total = slides.length;
 let idx = 0;
+
+// --- presenter-monitor sync ---
+const SYNC_DAY = 3;
+const SYNC_KEY = 'workshop-sync';
+const slideNums = slides.map(s => {
+  let n = s.previousSibling;
+  while (n && n.nodeType !== 8 /* COMMENT_NODE */) n = n.previousSibling;
+  const m = n && n.nodeValue && n.nodeValue.match(/^\s*(\d+)\./);
+  return m ? parseInt(m[1], 10) : null;
+});
+const syncChannel = ('BroadcastChannel' in window) ? new BroadcastChannel(SYNC_KEY) : null;
+function publishSync() {
+  const num = slideNums[idx];
+  if (num == null) return;
+  const payload = { day: SYNC_DAY, slide: num, t: Date.now() };
+  if (syncChannel) syncChannel.postMessage(payload);
+  try { localStorage.setItem(SYNC_KEY, JSON.stringify(payload)); } catch (_) {}
+}
+if (syncChannel) {
+  syncChannel.addEventListener('message', e => {
+    if (e.data && e.data.request === 'current') publishSync();
+  });
+}
 
 function fit() {
   const s = Math.min(window.innerWidth / 1280, window.innerHeight / 720) * 0.95;
@@ -1049,6 +1336,7 @@ function show(i) {
   document.getElementById('counter').textContent = `${idx+1} / ${total}`;
   document.getElementById('bar').style.width = `${((idx+1)/total)*100}%`;
   history.replaceState(null, '', `#${idx+1}`);
+  publishSync();
 }
 
 document.addEventListener('keydown', (e) => {
